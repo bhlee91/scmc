@@ -1,0 +1,24 @@
+const listItem = [
+    {
+      text:'Dashboard',
+      onclick: '/product'
+    }, 
+    {
+      text:'Product',
+      onclick: '/product',
+    } 
+];
+
+return (
+    <List>
+      {listItem.map((item, index) => {
+        const { text, onclick } = item;
+          return (
+            <Link key={text} to={onclick}>
+                <ListItem button>
+                <ListItemText primary={text} />
+                </ListItem>
+            </Link>
+            )})}
+    </List>
+);
