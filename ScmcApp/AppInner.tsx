@@ -185,6 +185,15 @@ function AppInner() {
       />
 
       <Tab.Screen
+        name="TraceDelivery"
+        component={TraceDelivery}
+        options={{
+          title: '화물추적',
+          tabBarIcon: () => <FontAwesome5 name="truck" size={20} />,
+        }}
+      />
+
+      <Tab.Screen
         name="내정보"
         component={MyInfo}
         options={{

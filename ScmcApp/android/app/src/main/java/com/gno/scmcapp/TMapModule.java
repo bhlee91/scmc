@@ -34,6 +34,7 @@ public class TMapModule extends ReactContextBaseJavaModule {
             pathInfo.put("rGoX", longitude);
             pathInfo.put("rGoY", latitude);
             pathInfo.put("rSOpt", vehicle.equals("MOTORCYCLE") ? "6" : "0");
+
             boolean result = tMapTapi.invokeRoute(pathInfo);
             if (result) {
                 promise.resolve(true);
