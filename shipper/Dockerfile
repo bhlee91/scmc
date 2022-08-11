@@ -19,7 +19,7 @@ RUN mkdir ./build
 
 # 위에서 생성한 앱의 빌드산출물을 nginx의 샘플 앱이 사용하던 폴더로 이동
 # host pc의 현재경로의 build 폴더를 workdir 의 build 폴더로 복사
-ADD ./build ./build
+COPY ./build /usr/share/nginx/html
 
 # nginx의 기본 설정을 삭제하고 앱에서 설정한 파일을 복사
 RUN rm -rf /etc/nginx/conf.d/default.conf
