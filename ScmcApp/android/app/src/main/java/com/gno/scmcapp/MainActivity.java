@@ -1,4 +1,4 @@
-package com.gno.scmcapp;
+package com.zno.scmcapp;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;

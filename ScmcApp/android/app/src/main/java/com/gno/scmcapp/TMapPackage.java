@@ -1,4 +1,4 @@
-package com.gno.scmcapp;
+package com.zno.scmcapp;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
