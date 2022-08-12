@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,6 +14,14 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
+
+import NaverLogin from './NaverLogin';
+
+declare global {
+  interface Window {
+    naver: any;
+  }
+}
 
 function Copyright(props: any) {
   return (
@@ -95,6 +103,7 @@ export default function LogIn() {
             >
               로그인
             </Button>
+            <NaverLogin />
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

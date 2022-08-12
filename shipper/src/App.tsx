@@ -17,6 +17,7 @@ import MemberReg from "./components/MemberReg";
 import Main from "./main";
 import "./App.css";
 import ShipperRequire from "./components/ShipperRequire";
+import NaverLogin from "./components/NaverLogin";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/UseTerms" element={<UseTerms />} />
         <Route path="/PersonalPolicy" element={<PersonalPolicy />} />
         <Route path="/LogIn" element={<LogIn />} />
+        <Route path="/LogIn/nid" element={<NaverLogin />} />
         <Route path="/MemberReg" element={<MemberReg />} />
       </Routes>
     </BrowserRouter>
