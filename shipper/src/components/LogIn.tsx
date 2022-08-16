@@ -16,6 +16,7 @@ import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 
 import NaverLogin from './NaverLogin';
+import { KAKAO_AUTH_URL } from "../utils/kakaoUtils";
 
 declare global {
   interface Window {
@@ -104,6 +105,14 @@ export default function LogIn() {
               로그인
             </Button>
             <NaverLogin />
+            <div>
+              <a href={KAKAO_AUTH_URL}>
+                <img
+                  src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                  alt="카카오 로그인 버튼"
+                />
+              </a>
+            </div>
             <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">

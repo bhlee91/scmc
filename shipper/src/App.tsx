@@ -18,6 +18,7 @@ import Main from "./main";
 import "./App.css";
 import ShipperRequire from "./components/ShipperRequire";
 import NaverLogin from "./components/NaverLogin";
+import KaKaoLogin from "./components/KaKaoLogin";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/PersonalPolicy" element={<PersonalPolicy />} />
         <Route path="/LogIn" element={<LogIn />} />
         <Route path="/LogIn/nid" element={<NaverLogin />} />
+        <Route path="/LogIn/kid" element={<KaKaoLogin />} />
         <Route path="/MemberReg" element={<MemberReg />} />
       </Routes>
     </BrowserRouter>

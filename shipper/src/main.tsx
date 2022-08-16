@@ -46,6 +46,8 @@ const rows = 1;
 function Main() {
   const navigate = useNavigate();
 
+  console.log()
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
