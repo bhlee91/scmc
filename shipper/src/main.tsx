@@ -25,6 +25,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import InfoIcon from "@mui/icons-material/Info";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+
+import store from './store';
+
 const theme = createTheme();
 
 const settings = {
@@ -46,7 +49,7 @@ const rows = 1;
 function Main() {
   const navigate = useNavigate();
 
-  console.log()
+  console.log(store.getState())
 
   return (
     <ThemeProvider theme={theme}>

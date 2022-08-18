@@ -18,11 +18,7 @@ import Appbar from "../common/Appbar";
 import NaverLogin from './NaverLogin';
 import { KAKAO_AUTH_URL } from "../utils/kakaoUtils";
 
-declare global {
-  interface Window {
-    naver: any;
-  }
-}
+const { naver } = window as any;
 
 function Copyright(props: any) {
   return (
@@ -46,6 +42,26 @@ export default function LogIn() {
       password: data.get("password"),
     });
   };
+
+  const Keys = {
+    CLIENT_ID: "_OKuc7UYmVLMPYx0UYhc",
+    CLIENT_SECRET: "ky5YnBxks7"
+  }
+
+  const initNaverLogin = () => {
+    const naverLogin = new naver.LoginWithNaverId({
+      clientId: Keys.CLIENT_ID,
+      callbackUrl: "http://localhost:3000/LogIn/nid",
+      isPopup: false,
+      loginButton: { color: 'green', type: 3, height: '36' }
+    })
+
+    naverLogin.init();
+  }
+
+  useEffect(() => {
+    initNaverLogin();
+  })
 
   return (
     <ThemeProvider theme={theme}>
@@ -104,7 +120,7 @@ export default function LogIn() {
             >
               로그인
             </Button>
-            <NaverLogin />
+            <div id="naverIdLogin"></div>
             <div>
               <a href={KAKAO_AUTH_URL}>
                 <img
