@@ -1,32 +1,23 @@
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import {
-  Button,
   CardContent,
   Divider,
   ImageList,
-  Link,
-  Paper,
+  Link
 } from "@mui/material";
 import Footer from "./common/Footer";
 import Appbar from "./common/Appbar";
-import BottomNavigation from "./common/BottomNavigation";
 import Slider from "react-slick";
 import { useNavigate } from "react-router-dom";
 
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import InfoIcon from "@mui/icons-material/Info";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-
-import store from './store';
+import IconButton from "@mui/material/IconButton";
 
 const theme = createTheme();
 
@@ -48,8 +39,6 @@ const rows = 1;
 
 function Main() {
   const navigate = useNavigate();
-
-  console.log(store.getState())
 
   return (
     <ThemeProvider theme={theme}>

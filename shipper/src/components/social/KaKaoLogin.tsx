@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-import { useAppDispatch } from '../store';
-import userSlice from '../slice/user';
+import { useAppDispatch } from '../../store';
+import userSlice from '../../slice/user';
+import tokenSlice from '../../slice/token';
 
 export default function KaKaoLogin() {
   const dispatch = useAppDispatch();
@@ -24,9 +25,8 @@ export default function KaKaoLogin() {
     })
     .then(res => {
       dispatch(
-        userSlice.actions.setAccessToken({
+        tokenSlice.actions.SET_TOKEN({
           accessToken: res.data.access_token,
-          socialInfo: 'kakao'
         })
       )
 
@@ -45,10 +45,9 @@ export default function KaKaoLogin() {
         const PROFILE = DATA.kakao_account
 
         dispatch(
-          userSlice.actions.setUser({
+          userSlice.actions.SET_USER({
             email: PROFILE.email,
             userName: DATA.properties.nickname,
-            accessToken: ACCESS_TOKEN,
             socialInfo: 'kakao'
           })
         )

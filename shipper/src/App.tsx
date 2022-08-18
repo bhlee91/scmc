@@ -17,8 +17,8 @@ import MemberReg from "./components/MemberReg";
 import Main from "./main";
 import "./App.css";
 import ShipperRequire from "./components/ShipperRequire";
-import NaverLogin from "./components/NaverLogin";
-import KaKaoLogin from "./components/KaKaoLogin";
+import NaverLogin from "./components/social/NaverLogin";
+import KaKaoLogin from "./components/social/KaKaoLogin";
 
 function App() {
   return (

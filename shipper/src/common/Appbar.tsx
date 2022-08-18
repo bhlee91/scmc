@@ -12,6 +12,10 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
+import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import "./Appbar.css";
+
+import store from '../store';
 
 const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
 const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
@@ -28,6 +32,9 @@ const ResponsiveAppBar = () => {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+
+  const token = store.getState().token;
+  const USER = store.getState().user;
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -120,9 +127,27 @@ const ResponsiveAppBar = () => {
                 </Button>
               ))}
             </Box>
-            <Button color="inherit" href="/LogIn">
-              로그인
-            </Button>
+            {
+              token.accessToken === "" ? 
+              <Button color="inherit" href="/LogIn">
+                로그인
+              </Button>
+              :
+              <PopupState variant="popover" popupId="login-user-menu">
+                {(popupState) => (
+                  <>
+                    <Button variant="contained" {...bindTrigger(popupState)}>
+                      { USER.userName }
+                    </Button>
+                    <Menu {...bindMenu(popupState)}>
+                      <MenuItem onClick={popupState.close}>Profile(예시)</MenuItem>
+                      <MenuItem onClick={popupState.close}>My account(예시)</MenuItem>
+                      <MenuItem onClick={popupState.close}>Logout(예시)</MenuItem>
+                    </Menu>
+                  </>
+                )}                
+              </PopupState>
+            }
           </Toolbar>
         </Container>
       </AppBar>
