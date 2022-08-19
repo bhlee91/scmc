@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,18 +7,18 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import { Link } from "react-router-dom";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import "./Appbar.css";
 
 import store from '../store';
+import axios from 'axios';
+import tokenSlice from "../slice/token";
 
 const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
-const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
+// const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
 
 const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -34,7 +34,24 @@ const ResponsiveAppBar = () => {
   };
 
   const token = store.getState().token;
+
+  if (token.social === "" || token.social === undefined || token.refreshToken === "" || token.refreshToken === undefined) {
+    store.dispatch(
+      tokenSlice.actions.SET_DELETE_TOKEN()
+    )
+  }
+
   const USER = store.getState().user;
+
+  useEffect(() => {
+    if (token.accessToken !== "") {
+      axios.get(`http://localhost:8080/member/login/social?social=${token.social}&token=${encodeURI(token.accessToken)}`)
+      .then(res => {
+        console.log(res)
+      })
+    }
+  })
+  console.log(token)
 
   return (
     <Box sx={{ flexGrow: 1 }}>

@@ -6,6 +6,8 @@ import { useAppDispatch } from '../../store';
 import userSlice from '../../slice/user';
 import tokenSlice from '../../slice/token';
 
+import { KAKAO_KEY } from '../../utils/constants';
+
 export default function KaKaoLogin() {
   const dispatch = useAppDispatch();
   const location = useLocation();
@@ -13,9 +15,9 @@ export default function KaKaoLogin() {
 
   useEffect(() => {
     const CODE = location.search.substring("?code=".length);
-    const GRANT_TYPE = "authorization_code";
+    const GRANT_TYPE = KAKAO_KEY.GRANT_TYPE_C;
     const REDIRECT_URI = "http://localhost:3000/LogIn/kid";
-    const REST_API_KEY = "1350e8c73caff861aa456734c6c40f6f";
+    const REST_API_KEY = KAKAO_KEY.REST_API_KEY;
 
     axios.post(`https://kauth.kakao.com/oauth/token?grant_type=${GRANT_TYPE}&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&code=${CODE}`, 
     {
@@ -24,9 +26,14 @@ export default function KaKaoLogin() {
       }
     })
     .then(res => {
+      const TOKEN_DATA = res.data
+
       dispatch(
         tokenSlice.actions.SET_TOKEN({
-          accessToken: res.data.access_token,
+          accessToken: TOKEN_DATA.access_token,
+          refreshToken: TOKEN_DATA.refresh_token,
+          expireTime: TOKEN_DATA.expires_in,
+          social: "KAKAO"
         })
       )
 
@@ -38,17 +45,17 @@ export default function KaKaoLogin() {
       axios.post("http://localhost:8080/member/login/social", 
       {
         token: ACCESS_TOKEN,
-        social: "kakao"
+        social: "KAKAO"
       })
       .then(res => {
         const DATA = JSON.parse(res.data.data.res)
         const PROFILE = DATA.kakao_account
 
         dispatch(
-          userSlice.actions.SET_USER({
+          userSlice.actions.SET_LOGIN({
             email: PROFILE.email,
             userName: DATA.properties.nickname,
-            socialInfo: 'kakao'
+            socialInfo: "KAKAO"
           })
         )
 

@@ -39,6 +39,7 @@
     "react-simple-image-viewer": "^1.2.1",
     "react-slick": "^0.28.1",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
     "typescript": "^4.6.2",
     "web-vitals": "^2.1.4"
@@ -69,6 +70,7 @@
   },
   "devDependencies": {
     "@types/react-html5-camera-photo": "^1.5.1",
-    "@types/react-slick": "^0.23.8"
+    "@types/react-slick": "^0.23.8",
+    "@types/redux-persist": "^4.3.1"
   }
 }

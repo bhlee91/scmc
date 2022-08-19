@@ -13,13 +13,23 @@ export default function NaverLogin() {
 
   useEffect(() => {
     if (!location.hash) return;
-    console.log(location)
-    const token = location.hash.substring("#access_token=".length, location.hash.lastIndexOf("&state="));
+    const HASH_VALUES = location.hash.replace("#", "").split("&");
+    console.log(HASH_VALUES)
+    const ACCESS_TOKEN = HASH_VALUES[0].split("=")[1];
+    const EXPIRE_TIME = HASH_VALUES[3].split("=")[1];
+
+    dispatch(
+      tokenSlice.actions.SET_TOKEN({
+        accessToken: ACCESS_TOKEN,
+        expireTime: EXPIRE_TIME,
+        social: "NAVER"
+      })
+    )
     
     axios.post("http://localhost:8080/member/login/social",
     {
-      token: token,
-      social: "naver"
+      token: ACCESS_TOKEN,
+      social: "NAVER"
     })
     .then(res => {
       console.log(JSON.parse(res.data.data.res).response)
@@ -27,11 +37,11 @@ export default function NaverLogin() {
       const PROFILE = JSON.parse(res.data.data.res).response
 
       dispatch(
-        userSlice.actions.SET_USER({
+        userSlice.actions.SET_LOGIN({
           email: PROFILE.email,
           phoneNumber: PROFILE.mobile,
           userName: PROFILE.name,
-          socialInfo: 'naver'
+          socialInfo: "NAVER"
         })
       )
 
