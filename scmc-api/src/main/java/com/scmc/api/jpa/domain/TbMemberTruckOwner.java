@@ -57,15 +57,6 @@ public class TbMemberTruckOwner {
 	@Column(name = "lift_type")
 	private String lift_type;
 	
-	@Column(name = "token")
-	private String token;
-	
-	@Column(name = "refresh_token")
-	private String refresh_token;
-	
-	@Column(name = "expired_time")
-	private int expired_time;
-	
 	@Column(name = "password_expireddate")
 	private Date password_expireddate;
 	
