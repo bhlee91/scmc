@@ -19,7 +19,13 @@ public class CommonCodeServiceImpl implements CommonCodeService {
 	@Override
 	public List<TbCommonCd> selectCommonCode() {
 		
-		return tbCommonCdRepository.findAll();
+		return tbCommonCdRepository.findAllByOrderByCodeTypeAscSortOrderAsc();
+	}
+
+	@Override
+	public List<TbCommonCd> selectCommonCodeByCodeType(String codeType) {
+		
+		return tbCommonCdRepository.findByCodeTypeOrderBySortOrderAsc(codeType);
 	}
 
 }
