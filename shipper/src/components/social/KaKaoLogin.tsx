@@ -55,7 +55,8 @@ export default function KaKaoLogin() {
           userSlice.actions.SET_LOGIN({
             email: PROFILE.email,
             userName: DATA.properties.nickname,
-            socialInfo: "KAKAO"
+            social: "KAKAO",
+            isLogin: true
           })
         )
 
@@ -64,6 +65,7 @@ export default function KaKaoLogin() {
     })
     .catch(() => {
       navigate("/LogIn")
+      alert("로그인 할 수 없습니다.\n다시 로그인해주세요.")
     })
   })
 

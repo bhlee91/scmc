@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import {
   Avatar,
   Button,
@@ -7,15 +8,23 @@ import {
   FormControl,
   FormControlLabel,
   Checkbox,
-  FormHelperText,
   Grid,
   Box,
   Typography,
-  Container,
+  Container
 } from "@mui/material/";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
+
+import axios from "axios";
+
+interface SignUpForm {
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+}
 
 function MemberReg() {
   const theme = createTheme();
@@ -25,16 +34,22 @@ function MemberReg() {
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
 
+  const { register, handleSubmit } = useForm<SignUpForm>();
+  const onSubmit: SubmitHandler<SignUpForm> = (data) => {
+    console.log(data)
+
+    axios.post("http://localhost:8080/jpa/test"
+    , data)
+    .then(res => {
+      console.log(res)
+    })
+  }
+
   // 동의 체크
   const handleAgree = (event: {
     target: { checked: boolean | ((prevState: boolean) => boolean) };
   }) => {
     setChecked(event.target.checked);
-  };
-
-  // form 전송
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
   };
 
   return (
@@ -57,7 +72,6 @@ function MemberReg() {
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
             <FormControl component="fieldset" variant="standard">
@@ -71,6 +85,7 @@ function MemberReg() {
                     id="email"
                     name="email"
                     label="이메일 주소"
+                    {...register("email")}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -81,6 +96,7 @@ function MemberReg() {
                     id="password"
                     name="password"
                     label="비밀번호 (숫자+영문자+특수문자 8자리 이상)"
+                    {...register("password")}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -100,6 +116,7 @@ function MemberReg() {
                     id="name"
                     name="name"
                     label="이름"
+                    {...register("name")}
                   />
                 </Grid>
 
@@ -109,6 +126,7 @@ function MemberReg() {
                     id="Phone"
                     name="Phone"
                     label="휴대폰번호(-없이 입력)"
+                    {...register("phone")}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -145,6 +163,7 @@ function MemberReg() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 size="large"
+                onClick={handleSubmit(onSubmit)}
               >
                 회원가입
               </Button>

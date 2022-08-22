@@ -15,9 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 
-import { NAVER_KEY, KAKAO_AUTH_URL } from '../utils/constants';
-
-const { naver } = window as any;
+import { initNaverLogin } from '../utils/naverLogin';
+import { initKaKaoLogin } from '../utils/kakaoLogin';
 
 function Copyright(props: any) {
   return (
@@ -42,19 +41,8 @@ export default function LogIn() {
     });
   };
 
-  const initNaverLogin = () => {
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: NAVER_KEY.CLIENT_ID,
-      callbackUrl: "http://localhost:3000/LogIn/nid",
-      isPopup: false,
-      loginButton: { color: 'green', type: 3, height: '36' }
-    })
-
-    naverLogin.init();
-  }
-
   useEffect(() => {
-    initNaverLogin();
+    initNaverLogin.init();
   })
 
   return (
@@ -116,7 +104,7 @@ export default function LogIn() {
             </Button>
             <div id="naverIdLogin"></div>
             <div>
-              <a href={KAKAO_AUTH_URL}>
+              <a href={initKaKaoLogin}>
                 <img
                   src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
                   alt="카카오 로그인 버튼"

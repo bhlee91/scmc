@@ -14,7 +14,7 @@ export default function NaverLogin() {
   useEffect(() => {
     if (!location.hash) return;
     const HASH_VALUES = location.hash.replace("#", "").split("&");
-    console.log(HASH_VALUES)
+    
     const ACCESS_TOKEN = HASH_VALUES[0].split("=")[1];
     const EXPIRE_TIME = HASH_VALUES[3].split("=")[1];
 
@@ -32,8 +32,6 @@ export default function NaverLogin() {
       social: "NAVER"
     })
     .then(res => {
-      console.log(JSON.parse(res.data.data.res).response)
-
       const PROFILE = JSON.parse(res.data.data.res).response
 
       dispatch(
@@ -41,15 +39,16 @@ export default function NaverLogin() {
           email: PROFILE.email,
           phoneNumber: PROFILE.mobile,
           userName: PROFILE.name,
-          socialInfo: "NAVER"
+          social: "NAVER",
+          isLogin: true
         })
       )
 
       navigate("/");
     })
-    .catch(err => {
-      console.log(err)
-      navigate("/LogIn");
+    .catch(() => {
+      navigate("/LogIn")
+      alert("로그인 할 수 없습니다.\n다시 로그인해주세요.")
     });
   })
 

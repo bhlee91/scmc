@@ -16,6 +16,7 @@ import "./Appbar.css";
 import store from '../store';
 import axios from 'axios';
 import tokenSlice from "../slice/token";
+import { initNaverLogin } from '../utils/naverLogin';
 
 const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
 // const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
@@ -33,25 +34,12 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
 
-  const token = store.getState().token;
+  store.dispatch(
+    tokenSlice.actions.SET_DELETE_TOKEN()
+  )
 
-  if (token.social === "" || token.social === undefined || token.refreshToken === "" || token.refreshToken === undefined) {
-    store.dispatch(
-      tokenSlice.actions.SET_DELETE_TOKEN()
-    )
-  }
-
+  const TOKEN = store.getState().token;
   const USER = store.getState().user;
-
-  useEffect(() => {
-    if (token.accessToken !== "") {
-      axios.get(`http://localhost:8080/member/login/social?social=${token.social}&token=${encodeURI(token.accessToken)}`)
-      .then(res => {
-        console.log(res)
-      })
-    }
-  })
-  console.log(token)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -64,7 +52,9 @@ const ResponsiveAppBar = () => {
               component="div"
               sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
             >
-              싼차만차
+              <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+                싼차만차
+              </Link>
             </Typography>
 
             <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -145,7 +135,7 @@ const ResponsiveAppBar = () => {
               ))}
             </Box>
             {
-              token.accessToken === "" ? 
+              TOKEN.accessToken === "" ? 
               <Button color="inherit" href="/LogIn">
                 로그인
               </Button>

@@ -4,7 +4,8 @@ const initialState = {
   userName: '',
   email: '',
   phoneNumber: '',
-  socialInfo: ''
+  social: '',
+  isLogin: false
 }
 
 const userSlice = createSlice({
@@ -15,13 +16,15 @@ const userSlice = createSlice({
       state.userName = action.payload.userName;
       state.email = action.payload.email;
       state.phoneNumber = action.payload.phoneNumber;
-      state.socialInfo = action.payload.socialInfo;
+      state.social = action.payload.social;
+      state.isLogin = action.payload.isLogin;
     },
     SET_LOGOUT(state) {
       state.userName = '';
       state.email = '';
       state.phoneNumber = '';
-      state.socialInfo = '';
+      state.social = '';
+      state.isLogin = false;
     }
   }
 })
