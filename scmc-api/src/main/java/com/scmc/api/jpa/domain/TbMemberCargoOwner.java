@@ -27,15 +27,6 @@ public class TbMemberCargoOwner {
 	@Column(name = "owner_name")
 	private String owner_name;
 	
-	@Column(name = "token")
-	private String token;
-	
-	@Column(name = "refresh_token")
-	private String refresh_token;
-	
-	@Column(name = "expired_time")
-	private int expired_time;
-	
 	@Column(name = "unregister_yn")
 	private String unregister_yn;
 	
