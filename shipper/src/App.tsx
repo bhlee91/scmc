@@ -19,6 +19,9 @@ import "./App.css";
 import ShipperRequire from "./components/ShipperRequire";
 import NaverLogin from "./components/social/NaverLogin";
 import KaKaoLogin from "./components/social/KaKaoLogin";
+import ImageTest from "./components/ImageTest";
+import ImageTest2 from "./components/ImageTest2";
+import AddConvertTest from "./components/AddConvertTest";
 
 function App() {
   return (
@@ -41,6 +44,9 @@ function App() {
         <Route path="/LogIn/nid" element={<NaverLogin />} />
         <Route path="/LogIn/kid" element={<KaKaoLogin />} />
         <Route path="/MemberReg" element={<MemberReg />} />
+        <Route path="/ImageTest" element={<ImageTest />} />
+        <Route path="/ImageTest2" element={<ImageTest2 />} />
+        <Route path="/AddConvertTest" element={<AddConvertTest />} />
       </Routes>
     </BrowserRouter>
   );

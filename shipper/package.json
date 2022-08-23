@@ -8,6 +8,7 @@
     "@date-io/moment": "^2.14.0",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
+    "@material-ui/core": "^4.12.4",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.5.2",
     "@mui/x-date-pickers": "^5.0.0-alpha.3",
@@ -28,9 +29,12 @@
     "react": "^17.0.2",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^17.0.2",
+    "react-easy-crop": "^4.5.0",
     "react-hook-form": "^7.34.2",
     "react-html5-camera-photo": "^1.5.5",
     "react-image-modal": "^1.0.8",
+    "react-image-pan-zoom-rotate": "^1.6.0",
+    "react-images-uploading": "^3.1.7",
     "react-images-viewer": "^1.7.1",
     "react-material-ui-carousel": "^3.2.0",
     "react-modal-image-responsive": "^1.1.1",
@@ -73,5 +77,6 @@
     "@types/react-html5-camera-photo": "^1.5.1",
     "@types/react-slick": "^0.23.8",
     "@types/redux-persist": "^4.3.1"
-  }
+  },
+  "proxy": "https://naveropenapi.apigw.ntruss.com"
 }
