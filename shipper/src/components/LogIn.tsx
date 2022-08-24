@@ -15,8 +15,10 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 
-import { initNaverLogin } from '../utils/naverLogin';
-import { initKaKaoLogin } from '../utils/kakaoLogin';
+import { 
+  initNaverLogin,
+  initKaKaoLogin
+} from '../utils';
 
 function Copyright(props: any) {
   return (
@@ -41,9 +43,15 @@ export default function LogIn() {
     });
   };
 
-  useEffect(() => {
-    initNaverLogin.init();
-  })
+  const handleNaverLogin = () => {
+    initNaverLogin()
+    .then(res => {
+      window.location.href = res.data
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -102,7 +110,13 @@ export default function LogIn() {
             >
               로그인
             </Button>
-            <div id="naverIdLogin"></div>
+            <div onClick={handleNaverLogin}>
+              <img
+                src="http://static.nid.naver.com/oauth/small_g_in.PNG"
+                alt="네이버 로그인 버튼"
+                style={{ height: 45 }}
+              />
+            </div>
             <div>
               <a href={initKaKaoLogin}>
                 <img

@@ -14,9 +14,8 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import "./Appbar.css";
 
 import store from '../store';
-import axios from 'axios';
 import tokenSlice from "../slice/token";
-import { initNaverLogin } from '../utils/naverLogin';
+import userSlice from "../slice/user";
 
 const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
 // const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
@@ -34,12 +33,13 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
 
-  store.dispatch(
-    tokenSlice.actions.SET_DELETE_TOKEN()
-  )
+  store.dispatch(tokenSlice.actions.SET_DELETE_TOKEN())
+  store.dispatch(userSlice.actions.SET_LOGOUT())
 
   const TOKEN = store.getState().token;
   const USER = store.getState().user;
+
+  console.log(TOKEN)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -144,7 +144,7 @@ const ResponsiveAppBar = () => {
                 {(popupState) => (
                   <>
                     <Button variant="contained" {...bindTrigger(popupState)}>
-                      { USER.userName }
+                      { USER.name }
                     </Button>
                     <Menu {...bindMenu(popupState)}>
                       <MenuItem onClick={popupState.close}>Profile(예시)</MenuItem>

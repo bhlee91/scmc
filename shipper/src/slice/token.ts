@@ -3,8 +3,9 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
   accessToken: '',
   refreshToken: '',
-  expireTime: 0,
-  social: ''
+  expireTime: '',
+  social: '',
+  loginTime: ''
 }
 
 const tokenSlice = createSlice({
@@ -16,12 +17,14 @@ const tokenSlice = createSlice({
       state.refreshToken = action.payload.refreshToken;
       state.expireTime = action.payload.expireTime;
       state.social = action.payload.social;
+      state.loginTime = action.payload.loginTime;
     },
     SET_DELETE_TOKEN(state) {
       state.accessToken = '';
       state.refreshToken = '';
-      state.expireTime = 0;
+      state.expireTime = '';
       state.social = '';
+      state.loginTime = '';
     }
   }
 })

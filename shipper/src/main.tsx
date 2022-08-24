@@ -19,7 +19,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import IconButton from "@mui/material/IconButton";
 
-import axios from "axios";
+import {
+  getCommonCode
+} from "./api/code";
 
 const theme = createTheme();
 
@@ -41,13 +43,6 @@ const rows = 1;
 
 function Main() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    axios.get("http://localhost:8080/common/code")
-    .then(res => {
-      console.log(res)
-    })
-  })
 
   return (
     <ThemeProvider theme={theme}>

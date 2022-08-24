@@ -5,6 +5,8 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
+    readonly REACT_APP_BASE_URL: string;
+
     readonly REACT_APP_NAVER_CLIENT_ID: string;
     readonly REACT_APP_NAVER_CLIENT_SECRET: string;
     readonly REACT_APP_KAKAO_REST_API_KEY: string;

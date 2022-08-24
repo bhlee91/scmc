@@ -1,6 +1,6 @@
 import axios from "axios";
 const geocodingUrl =
-  "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+  "/map-geocode/v2/geocode";
 
 export async function geocoding(query: any) {
   const coord = await axios

@@ -1,0 +1,57 @@
+{"properties": [
+  {
+    "name": "app.jwt-secret",
+    "type": "java.lang.String",
+    "description": "jwt secretKey"
+  },
+  {
+    "name": "app.jwt-expired-time",
+    "type": "int",
+    "description": "jwt expiredTime"
+  },
+  {
+    "name": "social.naver.client-id",
+    "type": "java.lang.String",
+    "description": "네이버 CLIENT_SECRET"
+  },
+  {
+    "name": "social.naver.client-secret",
+    "type": "java.lang.String",
+    "description": "네이버 CLIENT_ID"
+  },
+  {
+    "name": "social.naver.api.auth",
+    "type": "java.lang.String",
+    "description": "네이버 인증 요청 api"
+  },
+  {
+    "name": "social.naver.api.token",
+    "type": "java.lang.String",
+    "description": "네이버 토큰 요청 api"
+  },
+  {
+    "name": "social.naver.api.profile",
+    "type": "java.lang.String",
+    "description": "네이버 프로필 가져오기 api"
+  },
+  {
+    "name": "social.naver.api.refresh",
+    "type": "java.lang.String",
+    "description": "네이버 토큰 갱신 api"
+  },
+  {
+    "name": "social.kakao.rest-api-key",
+    "type": "java.lang.String",
+    "description": "카카오 REST API KEY"
+  },
+  {
+    "name": "social.kakao.api.profile",
+    "type": "java.lang.String",
+    "description": "카카오 프로필 가져오기 api"
+  },
+  {
+    "name": "social.kakao.api.refresh",
+    "type": "java.lang.String",
+    "description": "카카오 토큰 갱신 api"
+  }
+]}
