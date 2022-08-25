@@ -78,7 +78,6 @@ public class NaverLoginUtil {
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				res.put("token", apiUtil.readBody(con.getInputStream()));
-				log.info("token => " + res);
 				
 				HashMap<String, Object> profile = this.getProfile(res);
 				
@@ -143,7 +142,6 @@ public class NaverLoginUtil {
 		HashMap<String, Object> res = new HashMap<String, Object>();
 		
 		try {
-			log.info("data => " + data);
 			JSONObject json = new JSONObject(data.get("token").toString());
 			
 			con.setRequestMethod("GET");

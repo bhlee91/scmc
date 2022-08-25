@@ -47,7 +47,6 @@ export default function LogIn() {
   const handleNaverLogin = () => {
     initNaverLogin()
     .then(res => {
-      console.log(res)
       window.location.href = res.data
     })
     .catch(err => {
@@ -58,7 +57,6 @@ export default function LogIn() {
   const handleKaKaoLogin = () => {
     initKaKaoLogin()
     .then(res => {
-      console.log(res)
       window.location.href = res.data
     })
   }

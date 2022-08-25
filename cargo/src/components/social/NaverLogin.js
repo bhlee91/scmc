@@ -16,13 +16,12 @@ const NaverLogin = () => {
 
   useEffect(() => {
     const SEARCH_PARAM = location.search.replace("?", "").split("&");
-    
+
     const CODE = SEARCH_PARAM[0].split("=")[1];
     const STATE = SEARCH_PARAM[1].split("=")[1];
 
     getNaverAccessToken(CODE, STATE)
     .then(res => {
-      console.log(res)
       const TOKEN_INFO = JSON.parse(res.data.token)
       const PROFILE = JSON.parse(res.data.profile).response
 
@@ -51,7 +50,7 @@ const NaverLogin = () => {
       navigate("/LogIn")
       alert("로그인 할 수 없습니다.\n다시 로그인해주세요.")
     });
-  }, [])
+  })
 
   return (
     <div></div>

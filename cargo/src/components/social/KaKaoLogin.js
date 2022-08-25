@@ -16,10 +16,9 @@ const KaKaoLogin = () => {
 
   useEffect(() => {
     const CODE = location.search.substring("?code=".length);
-
+    
     getKaKaoAccessToken(CODE)
     .then(res => {
-      console.log(res)
       const TOKEN_INFO = JSON.parse(res.data.token)
       const PROFILE = JSON.parse(res.data.profile)
 
