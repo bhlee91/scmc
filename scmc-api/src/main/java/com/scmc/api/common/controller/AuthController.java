@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.common.utils.KaKaoLoginUtil;
 import com.scmc.api.common.utils.NaverLoginUtil;
 
 import io.swagger.annotations.Api;
@@ -28,11 +29,26 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 	
 	private final NaverLoginUtil naverLoginUtil;
+	private final KaKaoLoginUtil kakaoLoginUtil;
 
 	@ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 통해 사용자 정보 저장 후 토큰 생성")
 	@PostMapping("/kakao")
-	public ResponseEntity<?> kakaoAuthRequest(@RequestBody HashMap<String, Object> param) {
-		return new ResponseEntity<>(null);
+	public ResponseEntity<?> kakaoAuthRequest() throws Exception {
+		log.info("==================");
+		log.info("카카오 로그인");
+		log.info("==================");
+		
+		return new ResponseEntity<>(kakaoLoginUtil.authConnect(), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "카카오 Callback URL", notes = "인증 요청의 CallbackURL")
+	@GetMapping("/kakao/callback")
+	public ResponseEntity<?> kakaoAuthRequest(@RequestParam(value = "code") String code) throws Exception {
+		log.info("==================");
+		log.info("카카오 callback url");
+		log.info("==================");
+		
+		return new ResponseEntity<>(kakaoLoginUtil.getKaKaoToken(code), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "네이버 로그인", notes = "네이버 로그인을 통해 사용자 정보 저장 후 토큰 생성")

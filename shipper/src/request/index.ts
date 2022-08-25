@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
+import store from '../store';
 
 const request: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
@@ -6,7 +7,9 @@ const request: AxiosInstance = axios.create({
 });
 
 request.interceptors.request.use((config: AxiosRequestConfig) => {
-  console.log(config)
+  const TOKEN = store.getState().token
+
+  console.log(TOKEN)
   return config;
 }, (error: AxiosError) => {
   return Promise.reject(error)

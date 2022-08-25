@@ -39,8 +39,6 @@ const ResponsiveAppBar = () => {
   const TOKEN = store.getState().token;
   const USER = store.getState().user;
 
-  console.log(TOKEN)
-
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

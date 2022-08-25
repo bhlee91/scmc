@@ -44,13 +44,13 @@ public class SecurityConfig {
 					.and()
 				.authorizeHttpRequests()
 				.antMatchers(
-						"/**", 
+						"/",
+						"/auth/**",
 						"/swagger/**", 
 		        		"/swagger-ui.html", 
 		        		"/swagger-resources/**",
 		        		"/webjars/**", 
-		        		"/v2/api-docs",
-		        		"/auth/**")
+		        		"/v2/api-docs")
 				.permitAll()
 				.antMatchers("/admin/**").authenticated()
 				.anyRequest().authenticated()

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -18,7 +18,7 @@ import Appbar from "../common/Appbar";
 import { 
   initNaverLogin,
   initKaKaoLogin
-} from '../utils';
+} from '../api/auth';
 
 function Copyright(props: any) {
   return (
@@ -34,6 +34,7 @@ function Copyright(props: any) {
 const theme = createTheme();
 
 export default function LogIn() {
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -50,6 +51,14 @@ export default function LogIn() {
     })
     .catch(err => {
       console.log(err)
+    })
+  }
+
+  const handleKaKaoLogin = () => {
+    initKaKaoLogin()
+    .then(res => {
+      console.log(res)
+      window.location.href = res.data
     })
   }
 
@@ -117,13 +126,11 @@ export default function LogIn() {
                 style={{ height: 45 }}
               />
             </div>
-            <div>
-              <a href={initKaKaoLogin}>
-                <img
-                  src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
-                  alt="카카오 로그인 버튼"
-                />
-              </a>
+            <div onClick={handleKaKaoLogin}>
+              <img
+                src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                alt="카카오 로그인 버튼"
+              />
             </div>
             <Grid container>
               <Grid item xs>

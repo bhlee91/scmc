@@ -15,11 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class NaverLoginUtil {
 	
 	private final APIUtil apiUtil;
@@ -68,7 +66,7 @@ public class NaverLoginUtil {
 				+ "&client_secret=%s"
 				+ "&code=%s"
 				+ "&redirect_uri=%s"
-				, CLIENT_ID, CLIENT_SECRET, param.get("code"), URLEncoder.encode("http://localhost:3000/LogIn/nid", "UTF-8"));
+				, CLIENT_ID, CLIENT_SECRET, param.get("code"), URLEncoder.encode(REDIRECT_URL, "UTF-8"));
 		
 		HttpURLConnection con = apiUtil.connect(token_url);
 
@@ -108,8 +106,6 @@ public class NaverLoginUtil {
 		try {
 			JSONObject json = new JSONObject(data.get("token").toString());
 			
-			log.info("data => " + data);
-			
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
 			
@@ -142,16 +138,27 @@ public class NaverLoginUtil {
 		try {
 			int responseCode = con.getResponseCode();
 			
-			if (responseCode == HttpURLConnection.HTTP_OK) 
-				res.put("data", apiUtil.readBody(con.getInputStream()));
-			else 
-				res.put("data", apiUtil.readBody(con.getErrorStream()));
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				res.put("token", apiUtil.readBody(con.getInputStream()));
+				
+				HashMap<String, Object> profile = this.getProfile(res);
+				
+				if (profile.containsKey("profile")) {
+					res.put("profile", profile.get("profile"));
+				} else {
+					res.put("error_profile", profile.get("error_profile"));
+				}
+				
+				return res;
+			} else {
+				res.put("error", apiUtil.readBody(con.getErrorStream()));	
+				return res;
+			}
 			
 		} catch (IOException e) {
 			throw new RuntimeException("API 요청과 응답 실패", e);
 		} finally {
 			con.disconnect();
 		}
-		return res;
 	}
 }

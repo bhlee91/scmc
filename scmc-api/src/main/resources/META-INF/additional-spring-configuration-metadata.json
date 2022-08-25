@@ -45,13 +45,18 @@
     "description": "카카오 REST API KEY"
   },
   {
+    "name": "social.kakao.api.auth",
+    "type": "java.lang.String",
+    "description": "카카오 인증 요청 api"
+  },
+  {
     "name": "social.kakao.api.profile",
     "type": "java.lang.String",
     "description": "카카오 프로필 가져오기 api"
   },
   {
-    "name": "social.kakao.api.refresh",
+    "name": "social.kakao.api.token",
     "type": "java.lang.String",
-    "description": "카카오 토큰 갱신 api"
+    "description": "카카오 토큰 api"
   }
 ]}
