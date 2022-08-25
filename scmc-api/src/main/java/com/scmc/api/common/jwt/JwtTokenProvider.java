@@ -2,10 +2,9 @@ package com.scmc.api.common.jwt;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,9 +43,9 @@ public class JwtTokenProvider {
 	}
 	
 	// JWT 토큰 생성
-	public String createToken(String userPk, List<String> roles) {
-		Claims claims = Jwts.claims().setSubject(userPk);
-		claims.put("roles", roles);
+	public String createToken(HashMap<String, Object> info) {
+		Claims claims = Jwts.claims().setSubject(info.get("userId").toString());
+		claims.put("role", info.get("role").toString());
 		
 		Date now = new Date();
 		
@@ -60,19 +59,14 @@ public class JwtTokenProvider {
 	
 	// JWT 토큰에서 인증 정보 조회
 	public Authentication getAuthentication(String token) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
+		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserIdFromJwt(token));
 		
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 	
 	// 토큰에서 회원 정보 추출
-	public String getUserId(String token) {
+	public String getUserIdFromJwt(String token) {
 		return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-	}
-	
-	// Request의 Header에서 토큰 값을 가져옴. "Authorization": "TOKEN 값"
-	public String resolveToken(HttpServletRequest request) {
-		return request.getHeader("Authorization");
 	}
 	
 	// 토큰의 유효성 + 만료 확인

@@ -1,4 +1,4 @@
-import request from "../../request";
+import request from "src/request";
 
 const BASE_URL = "/auth"
 
@@ -9,7 +9,7 @@ export const initNaverLogin = () => {
   })
 }
 
-export const getNaverAccessToken = (code: string, state: string) => {
+export const getNaverAccessToken = (code, state) => {
   return request({
     url: `${BASE_URL}/naver/callback?code=${code}&state=${state}`,
     method: "get"
@@ -23,7 +23,7 @@ export const initKaKaoLogin = () => {
   })
 }
 
-export const getKaKaoAccessToken = (code: string) => {
+export const getKaKaoAccessToken = (code) => {
   return request({
     url: `${BASE_URL}/kakao/callback?code=${code}`,
     method: "get"

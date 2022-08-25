@@ -7,7 +7,7 @@ import tokenSlice from '../../slice/token';
 
 import {
   getNaverAccessToken
-} from "../../api/auth";
+} from "../../api/member/auth";
 
 const NaverLogin = () => {
   const dispatch = useAppDispatch();
@@ -22,6 +22,7 @@ const NaverLogin = () => {
 
     getNaverAccessToken(CODE, STATE)
     .then(res => {
+      console.log(res)
       const TOKEN_INFO = JSON.parse(res.data.token)
       const PROFILE = JSON.parse(res.data.profile).response
 

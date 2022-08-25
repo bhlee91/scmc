@@ -15,9 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NaverLoginUtil {
 	
 	private final APIUtil apiUtil;
@@ -65,8 +67,7 @@ public class NaverLoginUtil {
 				+ "&client_id=%s"
 				+ "&client_secret=%s"
 				+ "&code=%s"
-				+ "&redirect_uri=%s"
-				, CLIENT_ID, CLIENT_SECRET, param.get("code"), URLEncoder.encode(REDIRECT_URL, "UTF-8"));
+				, CLIENT_ID, CLIENT_SECRET, param.get("code"));
 		
 		HttpURLConnection con = apiUtil.connect(token_url);
 
@@ -77,6 +78,7 @@ public class NaverLoginUtil {
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
 				res.put("token", apiUtil.readBody(con.getInputStream()));
+				log.info("token => " + res);
 				
 				HashMap<String, Object> profile = this.getProfile(res);
 				
@@ -85,43 +87,16 @@ public class NaverLoginUtil {
 				} else {
 					res.put("error_profile", profile.get("error_profile"));
 				}
-				
-				return res;
 			} else {
-				res.put("error", apiUtil.readBody(con.getErrorStream()));	
-				return res;
+				res.put("error", apiUtil.readBody(con.getErrorStream()));
 			}
+			
+			return res;
 		} catch (IOException e) {
 			throw new RuntimeException("API 요청과 응답 실패", e);
 		} finally {
 			con.disconnect();
 		}
-	}
-	
-	private HashMap<String, Object> getProfile(HashMap<String, Object> data) {
-		HttpURLConnection con = apiUtil.connect(PROFILE_API);
-
-		HashMap<String, Object> res = new HashMap<String, Object>();
-		
-		try {
-			JSONObject json = new JSONObject(data.get("token").toString());
-			
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
-			
-			int responseCode = con.getResponseCode();
-			
-			if (responseCode == HttpURLConnection.HTTP_OK) 
-				res.put("profile", apiUtil.readBody(con.getInputStream()));
-			else 
-				res.put("error_profile", apiUtil.readBody(con.getErrorStream()));
-		} catch (IOException e) {
-			throw new RuntimeException("API 요청과 응답 실패", e);
-		} finally {
-			con.disconnect();
-		}
-		
-		return res;
 	}
 	
 	public HashMap<String, Object> refreshToken(HashMap<String, Object> obj) {
@@ -160,5 +135,33 @@ public class NaverLoginUtil {
 		} finally {
 			con.disconnect();
 		}
+	}
+	
+	private HashMap<String, Object> getProfile(HashMap<String, Object> data) {
+		HttpURLConnection con = apiUtil.connect(PROFILE_API);
+
+		HashMap<String, Object> res = new HashMap<String, Object>();
+		
+		try {
+			log.info("data => " + data);
+			JSONObject json = new JSONObject(data.get("token").toString());
+			
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
+			
+			int responseCode = con.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) 
+				res.put("profile", apiUtil.readBody(con.getInputStream()));
+			else 
+				res.put("error_profile", apiUtil.readBody(con.getErrorStream()));
+			
+		} catch (IOException e) {
+			throw new RuntimeException("API 요청과 응답 실패", e);
+		} finally {
+			con.disconnect();
+		}
+		
+		return res;
 	}
 }

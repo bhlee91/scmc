@@ -12,15 +12,15 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Footer from "../common/Footer";
-import Appbar from "../common/Appbar";
+import Footer from "src/common/Footer";
+import Appbar from "src/common/Appbar";
 
 import { 
   initNaverLogin,
   initKaKaoLogin
-} from '../api/member/auth';
+} from 'src/api/member/auth';
 
-function Copyright(props: any) {
+function Copyright(props) {
   return (
     <Typography
       variant="body2"
@@ -35,7 +35,7 @@ const theme = createTheme();
 
 export default function LogIn() {
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -47,6 +47,7 @@ export default function LogIn() {
   const handleNaverLogin = () => {
     initNaverLogin()
     .then(res => {
+      console.log(res)
       window.location.href = res.data
     })
     .catch(err => {

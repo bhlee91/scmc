@@ -1,4 +1,4 @@
-package com.scmc.api.common.controller;
+package com.scmc.api.member.user.controller;
 
 import java.util.HashMap;
 
@@ -68,7 +68,7 @@ public class AuthController {
 			@RequestParam(value = "state") String state
 		) throws Exception {
 		log.info("==================");
-		log.info("네이버 로그인");
+		log.info("네이버 callback url");
 		log.info("==================");
 		
 		HashMap<String, Object> param = new HashMap<String, Object>();

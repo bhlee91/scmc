@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { useAppDispatch } from '../../store';
-import userSlice from '../../slice/user';
-import tokenSlice from '../../slice/token';
+import { useAppDispatch } from 'src/store';
+import userSlice from 'src/slice/user';
+import tokenSlice from 'src/slice/token';
 
 import {
   getKaKaoAccessToken
-} from "../../api/member/auth";
+} from "src/api/member/auth";
 
 const KaKaoLogin = () => {
   const dispatch = useAppDispatch();
