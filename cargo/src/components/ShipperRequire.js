@@ -9,8 +9,7 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
-import Camera from "react-html5-camera-photo";
+import { useSearchParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -56,9 +55,13 @@ const steps = [
   },
 ];
 
-function ShipperRequire2() {
-  const [activeStep, setActiveStep] = React.useState(0);
-
+const ShipperRequire = () => {
+  const [ params, setParams ] = useSearchParams();
+  
+  const [activeStep, setActiveStep] = React.useState(
+    params.get("stepIndex") === null ? 0 : parseInt(params.get("stepIndex"))
+  );
+  
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -70,6 +73,10 @@ function ShipperRequire2() {
   const handleReset = () => {
     setActiveStep(0);
   };
+
+  React.useEffect(() => {
+    setParams({stepIndex: activeStep})
+  }, [activeStep])
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -275,7 +282,7 @@ function ShipperRequire2() {
                       {index === 1 ? (
                         <Button
                           variant="contained"
-                          href="/ShipSize"
+                          href="/ShipSize?stepIndex=1"
                           sx={{ mt: 1, mr: 1 }}
                         >
                           화물사이즈입력
@@ -376,4 +383,4 @@ function ShipperRequire2() {
     </ThemeProvider>
   );
 }
-export default ShipperRequire2;
+export default ShipperRequire;

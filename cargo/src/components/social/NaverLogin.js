@@ -25,6 +25,8 @@ const NaverLogin = () => {
       const TOKEN_INFO = JSON.parse(res.data.token)
       const PROFILE = JSON.parse(res.data.profile).response
 
+      console.log(PROFILE)
+
       dispatch(
         tokenSlice.actions.SET_TOKEN({
           accessToken: TOKEN_INFO.access_token,

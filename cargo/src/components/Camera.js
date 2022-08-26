@@ -14,27 +14,63 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import CardMedia from "@mui/material/CardMedia";
-import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import CameraLib from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 
+import { useAppDispatch } from 'src/store';
+import cargoImageSlice from 'src/slice/cargoImage';
+
 const theme = createTheme();
 
-function Camera() {
+const Camera = () => {
+  const dispatch = useAppDispatch();
   const [takePicture, setTakePicture] = React.useState("");
   const [picLoad, setPicload] = React.useState(false);
+  const [seq, setSeq] = React.useState(0);
 
-  function handleTakePhoto(dataUri) {
+  const handleTakePhoto = (dataUri) => {
     // Do stuff with the photo...
     console.log(dataUri);
     setTakePicture(dataUri);
     setPicload(true);
   }
+
   const handleReset = () => {
     setPicload(false);
-  };
+  }
+
+  const getBase64 = (file) => {
+    return new Promise(res => {
+      let baseURL = ""
+      let reader = new FileReader();
+  
+      reader.readAsDataURL(file);
+  
+      reader.onload = () => {
+        baseURL = reader.result
+        res(baseURL)
+      }
+    })
+  }
+
+  const handleFileInputChange = event => {
+    const file = event.target.files[0]
+
+    getBase64(file)
+    .then(res => {
+      dispatch(
+        cargoImageSlice.actions.SET_IMAGE({
+          seq: seq,
+          content: res
+        })
+      )
+
+      setSeq((value) => value++)
+    })
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -83,7 +119,7 @@ function Camera() {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained">등록</Button>
+          <Button variant="contained" onClick={handleFileInputChange}>등록</Button>
           <Button variant="contained" onClick={handleReset}>
             다시찍기
           </Button>

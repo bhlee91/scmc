@@ -3,36 +3,30 @@ import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import {
-  Container,
   createTheme,
   Divider,
   FormControl,
   Stack,
-  TextField,
   ThemeProvider,
 } from "@mui/material";
 
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import CardMedia from "@mui/material/CardMedia";
-import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
-import { TextFieldsOutlined } from "@mui/icons-material";
 import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormHelperText from "@mui/material/FormHelperText";
-import FilledInput from "@mui/material/FilledInput";
-import Input from "@mui/material/Input";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { createBrowserHistory } from "history";
 
 const theme = createTheme();
 
-function ShipSize() {
+const ShipSize = () => {
+  const history = createBrowserHistory();
+  const [params, setParams] = useSearchParams();
+
   const [values, setValues] = React.useState({
     horizontal: "",
     portrait: "",
@@ -42,8 +36,25 @@ function ShipSize() {
   });
 
   const handleChange = (prop) => (event) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  React.useEffect(() => {
+    console.log(history)
+    const listenBackEvent = () => {
+      const stepIndex = params.get("stepIndex")
+      
+      setParams({stepIndex: stepIndex})
+    }
+
+    const listenHistoryEvent = history.listen(({ action }) => {
+      
+      if (action === "POP") listenBackEvent();
+    })
+
+    return listenHistoryEvent;
+
+  }, [history, params])
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,7 +86,7 @@ function ShipSize() {
                 value={values.horizontal}
                 onChange={handleChange("horizontal")}
                 endAdornment={
-                  <InputAdornment position="end">미터</InputAdornment>
+                  <InputAdornment position="end">m</InputAdornment>
                 }
                 aria-describedby="outlined-horizontal-helper-text"
                 inputProps={{
@@ -93,7 +104,7 @@ function ShipSize() {
                 value={values.portrait}
                 onChange={handleChange("portrait")}
                 endAdornment={
-                  <InputAdornment position="end">미터</InputAdornment>
+                  <InputAdornment position="end">m</InputAdornment>
                 }
                 aria-describedby="outlined-portrait-helper-text"
                 inputProps={{
@@ -111,7 +122,7 @@ function ShipSize() {
                 value={values.height}
                 onChange={handleChange("height")}
                 endAdornment={
-                  <InputAdornment position="end">미터</InputAdornment>
+                  <InputAdornment position="end">m</InputAdornment>
                 }
                 aria-describedby="outlined-height-helper-text"
                 inputProps={{
@@ -129,7 +140,7 @@ function ShipSize() {
                 value={values.weight}
                 onChange={handleChange("weight")}
                 endAdornment={
-                  <InputAdornment position="end">Kg</InputAdornment>
+                  <InputAdornment position="end">㎏</InputAdornment>
                 }
                 aria-describedby="outlined-weight-helper-text"
                 inputProps={{
@@ -147,7 +158,7 @@ function ShipSize() {
                 value={values.volume}
                 onChange={handleChange("volume")}
                 endAdornment={
-                  <InputAdornment position="end">M3</InputAdornment>
+                  <InputAdornment position="end">㎥</InputAdornment>
                 }
                 aria-describedby="outlined-volume-helper-text"
                 inputProps={{
@@ -178,7 +189,7 @@ function ShipSize() {
             <div></div>
             <Button variant="contained">등록</Button>
 
-            <Button variant="contained" component={Link} to="/ShipperRequire">
+            <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`} >
               이전
             </Button>
           </Stack>
