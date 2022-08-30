@@ -19,13 +19,11 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import FormHelperText from "@mui/material/FormHelperText";
 import { Link, useSearchParams } from "react-router-dom";
-import { createBrowserHistory } from "history";
 
 const theme = createTheme();
 
 const ShipSize = () => {
-  const history = createBrowserHistory();
-  const [params, setParams] = useSearchParams();
+  const [ params ] = useSearchParams();
 
   const [values, setValues] = React.useState({
     horizontal: "",
@@ -38,23 +36,6 @@ const ShipSize = () => {
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
-
-  React.useEffect(() => {
-    console.log(history)
-    const listenBackEvent = () => {
-      const stepIndex = params.get("stepIndex")
-      
-      setParams({stepIndex: stepIndex})
-    }
-
-    const listenHistoryEvent = history.listen(({ action }) => {
-      
-      if (action === "POP") listenBackEvent();
-    })
-
-    return listenHistoryEvent;
-
-  }, [history, params])
 
   return (
     <ThemeProvider theme={theme}>

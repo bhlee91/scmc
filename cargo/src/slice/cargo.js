@@ -4,22 +4,38 @@ import store from "src/store"
 const initialState = {
   step: 0,
   imageList: [],
-  cargoName: '',
+  cargoName: "",
   truckUid: null,
   cweight: 0,
   cheight: 0,
   cwidth: 0,
   cverticalreal: 0,
-  departDatetimes: '',
-  arrivalDatetimes: '',
-  departAddrSt: '',
-  departAddrOld: '',
-  arrivalAddrSt: '',
-  arrivalAddrOld: ''
+  departDatetimes: "",
+  arrivalDatetimes: "",
+  departAddrSt: "",
+  departAddrOld: "",
+  arrivalAddrSt: "",
+  arrivalAddrOld: "",
+  receiverPhone: "",
+  departLatitude: "",
+  departLongitude: "",
+  arrivalLatitude: "",
+  arrivalLongitude: "",
+  loadMethod: {
+    value: "",
+    name: "선택"
+  },
+  unloadMethod: {
+    value: "",
+    name: "선택"
+  },
+  requestItems: "",
+  transitFare: "",
+  additionalFare: ""
 }
 
 const cargoSlice = createSlice({
-  name: 'cargo',
+  name: "cargo",
   initialState,
   reducers: {
     SET_IMAGE(state) {
@@ -49,6 +65,24 @@ const cargoSlice = createSlice({
       state.departAddrOld = action.payload.departAddrOld
       state.arrivalAddrSt = action.payload.arrivalAddrSt
       state.arrivalAddrOld = action.payload.arrivalAddrOld
+      state.departLatitude = action.payload.departLatitude
+      state.departLongitude = action.payload.departLongitude
+      state.arrivalLatitude = action.payload.arrivalLatitude
+      state.arrivalLongitude = action.payload.arrivalLongitude
+    },
+    SET_REQUEST_5(state, action) {
+      state.step = 5
+      state.loadMethod = action.payload.loadMethod
+      state.unloadMethod = action.payload.unloadMethod
+    },
+    SET_REQUEST_6(state, action) {
+      state.step = 6
+      state.requestItems = action.payload.requestItems
+    },
+    SET_REQUEST_7(state, action) {
+      state.step = 7
+      state.transitFare = action.payload.transitFare
+      state.additionalFare = action.payload.additionalFare
     }
   }
 })

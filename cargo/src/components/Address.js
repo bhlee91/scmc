@@ -8,7 +8,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -20,7 +20,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 const theme = createTheme();
 
-function Address() {
+const Address = () => {
+  const [ params ] = useSearchParams();
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -105,7 +107,7 @@ function Address() {
           <div></div>
           <Button variant="contained">등록</Button>
 
-          <Button variant="contained" component={Link} to="/ShipperRequire">
+          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
             이전
           </Button>
         </Stack>

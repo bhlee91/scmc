@@ -29,6 +29,8 @@ import {
   Typography,
 } from "@mui/material";
 
+import store from "src/store";
+
 const theme = createTheme();
 
 const steps = [
@@ -56,10 +58,12 @@ const steps = [
 ];
 
 const ShipperRequire = () => {
+  const cargo = store.getState().cargo
+  
   const [ params, setParams ] = useSearchParams();
   
   const [activeStep, setActiveStep] = React.useState(
-    params.get("stepIndex") === null ? 0 : parseInt(params.get("stepIndex"))
+    params.get("stepIndex") === null ? 1 : parseInt(params.get("stepIndex"))
   );
   
   const handleNext = () => {
@@ -71,7 +75,7 @@ const ShipperRequire = () => {
   };
 
   const handleReset = () => {
-    setActiveStep(0);
+    setActiveStep(1);
   };
 
   React.useEffect(() => {
@@ -129,12 +133,12 @@ const ShipperRequire = () => {
 
       <Container sx={{ py: 2 }} maxWidth="md">
         <Box sx={{ maxWidth: 400 }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
+          <Stepper activeStep={activeStep - 1} orientation="vertical">
             {steps.map((step, index) => (
               <Step key={step.label}>
                 <StepLabel
                   optional={
-                    index === 6 ? (
+                    index === 7 ? (
                       <Typography variant="caption">마지막 단계</Typography>
                     ) : null
                   }
@@ -213,8 +217,8 @@ const ShipperRequire = () => {
                   {index === 4 ? (
                     <Container sx={{ py: 1 }} maxWidth="md">
                       <Stack spacing={1}>
-                        <Item>상차 방법 : 지게차</Item>
-                        <Item>하차 방법 : 지게차</Item>
+                        <Item>상차 방법 : {cargo.loadMethod.name}</Item>
+                        <Item>하차 방법 : {cargo.unloadMethod.name}</Item>
                       </Stack>
                     </Container>
                   ) : null}
@@ -260,7 +264,7 @@ const ShipperRequire = () => {
                             variant="body2"
                             color="text.secondary"
                           >
-                            운송을 위뢰 하시겠습니까?
+                            운송을 요청 하시겠습니까?
                           </Typography>
                         </CardContent>
                       </Card>
@@ -273,7 +277,7 @@ const ShipperRequire = () => {
                       {index === 0 ? (
                         <Button
                           variant="contained"
-                          href="/Camera"
+                          href={`/Camera?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           사진찍기
@@ -282,7 +286,7 @@ const ShipperRequire = () => {
                       {index === 1 ? (
                         <Button
                           variant="contained"
-                          href="/ShipSize?stepIndex=1"
+                          href={`/ShipSize?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           화물사이즈입력
@@ -291,7 +295,7 @@ const ShipperRequire = () => {
                       {index === 2 ? (
                         <Button
                           variant="contained"
-                          href="/DateTime"
+                          href={`/DateTime?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           출도착 시간 입력
@@ -300,7 +304,7 @@ const ShipperRequire = () => {
                       {index === 3 ? (
                         <Button
                           variant="contained"
-                          href="/Address"
+                          href={`/Address?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           출발지/도착지 입력
@@ -309,7 +313,7 @@ const ShipperRequire = () => {
                       {index === 4 ? (
                         <Button
                           variant="contained"
-                          href="/LoadUnload"
+                          href={`/LoadUnload?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           상/하차 방법
@@ -318,7 +322,7 @@ const ShipperRequire = () => {
                       {index === 5 ? (
                         <Button
                           variant="contained"
-                          href="/RequestItem"
+                          href={`/RequestItem?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           요청사항
@@ -327,7 +331,7 @@ const ShipperRequire = () => {
                       {index === 6 ? (
                         <Button
                           variant="contained"
-                          href="/LoadPrice"
+                          href={`/LoadPrice?stepIndex=${activeStep}`}
                           sx={{ mt: 1, mr: 1 }}
                         >
                           요금확인
@@ -354,7 +358,7 @@ const ShipperRequire = () => {
               </Step>
             ))}
           </Stepper>
-          {activeStep === steps.length && (
+          {activeStep === steps.length + 1 && (
             <Paper square elevation={0} sx={{ p: 3 }}>
               <Typography>
                 고객님이 의뢰하신 화물이 정상적으로 등록되었습니다.

@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import "./Appbar.css";
 
@@ -21,7 +21,12 @@ const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
 // const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
 
 const ResponsiveAppBar = () => {
+  const navigate = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+
+  const TOKEN = store.getState().token;
+  const USER = store.getState().user;
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -31,11 +36,13 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
 
-  store.dispatch(tokenSlice.actions.SET_DELETE_TOKEN())
-  store.dispatch(userSlice.actions.SET_LOGOUT())
+  const handleLogout = () => {
+    store.dispatch(tokenSlice.actions.SET_DELETE_TOKEN())
+    store.dispatch(userSlice.actions.SET_LOGOUT())
 
-  const TOKEN = store.getState().token;
-  const USER = store.getState().user;
+    navigate("/", { replace: true })
+    alert("로그아웃 되었습니다.")
+  }
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -145,7 +152,7 @@ const ResponsiveAppBar = () => {
                     <Menu {...bindMenu(popupState)}>
                       <MenuItem onClick={popupState.close}>Profile(예시)</MenuItem>
                       <MenuItem onClick={popupState.close}>My account(예시)</MenuItem>
-                      <MenuItem onClick={popupState.close}>Logout(예시)</MenuItem>
+                      <MenuItem onClick={handleLogout}>Logout(예시)</MenuItem>
                     </Menu>
                   </>
                 )}                

@@ -8,29 +8,103 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import InputLabel from "@mui/material/InputLabel";
+import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
+import store, { useAppDispatch } from 'src/store';
+import cargoSlice from "src/slice/cargo";
+
+import {
+  getCommonCodeByType
+} from "src/api/code";
+
 const theme = createTheme();
 
-function LoadUnload() {
-  const [load, setLoad] = React.useState("");
-  const [unload, setUnLoad] = React.useState("");
+const LoadUnload = () => {
+  const cargo = store.getState().cargo
+  const dispatch = useAppDispatch();
+  const [ params ] = useSearchParams()
+  const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    setLoad(event.target.value);
-  };
-  const handleChange1 = (event) => {
-    setUnLoad(event.target.value);
-  };
+  const [list, setList] = React.useState([])
+
+  const loadApi = () => {
+    const codeType = "LDULD";
+
+    getCommonCodeByType(codeType)
+    .then(res => {
+      setList(res.data)
+    })
+    .then(() => {
+      setLoad({
+        value: cargo.loadMethod.value,
+        name: cargo.loadMethod.name
+      })
+  
+      setUnLoad({
+        value: cargo.unloadMethod.value,
+        name: cargo.unloadMethod.name
+      })
+    })
+  }
+
+  const [load, setLoad] = React.useState({
+    value: "",
+    name: "선택"
+  })
+  const [unload, setUnLoad] = React.useState({
+    value: "",
+    name: "선택"
+  })
+
+  React.useEffect(() => {
+    loadApi()
+  }, [])
+
+  const handleLoadChange = (child) => {
+    setLoad({
+      value: child.props.value,
+      name: child.props.children
+    })
+
+    dispatch(
+      cargoSlice.actions.SET_REQUEST_5({
+        loadMethod: {
+          value: child.props.value,
+          name: child.props.children
+        },
+        unloadMethod: unload
+      })
+    )
+  }
+  
+  const handleUnLoadChange = (child) => {
+    setUnLoad({
+      value: child.props.value,
+      name: child.props.children
+    })
+    
+    dispatch(
+      cargoSlice.actions.SET_REQUEST_5({
+        loadMethod: load,
+        unloadMethod: {
+          value: child.props.value,
+          name: child.props.children
+        }
+      })
+    )
+  }
+
+  const handleChangePage = () => {
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -56,18 +130,17 @@ function LoadUnload() {
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
-                value={load}
-                onChange={handleChange}
-                label="상차방법"
+                defaultValue=""
+                value={load.value}
+                onChange={(_e, child) => handleLoadChange(child)}
+                label="상차방법" 
               >
-                <MenuItem value="">
-                  <em>선택</em>
-                </MenuItem>
-                <MenuItem value={1}>수작업</MenuItem>
-                <MenuItem value={2}>지게차</MenuItem>
-                <MenuItem value={3}>크레인</MenuItem>
-                <MenuItem value={4}>호이스트</MenuItem>
-                <MenuItem value={5}>컨베이어</MenuItem>
+                <MenuItem value="">선택</MenuItem>
+                {
+                  list.map(obj => (
+                    <MenuItem key={obj.cdid} value={obj.cdid}>{obj.codeName}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
           </Grid>
@@ -81,23 +154,22 @@ function LoadUnload() {
           <Grid item xs={12} sm={3} md={4} container justifyContent="center">
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel id="demo-simple-select-standard-label">
-                상차방법
+                하차방법
               </InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
-                value={unload}
-                onChange={handleChange1}
+                defaultValue=""
+                value={unload.value}
+                onChange={(_e, child) => handleUnLoadChange(child)}
                 label="하차방법"
               >
-                <MenuItem value="">
-                  <em>선택</em>
-                </MenuItem>
-                <MenuItem value={1}>수작업</MenuItem>
-                <MenuItem value={2}>지게차</MenuItem>
-                <MenuItem value={3}>크레인</MenuItem>
-                <MenuItem value={4}>호이스트</MenuItem>
-                <MenuItem value={5}>컨베이어</MenuItem>
+                <MenuItem value="">선택</MenuItem>
+                {
+                  list.map(obj => (
+                    <MenuItem key={obj.cdid} value={obj.cdid}>{obj.codeName}</MenuItem>
+                  ))
+                }
               </Select>
             </FormControl>
           </Grid>
@@ -118,11 +190,8 @@ function LoadUnload() {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained">등록</Button>
-
-          <Button variant="contained" component={Link} to="/ShipperRequire">
-            이전
-          </Button>
+          <Button variant="contained" onClick={handleChangePage}>등록</Button>
+          <Button variant="contained" onClick={handleChangePage}>이전</Button>
         </Stack>
       </Box>
       <Footer />

@@ -1,12 +1,13 @@
 package com.scmc.api.code.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.scmc.api.code.service.CommonCodeService;
 import com.scmc.api.jpa.domain.TbCommonCd;
 import com.scmc.api.jpa.repository.TbCommonCdRepository;
-import com.scmc.api.code.service.CommonCodeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,4 +29,9 @@ public class CommonCodeServiceImpl implements CommonCodeService {
 		return tbCommonCdRepository.findByCodeTypeOrderBySortOrderAsc(codeType);
 	}
 
+	@Override
+	public HashMap<String, List<TbCommonCd>> selectCommonCodeByRequestItem() {
+		
+		return null;
+	}
 }

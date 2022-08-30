@@ -11,7 +11,7 @@ import CardMedia from "@mui/material/CardMedia";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -26,6 +26,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 const theme = createTheme();
 
 function DateTime() {
+  const [ params ] = useSearchParams();
+
   const [value, setValue] = React.useState(null);
   const handleChange = (newValue) => {
     setValue(newValue);
@@ -102,7 +104,7 @@ function DateTime() {
           <div></div>
           <Button variant="contained">등록</Button>
 
-          <Button variant="contained" component={Link} to="/ShipperRequire">
+          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
             이전
           </Button>
         </Stack>

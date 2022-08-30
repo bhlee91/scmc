@@ -45,7 +45,6 @@ public class JwtTokenProvider {
 	// JWT 토큰 생성
 	public String createToken(HashMap<String, Object> info) {
 		Claims claims = Jwts.claims().setSubject(info.get("userId").toString());
-		claims.put("role", info.get("role").toString());
 		
 		Date now = new Date();
 		

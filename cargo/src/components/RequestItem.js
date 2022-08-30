@@ -8,10 +8,9 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -20,7 +19,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 const theme = createTheme();
 
-function RequestItem() {
+const RequestItem = () => {
+  const [ params ] = useSearchParams();
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -41,10 +42,7 @@ function RequestItem() {
           {/* 요청사항  */}
           <Grid item xs={12} sm={3} md={4} container justifyContent="center">
             <FormGroup>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="냉장"
-              />
+              <FormControlLabel control={<Checkbox defaultChecked />} label="냉장"/>
               <FormControlLabel control={<Checkbox />} label="냉동" />
               <FormControlLabel control={<Checkbox />} label="리프트차량" />
               <FormControlLabel control={<Checkbox />} label="윙바디차량" />
@@ -89,7 +87,7 @@ function RequestItem() {
           <div></div>
           <Button variant="contained">등록</Button>
 
-          <Button variant="contained" component={Link} to="/ShipperRequire">
+          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
             이전
           </Button>
         </Stack>

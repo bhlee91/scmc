@@ -22,25 +22,21 @@ const NaverLogin = () => {
 
     getNaverAccessToken(CODE, STATE)
     .then(res => {
-      const TOKEN_INFO = JSON.parse(res.data.token)
-      const PROFILE = JSON.parse(res.data.profile).response
-
-      console.log(PROFILE)
+      console.log(res)
+      const SOCIAL = JSON.parse(res.data.socialToken)
+      const PROFILE = res.data.profile
 
       dispatch(
         tokenSlice.actions.SET_TOKEN({
-          accessToken: TOKEN_INFO.access_token,
-          refreshToken: TOKEN_INFO.refresh_token,
-          expireTime: TOKEN_INFO.expires_in,
-          social: "NAVER",
-          loginTime: Date.now()
+          accessToken: res.token,
+          refreshToken: SOCIAL.refresh_token
         })
       )
       dispatch(
         userSlice.actions.SET_LOGIN({
-          name: PROFILE.name,
-          email: PROFILE.email,
-          phoneNumber: PROFILE.mobile,
+          name: PROFILE.ownerName,
+          email: "",
+          phoneNumber: PROFILE.phoneNumber,
           social: "NAVER",
           isLogin: true
         })

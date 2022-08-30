@@ -12,17 +12,21 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.scmc.api.jpa.domain.TbMemberCargoOwner;
+import com.scmc.api.member.user.service.AuthService;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class NaverLoginUtil {
 	
 	private final APIUtil apiUtil;
+	private final AuthService authService;
+	private final PasswordEncoder passwordEncoder;
 	
 	@Value("${social.naver.client-id}")
 	private String CLIENT_ID;
@@ -77,15 +81,16 @@ public class NaverLoginUtil {
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				res.put("token", apiUtil.readBody(con.getInputStream()));
+				String socialToken = apiUtil.readBody(con.getInputStream());
 				
-				HashMap<String, Object> profile = this.getProfile(res);
+				res.put("socialToken", socialToken);
 				
-				if (profile.containsKey("profile")) {
-					res.put("profile", profile.get("profile"));
-				} else {
-					res.put("error_profile", profile.get("error_profile"));
-				}
+				TbMemberCargoOwner user = this.getProfile(socialToken);
+				
+				res.put("profile", user);
+				res.put("token", authService.generateToken(user.getUserId()));
+				
+				return res;
 			} else {
 				res.put("error", apiUtil.readBody(con.getErrorStream()));
 			}
@@ -113,15 +118,14 @@ public class NaverLoginUtil {
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				res.put("token", apiUtil.readBody(con.getInputStream()));
+				String socialToken = apiUtil.readBody(con.getInputStream());
 				
-				HashMap<String, Object> profile = this.getProfile(res);
+				res.put("socialToken", socialToken);
 				
-				if (profile.containsKey("profile")) {
-					res.put("profile", profile.get("profile"));
-				} else {
-					res.put("error_profile", profile.get("error_profile"));
-				}
+				TbMemberCargoOwner user = this.getProfile(socialToken);
+				
+				res.put("profile", user);
+				res.put("token", authService.generateToken(user.getUserId()));
 				
 				return res;
 			} else {
@@ -136,30 +140,32 @@ public class NaverLoginUtil {
 		}
 	}
 	
-	private HashMap<String, Object> getProfile(HashMap<String, Object> data) {
+	private TbMemberCargoOwner getProfile(String socialToken) {
 		HttpURLConnection con = apiUtil.connect(PROFILE_API);
-
-		HashMap<String, Object> res = new HashMap<String, Object>();
 		
 		try {
-			JSONObject json = new JSONObject(data.get("token").toString());
+			JSONObject json = new JSONObject(socialToken);
 			
 			con.setRequestMethod("GET");
 			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
 			
 			int responseCode = con.getResponseCode();
 			
-			if (responseCode == HttpURLConnection.HTTP_OK) 
-				res.put("profile", apiUtil.readBody(con.getInputStream()));
-			else 
-				res.put("error_profile", apiUtil.readBody(con.getErrorStream()));
-			
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				String profile = apiUtil.readBody(con.getInputStream());
+				
+				json = new JSONObject(profile).getJSONObject("response");
+				json = json.put("social", "NAVER");
+
+				return authService.insertAndGetUser(json);
+			}
+			else {
+				return null;
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("API 요청과 응답 실패", e);
 		} finally {
 			con.disconnect();
 		}
-		
-		return res;
 	}
 }

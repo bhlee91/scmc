@@ -18,7 +18,7 @@ function footer() {
   return (
     <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
       <Typography variant="h6" align="center" gutterBottom>
-        GNO 소프트웨어
+        ZNO 소프트웨어
       </Typography>
       <Typography
         variant="subtitle1"

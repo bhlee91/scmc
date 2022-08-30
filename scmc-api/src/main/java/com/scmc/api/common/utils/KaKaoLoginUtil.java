@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.scmc.api.jpa.domain.TbMemberCargoOwner;
+import com.scmc.api.member.user.service.AuthService;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class KaKaoLoginUtil {
 	
 	private final APIUtil apiUtil;
+	private final AuthService authService;
 
 	@Value("${social.kakao.rest-api-key}")
 	private String REST_API_KEY;
@@ -56,15 +60,14 @@ public class KaKaoLoginUtil {
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				res.put("token", apiUtil.readBody(con.getInputStream()));
+				String socialToken = apiUtil.readBody(con.getInputStream());
 				
-				HashMap<String, Object> profile = this.getProfile(res);
+				res.put("socialToken", socialToken);
 				
-				if (profile.containsKey("profile")) {
-					res.put("profile", profile.get("profile"));
-				} else {
-					res.put("error_profile", profile.get("error_profile"));
-				}
+				TbMemberCargoOwner user = this.getProfile(socialToken);
+				
+				res.put("profile", user);
+				res.put("token", authService.generateToken(user.getUserId()));
 				
 				return res;
 			} else {
@@ -76,32 +79,6 @@ public class KaKaoLoginUtil {
 		} finally {
 			con.disconnect();
 		}
-	}
-	
-	private HashMap<String, Object> getProfile(HashMap<String, Object> data) {
-		HttpURLConnection con = apiUtil.connect(PROFILE_API);
-
-		HashMap<String, Object> res = new HashMap<String, Object>();
-		
-		try {
-			JSONObject json = new JSONObject(data.get("token").toString());
-			
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
-			
-			int responseCode = con.getResponseCode();
-			
-			if (responseCode == HttpURLConnection.HTTP_OK) 
-				res.put("profile", apiUtil.readBody(con.getInputStream()));
-			else 
-				res.put("error_profile", apiUtil.readBody(con.getErrorStream()));
-		} catch (IOException e) {
-			throw new RuntimeException("API 요청과 응답 실패", e);
-		} finally {
-			con.disconnect();
-		}
-		
-		return res;
 	}
 	
 	public HashMap<String, Object> refreshToken(HashMap<String, Object> obj) {
@@ -118,15 +95,14 @@ public class KaKaoLoginUtil {
 			int responseCode = con.getResponseCode();
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
-				res.put("token", apiUtil.readBody(con.getInputStream()));
+				String socialToken = apiUtil.readBody(con.getInputStream());
 				
-				HashMap<String, Object> profile = this.getProfile(res);
+				res.put("socialToken", socialToken);
 				
-				if (profile.containsKey("profile")) {
-					res.put("profile", profile.get("profile"));
-				} else {
-					res.put("error_profile", profile.get("error_profile"));
-				}
+				TbMemberCargoOwner user = this.getProfile(socialToken);
+				
+				res.put("profile", user);
+				res.put("token", authService.generateToken(user.getUserId()));
 				
 				return res;
 			} else {
@@ -134,6 +110,35 @@ public class KaKaoLoginUtil {
 				return res;
 			}
 			
+		} catch (IOException e) {
+			throw new RuntimeException("API 요청과 응답 실패", e);
+		} finally {
+			con.disconnect();
+		}
+	}
+	
+	private TbMemberCargoOwner getProfile(String socialToken) {
+		HttpURLConnection con = apiUtil.connect(PROFILE_API);
+		
+		try {
+			JSONObject json = new JSONObject(socialToken);
+			
+			con.setRequestMethod("GET");
+			con.setRequestProperty("Authorization", "Bearer " + json.get("access_token"));
+			
+			int responseCode = con.getResponseCode();
+			
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				String profile = apiUtil.readBody(con.getInputStream());
+				
+				json = new JSONObject(profile);
+				json = json.put("social", "KAKAO");
+
+				return authService.insertAndGetUser(json);
+			}
+			else {
+				return null;
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("API 요청과 응답 실패", e);
 		} finally {

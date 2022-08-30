@@ -22,9 +22,13 @@ import "react-html5-camera-photo/build/css/index.css";
 import { useAppDispatch } from 'src/store';
 import cargoImageSlice from 'src/slice/cargoImage';
 
+import { Link, useSearchParams } from "react-router-dom";
+
 const theme = createTheme();
 
 const Camera = () => {
+  const [ params ] = useSearchParams();
+  
   const dispatch = useAppDispatch();
   const [takePicture, setTakePicture] = React.useState("");
   const [picLoad, setPicload] = React.useState(false);
@@ -122,6 +126,9 @@ const Camera = () => {
           <Button variant="contained" onClick={handleFileInputChange}>등록</Button>
           <Button variant="contained" onClick={handleReset}>
             다시찍기
+          </Button>
+          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`} >
+            이전
           </Button>
         </Stack>
       </Box>

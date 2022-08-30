@@ -19,23 +19,22 @@ const KaKaoLogin = () => {
     
     getKaKaoAccessToken(CODE)
     .then(res => {
-      const TOKEN_INFO = JSON.parse(res.data.token)
-      const PROFILE = JSON.parse(res.data.profile)
+      console.log(res)
+      const SOCIAL = JSON.parse(res.data.socialToken)
+      const PROFILE = res.data.profile
 
       dispatch(
         tokenSlice.actions.SET_TOKEN({
-          accessToken: TOKEN_INFO.access_token,
-          refreshToken: TOKEN_INFO.refresh_token,
-          expireTime: TOKEN_INFO.expires_in,
-          social: "KAKAO",
-          loginTime: Date.now()
+          accessToken: res.token,
+          refreshToken: SOCIAL.refresh_token
         })
       )
 
       dispatch(
         userSlice.actions.SET_LOGIN({
-          email: PROFILE.kakao_account.email,
-          userName: PROFILE.kakao_account.profile.nickname,
+          name: PROFILE.ownerName,
+          email: "",
+          phoneNumber: PROFILE.phoneNumber,
           social: "KAKAO",
           isLogin: true
         })

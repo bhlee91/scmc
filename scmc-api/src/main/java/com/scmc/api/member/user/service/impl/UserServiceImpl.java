@@ -2,8 +2,8 @@ package com.scmc.api.member.user.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.scmc.api.member.user.domain.User;
-import com.scmc.api.member.user.repository.UserRepository;
+import com.scmc.api.jpa.domain.TbMemberCargoOwner;
+import com.scmc.api.jpa.repository.TbMemberCargoOwnerRepository;
 import com.scmc.api.member.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-	private final UserRepository userRepository;
+	private final TbMemberCargoOwnerRepository tbMemberCargoOwnerRepository;
 	
 	@Override
-	public User findByUserId(String userId) {
-		return userRepository.findByUserId(userId);
+	public TbMemberCargoOwner findByUserId(String userId) {
+		return tbMemberCargoOwnerRepository.findByUserId(userId);
 	}
 
 }
