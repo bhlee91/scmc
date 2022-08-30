@@ -12,4 +12,6 @@ import com.scmc.api.jpa.domain.TbCargoImage;
 public interface TbCargoImageRepository extends JpaRepository<TbCargoImage, Long>{
 	
 	List<TbCargoImage> findAllByTbCargoRequestOrderByImageSeqAsc(Long reqId);
+	
+	
 }

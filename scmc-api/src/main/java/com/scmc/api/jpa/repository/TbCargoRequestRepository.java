@@ -7,7 +7,5 @@ import com.scmc.api.jpa.domain.TbCargoRequest;
 
 @Repository
 public interface TbCargoRequestRepository extends JpaRepository<TbCargoRequest, Long>{
-
-//	@Query("select distinct R from TbCargoRequest R left join fetch R.images where R.ownerUid = :ownerUid")
-//	List<TbCargoRequest> findAllWithTbCargoImageByOwnerUidUsingFetchJoin(Long ownerUid);
+	
 }

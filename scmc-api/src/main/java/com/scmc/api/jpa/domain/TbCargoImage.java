@@ -13,13 +13,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tb_cargo_image")
 @Getter
+@Setter
 public class TbCargoImage {
 
 	@Id
@@ -43,7 +46,8 @@ public class TbCargoImage {
 	private Date regDt;
 		
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonProperty("req_id")
+	@JsonProperty("request")
+	@JsonBackReference
 	@JoinColumn(name= "req_id", referencedColumnName = "req_id")
 	private TbCargoRequest tbCargoRequest;
 	

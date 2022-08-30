@@ -15,12 +15,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "tb_cargo_request")
 @Getter
+@Setter
 public class TbCargoRequest {
 
 	@Id
@@ -83,7 +87,7 @@ public class TbCargoRequest {
 	private String receiverPhone;
 	
 	@Column(name = "depart_latitude")
-	private String deprtLatitude;
+	private String departLatitude;
 	
 	@Column(name = "depart_longitude")
 	private String departLongitude;
@@ -127,9 +131,8 @@ public class TbCargoRequest {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
-	@JsonIgnore
+	@JsonManagedReference
 	@OneToMany(mappedBy = "tbCargoRequest", fetch = FetchType.LAZY)
-	@Convert()
-	private List<TbCargoImage> images = new ArrayList<>();
+	private List<TbCargoImage> images = new ArrayList<TbCargoImage>();
 
 }

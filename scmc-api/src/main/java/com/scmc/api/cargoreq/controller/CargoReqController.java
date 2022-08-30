@@ -1,13 +1,22 @@
 package com.scmc.api.cargoreq.controller;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
+import com.scmc.api.jpa.domain.TbCargoRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,16 +46,33 @@ public class CargoReqController {
 	}
 	
 	@ApiOperation(value = "의뢰 내역 상태 변경", notes = "의뢰내역 상태를 변경한다.")
-	@GetMapping("/update/{status}/{reqId}")
+	@PostMapping("/update")
 	public ResponseEntity<?> updateCargoRequestStatus(
-			@ApiParam(value = "상태 값", example = "MF") @PathVariable(value = "status") String status
-			,@ApiParam(value = "요청번호", example = "1") @PathVariable(value = "reqId") Long reqId
+			@RequestParam(value = "status") String status
+			,@RequestParam(value = "reqId")  Long reqId
 			) throws Exception {
 		log.info("========================");
 		log.info("의뢰내역 상태 변경");
 		log.info("========================");
 		
 		return new ResponseEntity<>(cargoReqService.updateStatus(status, reqId), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
+	@PostMapping("/create")
+	public ResponseEntity<?> createCargoRequest(
+			@RequestBody Map<String, Object> param
+			) throws Exception {
+		log.info("========================");
+		log.info("의뢰내역 등록 or 수정");
+		log.info("========================");
+		
+//		param.put("ownerUid", 1L);
+//		param.put("reqComyn", "N");
+//		param.put("status", "RO");
+//		param.put("regDt", new Timestamp(0));
+	
+		return new ResponseEntity<>(cargoReqService.createRequest(param), HttpStatus.OK);
 	}
 	
 }
