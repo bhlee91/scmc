@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit"
-import store from "src/store"
 
 const initialState = {
   step: 0,
@@ -38,9 +37,12 @@ const cargoSlice = createSlice({
   name: "cargo",
   initialState,
   reducers: {
-    SET_IMAGE(state) {
-      state.step = 0
-      state.imageList = store.getState().cargoImage
+    RESET(state) {
+      state = initialState
+    },
+    SET_IMAGE(state, action) {
+      state.step = 1
+      state.imageList = [...action.payload.contents]
     },
     SET_REQUEST_1(state, action) {
       state.step = 1

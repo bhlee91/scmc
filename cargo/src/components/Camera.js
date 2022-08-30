@@ -20,19 +20,24 @@ import CameraLib from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 
 import { useAppDispatch } from 'src/store';
+import cargoSlice from 'src/slice/cargo';
 import cargoImageSlice from 'src/slice/cargoImage';
 
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import store from "src/store";
 
 const theme = createTheme();
 
 const Camera = () => {
   const [ params ] = useSearchParams();
+  const navigate = useNavigate();
   
   const dispatch = useAppDispatch();
   const [takePicture, setTakePicture] = React.useState("");
   const [picLoad, setPicload] = React.useState(false);
-  const [seq, setSeq] = React.useState(0);
+
+  const [fileImage, setFileImage] = React.useState([])
+  const [previewFile, setPreviewFile] = React.useState([])
 
   const handleTakePhoto = (dataUri) => {
     // Do stuff with the photo...
@@ -45,34 +50,63 @@ const Camera = () => {
     setPicload(false);
   }
 
-  const getBase64 = (file) => {
-    return new Promise(res => {
+  const getBase64 = (file, index) => {
+    return new Promise((resolve, reject) => {
       let baseURL = ""
       let reader = new FileReader();
-  
+
       reader.readAsDataURL(file);
-  
+
       reader.onload = () => {
         baseURL = reader.result
-        res(baseURL)
+        dispatch(
+          cargoImageSlice.actions.SET_IMAGE({
+            seq: index,
+            content: baseURL
+          })
+        )
+
+        resolve()
+      }
+      reader.onerror = (error) => {
+        reject(error)
       }
     })
   }
 
-  const handleFileInputChange = event => {
-    const file = event.target.files[0]
+  const handleFileInputChange = () => {
 
-    getBase64(file)
-    .then(res => {
-      dispatch(
-        cargoImageSlice.actions.SET_IMAGE({
-          seq: seq,
-          content: res
-        })
+    Promise.all(
+      Array.from(fileImage).map((file, index) => 
+        getBase64(file, index)
       )
-
-      setSeq((value) => value++)
+    )
+    .then(() => {
+      dispatch(
+        cargoSlice.actions.SET_IMAGE(
+          store.getState().cargoImage
+        )
+      )
     })
+    .then(() => {
+      navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`, { replace: true })
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+
+  const handleInputChange = event => {
+    setFileImage(event.target.files)
+
+    let fileURLList = []
+
+    for (let i = 0; i < event.target.files.length; i++) {
+      let fileURL = URL.createObjectURL(event.target.files.item(i))
+      fileURLList.push(fileURL)
+    }
+
+    setPreviewFile(fileURLList)
   }
 
   return (
@@ -80,6 +114,13 @@ const Camera = () => {
       <CssBaseline />
       {/* app bar component */}
       <Appbar />
+
+      <input type="file" multiple={true} onChange={handleInputChange}></input>
+      <div>
+        {
+          previewFile.map((file, index) => <img key={index} style={{ width: 250, height: 250 }} alt="imageSample" src={file} />)
+        }
+      </div>
 
       <Container sx={{ py: 3 }} maxWidth="md">
         {/* End hero unit */}
@@ -123,7 +164,7 @@ const Camera = () => {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained" onClick={handleFileInputChange}>등록</Button>
+          <Button type="file" variant="contained" onClick={handleFileInputChange}>등록</Button>
           <Button variant="contained" onClick={handleReset}>
             다시찍기
           </Button>

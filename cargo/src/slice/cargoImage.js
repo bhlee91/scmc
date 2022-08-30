@@ -13,8 +13,17 @@ const cargoImageSlice = createSlice({
         state.contents.forEach((obj) => {
           if (obj.seq === action.payload.seq) {
             obj.content = action.payload.content
+            return
           }
         })
+
+        state.contents.push(
+          {
+            seq: action.payload.seq,
+            content: action.payload.content
+          }
+        )
+
       } else {
         state.contents.push(
           {
@@ -26,6 +35,9 @@ const cargoImageSlice = createSlice({
     },
     REMOVE_IMAGE(state, action) {
       state.contents = state.contents.filter(obj => obj.seq = action.payload.seq)
+    },
+    RESET(state) {
+      state.contents = []
     }
   }
 })

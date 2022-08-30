@@ -181,11 +181,11 @@ const ShipperRequire = () => {
                         divider={<Divider orientation="vertical" flexItem />}
                         spacing={1}
                       >
-                        <Item>가로 5M</Item>
-                        <Item>세로 3M</Item>
-                        <Item>높이 3M</Item>
-                        <Item>중량 30Kg</Item>
-                        <Item>체젹 10M3</Item>
+                        <Item>가로 5m</Item>
+                        <Item>세로 3m</Item>
+                        <Item>높이 3m</Item>
+                        <Item>중량 30㎏</Item>
+                        <Item>체적 10㎥</Item>
                       </Stack>
                     </Container>
                   ) : null}
