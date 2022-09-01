@@ -32,6 +32,7 @@ const KaKaoLogin = () => {
 
       dispatch(
         userSlice.actions.SET_LOGIN({
+          ownerUid: PROFILE.ownerUid,
           name: PROFILE.ownerName,
           email: "",
           phoneNumber: PROFILE.phoneNumber,

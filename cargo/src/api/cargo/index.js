@@ -8,3 +8,11 @@ export function getCommonCode() {
     method: "get"
   })
 }
+
+
+export const getReqList = (ownerUid) =>   {
+  return request({
+    url: `${BASE_URL}/list/${ownerUid}`,
+    method: "get"
+  })
+}

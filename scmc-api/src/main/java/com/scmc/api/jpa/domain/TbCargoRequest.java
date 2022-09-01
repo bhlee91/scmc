@@ -54,7 +54,7 @@ public class TbCargoRequest {
 	private float cverticalreal;
 	
 	@Column(name = "depart_datetimes")
-	private Date departDatemtimes;
+	private Date departDatetimes;
 	
 	@Column(name = "arrival_datetimes")
 	private Date arrivalDatetimes;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -15,10 +15,10 @@ import {
   Box,
   Divider,
   Chip,
-  CardHeader,
+  //CardHeader,
   Collapse,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
@@ -32,13 +32,18 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import { render } from "react-dom";
+//import { render } from "react-dom";
 import ImageViewer from "react-simple-image-viewer";
+import {
+  getReqList
+} from "src/api/cargo/index";
+import store from 'src/store';
 
 const theme = createTheme();
 
 const ExpandMore = styled(props => {
-  const { expand, ...other } = props;
+
+const { expand, ...other } = props;
   return <IconButton {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
@@ -59,6 +64,11 @@ function UseList() {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
+  const [reqList, setReqList] = useState([]);
+
+  //ownerUid 받아오기
+  const ownerUid = store.getState().user.ownerUid;
 
   // 상세보기 처리
   const [expanded, setExpanded] = React.useState(false);
@@ -84,6 +94,158 @@ function UseList() {
     setCurrentImage(0);
     setIsViewerOpen(false);
   };
+
+  const convertDate = (date) => {
+    let d = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date)
+    
+    return d;
+      
+  }
+
+  useEffect(() => {
+    getReqList(ownerUid)
+      .then(res => {
+        convertDate(res.data[0].departDatetimes)
+        setReqList(res.data)
+        console.log(res)
+      })
+      
+       
+        
+        // let dtimes = new Date(res.data.departDatetimes)
+        // let atimes = new Date(res.data.arrivalDatetimes)
+        // dtimes = dtimes.getFullYear + '년' + dtimes.getMonth + '월' + 
+        //         dtimes.getDay + '일' + dtimes.getHours + '시' + dtimes.getMinutes +'분';
+        // atimes = atimes.getFullYear + '년' + atimes.getMonth + '월' + 
+        //         atimes.getDay + '일' + atimes.getHours + '시' + atimes.getMinutes +'분';
+        
+      
+  },[]);
+  const renderCardContent = reqList.map(data => {
+    return(
+      <Container sx={{ py: 1 }} maxWidth="md"  key={data.reqId}>
+      {/* End hero unit */}
+      <Grid container spacing={1} item xs={12} sm={3} md={4}>
+        {/* 이용내역보기 */}
+        <Card
+          sx={{ width: "100%", display: "flex", flexDirection: "column" }}
+        >
+          <CardContent sx={{ flex: "1 0 auto" }}>
+            <Grid container spacing={1} item xs={12} sm={3} md={4}>
+              <Grid item xs={6}>
+                <Stack sx={{ py: 1 }} direction="row" spacing={1}>
+                  <Chip label="최적차량검색중" color="success" />
+                </Stack>
+              </Grid>
+              <Grid item xs={6}>
+                <Box
+                  m={1}
+                  display="flex"
+                  justifyContent="right"
+                  alignItems="center"
+                >
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="info"
+                    sx={{ height: 40 }}
+                    href="/"
+                  >
+                    취소하기
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+
+            <Divider />
+            <Typography gutterBottom variant="body2" component="div">
+              <ArrowRightIcon color="primary" />
+              상차지 : {data.departAddrSt}
+            </Typography>
+            <Divider />
+            <Typography gutterBottom variant="body2" component="div">
+              <ArrowRightIcon color="primary" /> 시간 : {data.departDatetimes}
+            </Typography>
+            <Divider />
+            <Typography gutterBottom variant="body2" component="div">
+              <ArrowRightIcon color="primary" />
+              하차지 : {data.arrivalAddrSt}
+            </Typography>
+            <Divider />
+            <Typography gutterBottom variant="body2" component="div">
+              <ArrowRightIcon color="primary" />
+              시간 : {data.arrivalDatetimes}
+            </Typography>
+          </CardContent>
+
+          <CardActions disableSpacing>
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="상세보기"
+            >
+              <ExpandMoreIcon />
+            </ExpandMore>
+          </CardActions>
+
+          {/* 상세보기 */}
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <CardContent>
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={3} md={4}>
+                  <ThemeProvider theme={theme}>
+                    <Box
+                      sx={{
+                        p: 2,
+                        bgcolor: "background.default",
+                        display: "grid",
+                        gridTemplateColumns: { md: "1fr 1fr" },
+                        gap: 2,
+                      }}
+                    >
+                      <Item>화물정보</Item>
+                      <Typography>크기 : {data.cwidth} M {data.cverticalreal} M {data.cheight}</Typography>
+                      <Typography>중량 : {data.cweight} Kg</Typography>
+                      <Typography>체적 : XX M3</Typography>
+                    </Box>
+                  </ThemeProvider>
+
+                  {/* 화주 이미지  */}
+                  <ImageList sx={{ width: 400, height: 200 }}>
+                    {images.map((src, index) => (
+                      <img
+                        src={src}
+                        onClick={() => openImageViewer(index)}
+                        width="200"
+                        key={index}
+                        style={{ margin: "1px" }}
+                        alt=""
+                      />
+                    ))}
+
+                    {isViewerOpen && (
+                      <ImageViewer
+                        src={images}
+                        currentIndex={currentImage}
+                        onClose={closeImageViewer}
+                        disableScroll={false}
+                        backgroundStyle={{
+                          backgroundColor: "rgba(0,0,0,0.9)",
+                        }}
+                        closeOnClickOutside={true}
+                      />
+                    )}
+                  </ImageList>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Collapse>
+        </Card>
+      </Grid>
+    </Container>
+    )
+  })
 
   return (
     <ThemeProvider theme={theme}>
@@ -130,234 +292,8 @@ function UseList() {
           <Item>1. 현재 진행중인 운송내역</Item>
         </Stack>
       </Container>
+      {renderCardContent}
 
-      <Container sx={{ py: 1 }} maxWidth="md">
-        {/* End hero unit */}
-        <Grid container spacing={1} item xs={12} sm={3} md={4}>
-          {/* 이용내역보기 */}
-          <Card
-            sx={{ width: "100%", display: "flex", flexDirection: "column" }}
-          >
-            <CardContent sx={{ flex: "1 0 auto" }}>
-              <Grid container spacing={1} item xs={12} sm={3} md={4}>
-                <Grid item xs={6}>
-                  <Stack sx={{ py: 1 }} direction="row" spacing={1}>
-                    <Chip label="최적차량검색중" color="success" />
-                  </Stack>
-                </Grid>
-                <Grid item xs={6}>
-                  <Box
-                    m={1}
-                    display="flex"
-                    justifyContent="right"
-                    alignItems="center"
-                  >
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      color="info"
-                      sx={{ height: 40 }}
-                      href="/"
-                    >
-                      취소하기
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
-
-              <Divider />
-              <Typography gutterBottom variant="body2" component="div">
-                <ArrowRightIcon color="primary" />
-                상차지 : 서울특별시 강남구 테헤란로 1
-              </Typography>
-              <Divider />
-              <Typography gutterBottom variant="body2" component="div">
-                <ArrowRightIcon color="primary" /> 시간 : 2022년 5월 11일 11시
-                00분
-              </Typography>
-              <Divider />
-              <Typography gutterBottom variant="body2" component="div">
-                <ArrowRightIcon color="primary" />
-                하차지 : 서울특별시 강남구 테헤란로 1
-              </Typography>
-              <Divider />
-              <Typography gutterBottom variant="body2" component="div">
-                <ArrowRightIcon color="primary" />
-                시간 : 2022년 5월 11일 11시 00분
-              </Typography>
-            </CardContent>
-
-            <CardActions disableSpacing>
-              <ExpandMore
-                expand={expanded}
-                onClick={handleExpandClick}
-                aria-expanded={expanded}
-                aria-label="상세보기"
-              >
-                <ExpandMoreIcon />
-              </ExpandMore>
-            </CardActions>
-
-            {/* 상세보기 */}
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} sm={3} md={4}>
-                    <ThemeProvider theme={theme}>
-                      <Box
-                        sx={{
-                          p: 2,
-                          bgcolor: "background.default",
-                          display: "grid",
-                          gridTemplateColumns: { md: "1fr 1fr" },
-                          gap: 2,
-                        }}
-                      >
-                        <Item>화물정보</Item>
-                        <Typography>크기 : XX M XX M XX</Typography>
-                        <Typography>중량 : XX Kg</Typography>
-                        <Typography>체적 : XX M3</Typography>
-                      </Box>
-                    </ThemeProvider>
-
-                    {/* 화주 이미지  */}
-                    <ImageList sx={{ width: 400, height: 200 }}>
-                      {images.map((src, index) => (
-                        <img
-                          src={src}
-                          onClick={() => openImageViewer(index)}
-                          width="200"
-                          key={index}
-                          style={{ margin: "1px" }}
-                          alt=""
-                        />
-                      ))}
-
-                      {isViewerOpen && (
-                        <ImageViewer
-                          src={images}
-                          currentIndex={currentImage}
-                          onClose={closeImageViewer}
-                          disableScroll={false}
-                          backgroundStyle={{
-                            backgroundColor: "rgba(0,0,0,0.9)",
-                          }}
-                          closeOnClickOutside={true}
-                        />
-                      )}
-                    </ImageList>
-                  </Grid>
-                </Grid>
-              </CardContent>
-              <CardContent>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} sm={3} md={4}>
-                    <ThemeProvider theme={theme}>
-                      <Box
-                        sx={{
-                          p: 2,
-                          bgcolor: "background.default",
-                          display: "grid",
-                          gridTemplateColumns: { md: "1fr 1fr" },
-                          gap: 2,
-                        }}
-                      >
-                        <Item>상차지</Item>
-                        <Typography>
-                          상차지 : 서울특별시 강남구 테헤란로 1
-                        </Typography>
-                        <Typography>
-                          시간 : 2022년 5월 11일 11시 00분
-                        </Typography>
-                      </Box>
-                    </ThemeProvider>
-
-                    {/* 상차지 이미지  */}
-                    <ImageList sx={{ width: 400, height: 200 }}>
-                      {images.map((src, index) => (
-                        <img
-                          src={src}
-                          onClick={() => openImageViewer(index)}
-                          width="200"
-                          key={index}
-                          style={{ margin: "2px" }}
-                          alt=""
-                        />
-                      ))}
-
-                      {isViewerOpen && (
-                        <ImageViewer
-                          src={images}
-                          currentIndex={currentImage}
-                          onClose={closeImageViewer}
-                          disableScroll={false}
-                          backgroundStyle={{
-                            backgroundColor: "rgba(0,0,0,0.9)",
-                          }}
-                          closeOnClickOutside={true}
-                        />
-                      )}
-                    </ImageList>
-                  </Grid>
-                </Grid>
-              </CardContent>
-              {/* 하차지  */}
-              <CardContent>
-                <Grid container spacing={1}>
-                  <Grid item xs={12} sm={3} md={4}>
-                    <ThemeProvider theme={theme}>
-                      <Box
-                        sx={{
-                          p: 2,
-                          bgcolor: "background.default",
-                          display: "grid",
-                          gridTemplateColumns: { md: "1fr 1fr" },
-                          gap: 2,
-                        }}
-                      >
-                        <Item>하차지</Item>
-                        <Typography>
-                          하차지 : 서울특별시 강남구 테헤란로 1
-                        </Typography>
-                        <Typography>
-                          시간 : 2022년 5월 11일 11시 00분
-                        </Typography>
-                      </Box>
-                    </ThemeProvider>
-
-                    {/* 하차지 이미지  */}
-                    <ImageList sx={{ width: 400, height: 200 }}>
-                      {images.map((src, index) => (
-                        <img
-                          src={src}
-                          onClick={() => openImageViewer(index)}
-                          width="200"
-                          key={index}
-                          style={{ margin: "2px" }}
-                          alt=""
-                        />
-                      ))}
-
-                      {isViewerOpen && (
-                        <ImageViewer
-                          src={images}
-                          currentIndex={currentImage}
-                          onClose={closeImageViewer}
-                          disableScroll={false}
-                          backgroundStyle={{
-                            backgroundColor: "rgba(0,0,0,0.9)",
-                          }}
-                          closeOnClickOutside={true}
-                        />
-                      )}
-                    </ImageList>
-                  </Grid>
-                </Grid>
-              </CardContent>
-            </Collapse>
-          </Card>
-        </Grid>
-      </Container>
 
       <Container sx={{ py: 2 }} maxWidth="md">
         <Stack spacing={1}>

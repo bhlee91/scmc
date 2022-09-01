@@ -71,7 +71,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 			tbcr.setCheight((float)param.get("cheight"));
 			tbcr.setCwidth((float)param.get("cwidth"));
 			tbcr.setCverticalreal((float)param.get("cverticalreal"));
-			tbcr.setDepartDatemtimes( (Date)param.get("departDatetimes"));
+			tbcr.setDepartDatetimes( (Date)param.get("departDatetimes"));
 			tbcr.setArrivalDatetimes((Date)param.get("arrivalDateTimes"));
 			tbcr.setDepartAddrSt((String)param.get("departAddrSt"));
 			tbcr.setDepartAddrSt2((String)param.get("departAddrSt2"));
