@@ -26,30 +26,21 @@ import cargoSlice from "src/slice/cargo";
 const theme = createTheme();
 
 const ShipSize = () => {
+  const cargo = store.getState().cargo
   const dispatch = useAppDispatch();
   const [ params ] = useSearchParams();
   const navigate = useNavigate();
 
   const [values, setValues] = React.useState({
-    horizontal: 0,
-    portrait: 0,
-    height: 0,
-    weight: 0,
-    volume: 0,
+    horizontal: cargo.cwidth,
+    portrait: cargo.cverticalreal,
+    height: cargo.cheight,
+    weight: cargo.cweight,
+    volume: (cargo.cwidth * cargo.cverticalreal * cargo.cheight).toFixed(1),
   });
 
-  React.useEffect(() => {
-    console.log(values)
-    setValues(value => {
-      value.volume = parseFloat(value.horizontal) * parseFloat(value.portrait) * parseFloat(value.height)
-    })
-    console.log(values)
-  }, [values])
-
   const handleChange = (prop) => (event) => {
-    console.log(prop)
-    console.log(event)
-    setValues({ ...values, [prop]: parseFloat(event.target.value) });
+    setValues({ ...values, [prop]: event.target.value });
   };
 
   const handleChangePage = () => {
@@ -62,6 +53,10 @@ const ShipSize = () => {
       })
     )
 
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
+  const handleCancelPage = () => {
     navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
   }
 
@@ -99,7 +94,6 @@ const ShipSize = () => {
                 }
                 aria-describedby="outlined-horizontal-helper-text"
                 inputProps={{
-                  type: "number",
                   "aria-label": "horizontal",
                 }}
               />
@@ -118,7 +112,6 @@ const ShipSize = () => {
                 }
                 aria-describedby="outlined-portrait-helper-text"
                 inputProps={{
-                  type: "number",
                   "aria-label": "portrait",
                 }}
               />
@@ -147,7 +140,7 @@ const ShipSize = () => {
 
             <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
               <OutlinedInput
-                id="outlined-adornment-weightt"
+                id="outlined-adornment-weight"
                 value={values.weight}
                 onChange={handleChange("weight")}
                 endAdornment={
@@ -155,7 +148,6 @@ const ShipSize = () => {
                 }
                 aria-describedby="outlined-weight-helper-text"
                 inputProps={{
-                  type: "number",
                   "aria-label": "weight",
                 }}
               />
@@ -166,15 +158,13 @@ const ShipSize = () => {
 
             <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
               <OutlinedInput
-                id="outlined-adornment-weightt"
-                value={values.horizontal * values.portrait * values.height}
-                onChange={handleChange("volume")}
+                id="outlined-adornment-volume"
+                value={(values.horizontal * values.portrait * values.height).toFixed(1)}
                 endAdornment={
                   <InputAdornment position="end">㎥</InputAdornment>
                 }
                 aria-describedby="outlined-volume-helper-text"
                 inputProps={{
-                  type: "number",
                   "aria-label": "volume",
                 }}
               />
@@ -201,7 +191,7 @@ const ShipSize = () => {
           >
             <div></div>
             <Button variant="contained" onClick={handleChangePage}>등록</Button>
-            <Button variant="contained" onClick={handleChangePage}>이전</Button>
+            <Button variant="contained" onClick={handleCancelPage}>이전</Button>
           </Stack>
         </Box>
       </div>

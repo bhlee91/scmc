@@ -15,3 +15,10 @@ export function getCommonCodeByType(codeType) {
     method: "get"
   })
 }
+
+export function getCommonCodeByRequestItem() {
+  return request({
+    url: `${BASE_URL}/code/request-item`,
+    method: "get"
+  })
+}

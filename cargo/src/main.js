@@ -19,6 +19,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import IconButton from "@mui/material/IconButton";
 
+import store from "src/store";
+
 const theme = createTheme();
 
 const settings = {
@@ -37,9 +39,12 @@ const settings = {
 const cols = 1;
 const rows = 1;
 
-function Main() {
+const Main = () => {
   const navigate = useNavigate();
-
+  const cargo = store.getState().cargo
+  
+  console.log(cargo)
+  
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />

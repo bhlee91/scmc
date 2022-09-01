@@ -5,33 +5,54 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Container, createTheme, Divider, ThemeProvider } from "@mui/material";
 
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
-import CardMedia from "@mui/material/CardMedia";
-import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
+import store, { useAppDispatch } from 'src/store';
+import cargoSlice from "src/slice/cargo";
+
 const theme = createTheme();
 
-function DateTime() {
+const DateTime = () => {
+  const cargo = store.getState().cargo
+  const dispatch = useAppDispatch();
   const [ params ] = useSearchParams();
+  const navigate = useNavigate();
 
-  const [value, setValue] = React.useState(null);
-  const handleChange = (newValue) => {
-    setValue(newValue);
+  const [depart, setDepart] = React.useState(cargo.departDatetimes.replace(" ", "T"));
+  const [arrival, setArrival] = React.useState(cargo.arrivalDatetimes.replace(" ", "T"));
+
+  const handleDepartChange = (event) => {
+    console.log(depart)
+    setDepart(event.target.value)
+  }
+
+  const handleArrivalChange = (event) => {
+    console.log(arrival)
+    setArrival(event.target.value)
   };
+
+  const handleChangePage = () => {
+    dispatch(
+      cargoSlice.actions.SET_REQUEST_3({
+        departDatetimes: depart.replace("T", " "),
+        arrivalDatetimes: arrival.replace("T", " ")
+      })
+    )
+
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
+  const handleCancelPage = () => {
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -56,7 +77,8 @@ function DateTime() {
                 id="start-date"
                 label="출발날짜 및 시간"
                 type="datetime-local"
-                defaultValue=""
+                value={depart}
+                onChange={handleDepartChange}
                 sx={{ width: 250 }}
                 InputLabelProps={{
                   shrink: true,
@@ -77,7 +99,9 @@ function DateTime() {
                 id="arival-date"
                 label="도착날짜 및 시간"
                 type="datetime-local"
-                defaultValue=""
+                inputformat="yyyy-MM-dd HH:mm:ss"
+                value={arrival}
+                onChange={handleArrivalChange}
                 sx={{ width: 250 }}
                 InputLabelProps={{
                   shrink: true,
@@ -102,11 +126,9 @@ function DateTime() {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained">등록</Button>
+          <Button variant="contained" onClick={handleChangePage}>등록</Button>
 
-          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
-            이전
-          </Button>
+          <Button variant="contained" onClick={handleCancelPage}>이전</Button>
         </Stack>
       </Box>
       <Footer />

@@ -29,6 +29,8 @@ import store from "src/store";
 const theme = createTheme();
 
 const Camera = () => {
+  const imageList = store.getState().cargo.imageList
+
   const [ params ] = useSearchParams();
   const navigate = useNavigate();
   
@@ -37,7 +39,9 @@ const Camera = () => {
   const [picLoad, setPicload] = React.useState(false);
 
   const [fileImage, setFileImage] = React.useState([])
-  const [previewFile, setPreviewFile] = React.useState([])
+  const [previewFile, setPreviewFile] = React.useState([
+    ...imageList.map(image => image.content)
+  ])
 
   const handleTakePhoto = (dataUri) => {
     // Do stuff with the photo...

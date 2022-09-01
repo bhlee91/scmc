@@ -8,9 +8,8 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import IconButton from "@mui/material/IconButton";
@@ -22,6 +21,15 @@ const theme = createTheme();
 
 const Address = () => {
   const [ params ] = useSearchParams();
+  const navigate = useNavigate();
+
+  const handleChangePage = () => {
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
+  const handleCancelPage = () => {
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -105,11 +113,9 @@ const Address = () => {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained">등록</Button>
+          <Button variant="contained" onClick={handleChangePage}>등록</Button>
 
-          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
-            이전
-          </Button>
+          <Button variant="contained" onClick={handleCancelPage}>이전</Button>
         </Stack>
       </Box>
       <Footer />

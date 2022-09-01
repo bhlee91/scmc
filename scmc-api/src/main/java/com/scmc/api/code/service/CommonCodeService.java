@@ -9,5 +9,5 @@ public interface CommonCodeService {
 	
 	List<TbCommonCd> selectCommonCode();
 	List<TbCommonCd> selectCommonCodeByCodeType(String codeType);
-	HashMap<String, List<TbCommonCd>> selectCommonCodeByRequestItem();
+	HashMap<String, Object> selectCommonCodeByRequestItem();
 }

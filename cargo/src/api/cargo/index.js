@@ -2,15 +2,15 @@ import request from "src/request";
 
 const BASE_URL = "/req"
 
-export function getCommonCode() {
+export function setCargoRequest(data) {
   return request({
-    url: `${BASE_URL}/`,
-    method: "get"
+    url: `${BASE_URL}/cargo`,
+    method: "post",
+    body: data
   })
 }
 
-
-export const getReqList = (ownerUid) =>   {
+export function getReqList(ownerUid) {
   return request({
     url: `${BASE_URL}/list/${ownerUid}`,
     method: "get"

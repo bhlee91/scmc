@@ -2,25 +2,115 @@ import * as React from "react";
 import Footer from "../common/Footer";
 import Appbar from "../common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Container, createTheme, Divider, ThemeProvider } from "@mui/material";
+import { Container, createTheme, Divider, FormControl, FormLabel, ThemeProvider } from "@mui/material";
 
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
+
+import { useAppDispatch } from 'src/store';
+import cargoSlice from "src/slice/cargo";
+
+import {
+  getCommonCodeByRequestItem
+} from "src/api/code";
 
 const theme = createTheme();
 
 const RequestItem = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [ params ] = useSearchParams();
+
+  const [ requestList, setRequestList ] = React.useState({})
+  // 냉장/냉동여부
+  const [ rfofz, setRfofz ] = React.useState({
+    value: "RNA",
+    name: "냉장/냉동여부_해당없음"
+  })
+  // 차량종류
+  const [ ctype, setCtype ] = React.useState({
+    value: "",
+    name: "선택안함"
+  })
+  // 기타 요청사항
+  const [ reqit, setReqit ] = React.useState([])
+
+  React.useLayoutEffect(() => {
+    getCommonCodeByRequestItem()
+    .then(res => {
+      setRequestList(res.data)
+    })
+  }, [])
+
+  const handleRequestChange = props => event => {
+    const checked = event.target.checked
+    const value = event.target.value
+    const name = event.target.name
+
+    const request = {
+      value: value,
+      name: name
+    }
+
+    if (props === "RFOFZ") {
+      request.name = `${requestList[props].code_typename}_${request.name}`
+
+      setRfofz(request)
+    } else if (props === "CTYPE") {
+      request.name = `${requestList[props].code_typename}_${request.name}`
+
+      setCtype(request)
+    } else {
+      setReqit(items => {
+        if (checked) {
+          items.push(request)
+        } else {
+          items.filter(item => item.value === request.value)
+        }
+        
+        return items
+      })
+    }
+  }
+
+  const handleChangePage = () => {
+    let requestName = [rfofz.name]
+    let requestValue = [rfofz.value]
+
+    if (ctype.value !== "") {
+      requestName.push(ctype.name)
+      requestValue.push(ctype.value)
+    } 
+    requestName.push(...reqit.map(e => e.name))
+    requestValue.push(...reqit.map(e => e.value))
+
+    dispatch(
+      cargoSlice.actions.SET_REQUEST_6({
+        requestItems: {
+          value: requestValue.join("^"),
+          name: requestName
+        }
+      })
+    )
+
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
+  const handleCancelPage = () => {
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -40,34 +130,37 @@ const RequestItem = () => {
 
         <Grid container spacing={1} justifyContent="center">
           {/* 요청사항  */}
-          <Grid item xs={12} sm={3} md={4} container justifyContent="center">
-            <FormGroup>
-              <FormControlLabel control={<Checkbox defaultChecked />} label="냉장"/>
-              <FormControlLabel control={<Checkbox />} label="냉동" />
-              <FormControlLabel control={<Checkbox />} label="리프트차량" />
-              <FormControlLabel control={<Checkbox />} label="윙바디차량" />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="방풍/방수 차량(탑차, 천막)"
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="운송요금 상차지 지불"
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="운송요금 하차지 지불"
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="세금계산서/현금영수증 발행"
-              />
-              <FormControlLabel
-                control={<Checkbox />}
-                label="기사님 상하차 도움(추가요금 발생)"
-              />
+          <FormControl xs={12} sm={3} md={4} style={{ paddingRight: 30 }}>
+            <FormLabel component="legend" color="info">{requestList.RFOFZ?.code_typename}</FormLabel>
+            <RadioGroup value={rfofz?.value} onChange={handleRequestChange("RFOFZ")}>
+              {
+                requestList.RFOFZ?.codes.map(code => 
+                  <FormControlLabel key={code.cdid} name={code.codeName} value={code.cdid} control={<Radio />} label={code.codeName}/>
+                )
+              }
+            </RadioGroup>
+          </FormControl>
+          <FormControl xs={12} sm={3} md={4} style={{ paddingRight: 30 }}>
+            <FormLabel component="legend" color="info">{requestList.CTYPE?.code_typename}</FormLabel>
+            <RadioGroup value={ctype?.value} onChange={handleRequestChange("CTYPE")}>
+              {
+                requestList.CTYPE?.codes.map(code => 
+                  <FormControlLabel key={code.cdid} name={code.codeName} value={code.cdid} control={<Radio />} label={code.codeName}/>
+                )
+              }
+              <FormControlLabel key="" name="선택안함" value="" control={<Radio />} label="선택안함" />
+            </RadioGroup>
+          </FormControl>
+          <FormControl xs={12} sm={3} md={4}>
+            <FormLabel component="legend" color="info">{requestList.REQIT?.code_typename}</FormLabel>
+            <FormGroup onChange={handleRequestChange("REQIT")}>
+              {
+                requestList.REQIT?.codes.map(code => 
+                  <FormControlLabel key={code.cdid} name={code.codeName} value={code.cdid} control={<Checkbox />} label={code.codeName}/>
+                )
+              }
             </FormGroup>
-          </Grid>
+          </FormControl>
         </Grid>
       </Container>
 
@@ -85,11 +178,9 @@ const RequestItem = () => {
           alignItems="center"
         >
           <div></div>
-          <Button variant="contained">등록</Button>
+          <Button variant="contained" onClick={handleChangePage}>등록</Button>
 
-          <Button variant="contained" component={Link} to={`/ShipperRequire?stepIndex=${params.get("stepIndex")}`}>
-            이전
-          </Button>
+          <Button variant="contained" onClick={handleCancelPage}>이전</Button>
         </Stack>
       </Box>
       <Footer />

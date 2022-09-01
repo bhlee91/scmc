@@ -28,7 +28,7 @@ const initialState = {
     value: "",
     name: "선택"
   },
-  requestItems: "",
+  requestItems: [],
   transitFare: "",
   additionalFare: ""
 }
@@ -37,8 +37,8 @@ const cargoSlice = createSlice({
   name: "cargo",
   initialState,
   reducers: {
-    RESET(state) {
-      state = initialState
+    REQUEST_COMPLETE() {
+      return initialState
     },
     SET_IMAGE(state, action) {
       state.step = 1
@@ -74,8 +74,8 @@ const cargoSlice = createSlice({
     },
     SET_REQUEST_5(state, action) {
       state.step = 5
-      state.loadMethod = action.payload.loadMethod
-      state.unloadMethod = action.payload.unloadMethod
+      state.loadMethod = { ...action.payload.loadMethod }
+      state.unloadMethod = { ...action.payload.unloadMethod }
     },
     SET_REQUEST_6(state, action) {
       state.step = 6

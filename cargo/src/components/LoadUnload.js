@@ -72,16 +72,6 @@ const LoadUnload = () => {
       value: child.props.value,
       name: child.props.children
     })
-
-    dispatch(
-      cargoSlice.actions.SET_REQUEST_5({
-        loadMethod: {
-          value: child.props.value,
-          name: child.props.children
-        },
-        unloadMethod: unload
-      })
-    )
   }
   
   const handleUnLoadChange = (child) => {
@@ -89,19 +79,20 @@ const LoadUnload = () => {
       value: child.props.value,
       name: child.props.children
     })
-    
-    dispatch(
-      cargoSlice.actions.SET_REQUEST_5({
-        loadMethod: load,
-        unloadMethod: {
-          value: child.props.value,
-          name: child.props.children
-        }
-      })
-    )
   }
 
   const handleChangePage = () => {
+    dispatch(
+      cargoSlice.actions.SET_REQUEST_5({
+        loadMethod: { ...load },
+        unloadMethod: { ...unload }
+      })
+    )
+
+    navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
+  }
+
+  const handleCancelPage = () => {
     navigate(`/ShipperRequire?stepIndex=${params.get("stepIndex")}`)
   }
 
@@ -191,7 +182,7 @@ const LoadUnload = () => {
         >
           <div></div>
           <Button variant="contained" onClick={handleChangePage}>등록</Button>
-          <Button variant="contained" onClick={handleChangePage}>이전</Button>
+          <Button variant="contained" onClick={handleCancelPage}>이전</Button>
         </Stack>
       </Box>
       <Footer />

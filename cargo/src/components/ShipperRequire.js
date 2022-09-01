@@ -9,7 +9,8 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
-import { useSearchParams } from "react-router-dom";
+import LinearProgress from "@mui/material/LinearProgress";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -29,7 +30,11 @@ import {
   Typography,
 } from "@mui/material";
 
-import store from "src/store";
+import store, { useAppDispatch } from "src/store";
+import cargoSlice from "src/slice/cargo";
+import {
+  setCargoRequest
+} from "src/api/cargo";
 
 const theme = createTheme();
 
@@ -59,28 +64,37 @@ const steps = [
 
 const ShipperRequire = () => {
   const cargo = store.getState().cargo
-  
+  const dispatch = useAppDispatch();
   const [ params, setParams ] = useSearchParams();
-  
+  const navigate = useNavigate();
+
   const [activeStep, setActiveStep] = React.useState(
     params.get("stepIndex") === null ? 1 : parseInt(params.get("stepIndex"))
   );
+  const [loading, setLoading] = React.useState(false)
   
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep === 7) {
+      if (window.confirm("운송 요청하시겠습니까?")) {
+        setLoading(true)
+        handleSendConfirm()
+      }
+    } else {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(1);
+  const handleChangeHome = () => {
+    navigate("/", { replace: true })
   };
 
   React.useEffect(() => {
     setParams({stepIndex: activeStep})
-  }, [activeStep])
+  }, [activeStep, setParams])
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -92,6 +106,47 @@ const ShipperRequire = () => {
 
   const cols = 1;
   const rows = 1;
+
+  const handleSendConfirm = () => {
+    const request = {
+      imageList: cargo.imageList,
+      cargoName: cargo.cargoName,
+      truckUid: cargo.truckUid,
+      cweight: cargo.cweight,
+      cheight: cargo.cheight,
+      cwidth: cargo.cwidth,
+      cverticalreal: cargo.cverticalreal,
+      departDatetimes: cargo.departDatetimes,
+      arrivalDatetimes: cargo.arrivalDatetimes,
+      departAddrSt: "",
+      departAddrOld: "",
+      arrivalAddrSt: "",
+      arrivalAddrOld: "",
+      receiverPhone: cargo.receiverPhone,
+      departLatitude: "",
+      departLongitude: "",
+      arrivalLatitude: "",
+      arrivalLongitude: "",
+      loadMethod: cargo.loadMethod.value,
+      unloadMethod: cargo.unloadMethod.value,
+      requestItems: cargo.requestItems.value === undefined ? "" : cargo.requestItems.value,
+      transitFare: "",
+      additionalFare: ""
+    }
+
+    setCargoRequest(request)
+    .then(() => {
+      console.log(request)
+
+      dispatch(
+        cargoSlice.actions.REQUEST_COMPLETE({})
+      )
+    })
+    .finally(() => {
+      setLoading(false)
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    })
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -181,11 +236,11 @@ const ShipperRequire = () => {
                         divider={<Divider orientation="vertical" flexItem />}
                         spacing={1}
                       >
-                        <Item>가로 5m</Item>
-                        <Item>세로 3m</Item>
-                        <Item>높이 3m</Item>
-                        <Item>중량 30㎏</Item>
-                        <Item>체적 10㎥</Item>
+                        <Item>가로 {cargo.cwidth}m</Item>
+                        <Item>세로 {cargo.cverticalreal}m</Item>
+                        <Item>높이 {cargo.cheight}m</Item>
+                        <Item>중량 {cargo.cweight}㎏</Item>
+                        <Item>체적 {(cargo.cwidth * cargo.cverticalreal * cargo.cheight).toFixed(1)}㎥</Item>
                       </Stack>
                     </Container>
                   ) : null}
@@ -195,8 +250,8 @@ const ShipperRequire = () => {
                   {index === 2 ? (
                     <Container sx={{ py: 1 }} maxWidth="md">
                       <Stack spacing={1}>
-                        <Item>출발일 : 2022년 5월 22일 15시 35분</Item>
-                        <Item>도착일 : 2022년 5월 22일 15시 35분</Item>
+                        <Item>출발일 : {cargo.departDatetimes}</Item>
+                        <Item>도착일 : {cargo.arrivalDatetimes}</Item>
                       </Stack>
                     </Container>
                   ) : null}
@@ -228,8 +283,11 @@ const ShipperRequire = () => {
                   {index === 5 ? (
                     <Container sx={{ py: 1 }} maxWidth="md">
                       <Stack spacing={1}>
-                        <Item>운송요금 하차지 지불</Item>
-                        <Item>세금계산서 발행</Item>
+                        {
+                          cargo.requestItems.name?.map((item, index) => 
+                            <Item key={index}>{item}</Item>
+                          )
+                        }
                       </Stack>
                     </Container>
                   ) : null}
@@ -353,6 +411,8 @@ const ShipperRequire = () => {
                         이전으로
                       </Button>
                     </div>
+                    <br/>
+                    {loading && <LinearProgress />}
                   </Box>
                 </StepContent>
               </Step>
@@ -365,17 +425,10 @@ const ShipperRequire = () => {
               </Typography>
               <Button
                 variant="contained"
-                onClick={handleReset}
+                onClick={handleChangeHome}
                 sx={{ mt: 1, mr: 1 }}
               >
                 홈으로
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleBack}
-                sx={{ mt: 1, mr: 1 }}
-              >
-                이전으로
               </Button>
             </Paper>
           )}
