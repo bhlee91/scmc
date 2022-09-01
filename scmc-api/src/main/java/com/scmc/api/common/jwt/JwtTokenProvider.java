@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -35,7 +34,7 @@ public class JwtTokenProvider {
 	@Value("${app.jwt-expired-time:0}")
 	private int tokenValidTime; // 1시간
 	
-	private final UserDetailsService userDetailsService;
+	private final CustomUserDetailsService customUserDetailsService;
 	
 	@PostConstruct
 	protected void init() {
@@ -58,9 +57,9 @@ public class JwtTokenProvider {
 	
 	// JWT 토큰에서 인증 정보 조회
 	public Authentication getAuthentication(String token) {
-		UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserIdFromJwt(token));
+		UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserIdFromJwt(token));
 		
-		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+		return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), "1234", userDetails.getAuthorities());
 	}
 	
 	// 토큰에서 회원 정보 추출

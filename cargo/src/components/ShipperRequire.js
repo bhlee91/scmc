@@ -30,10 +30,13 @@ import {
   Typography,
 } from "@mui/material";
 
+import {
+  nowDateTime
+} from "src/utils/commonUtils";
 import store, { useAppDispatch } from "src/store";
 import cargoSlice from "src/slice/cargo";
 import {
-  setCargoRequest
+  setRequest
 } from "src/api/cargo";
 
 const theme = createTheme();
@@ -64,6 +67,8 @@ const steps = [
 
 const ShipperRequire = () => {
   const cargo = store.getState().cargo
+  const user = store.getState().user
+
   const dispatch = useAppDispatch();
   const [ params, setParams ] = useSearchParams();
   const navigate = useNavigate();
@@ -109,6 +114,7 @@ const ShipperRequire = () => {
 
   const handleSendConfirm = () => {
     const request = {
+      ownerUid: user.ownerUid,
       imageList: cargo.imageList,
       cargoName: cargo.cargoName,
       truckUid: cargo.truckUid,
@@ -130,21 +136,23 @@ const ShipperRequire = () => {
       loadMethod: cargo.loadMethod.value,
       unloadMethod: cargo.unloadMethod.value,
       requestItems: cargo.requestItems.value === undefined ? "" : cargo.requestItems.value,
-      transitFare: "",
-      additionalFare: ""
+      transitFare: cargo.transitFare,
+      additionalFare: cargo.additionalFare,
+      status: "RO",
+      regComDate: nowDateTime()
     }
 
-    setCargoRequest(request)
+    setRequest(request)
     .then(() => {
       console.log(request)
 
-      dispatch(
-        cargoSlice.actions.REQUEST_COMPLETE({})
-      )
+      // dispatch(
+      //   cargoSlice.actions.REQUEST_COMPLETE({})
+      // )
     })
     .finally(() => {
       setLoading(false)
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
     })
   }
 

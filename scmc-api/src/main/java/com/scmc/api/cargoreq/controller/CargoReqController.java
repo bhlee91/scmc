@@ -1,9 +1,6 @@
 package com.scmc.api.cargoreq.controller;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
-import com.scmc.api.jpa.domain.TbCargoRequest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Api(tags = "의뢰내역")
 @RestController
-@RequestMapping("/req")
+@RequestMapping("/cargo")
 @RequiredArgsConstructor
 @Slf4j
 public class CargoReqController {
@@ -34,7 +30,7 @@ public class CargoReqController {
 	private final CargoReqService cargoReqService;
 	
 	@ApiOperation(value = "화주별 이용내역 전체 조회", notes = "화주별 이용내역 리스트를 조회한다.")
-	@GetMapping("/list/{ownerUid}")
+	@GetMapping({"/request", "/request/{ownerUid}"})
 	public ResponseEntity<?> selectCargoRequest(
 			@ApiParam(value = "화주 uid", example = "1") @PathVariable(value = "ownerUid") Long ownerUid
 			) throws Exception {
@@ -45,11 +41,32 @@ public class CargoReqController {
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByOwnerUid(ownerUid), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
+	@PostMapping("/request")
+	public ResponseEntity<?> createCargoRequest(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("========================");
+		log.info("의뢰내역 등록/수정");
+		log.info("========================");
+	
+		return new ResponseEntity<>(cargoReqService.insertAndUpdateRequest(param), HttpStatus.OK);
+	}
+	
+	/*
+	 * 진행상태 
+	 * RO: 준비/등록중 
+	 * MO: 최적차량검색
+	 * MF: 매칭완료
+	 * LC: 상차완료
+	 * TO: 운송중
+	 * UC: 하차완료
+	 * TF: 운송완료
+	 * TN: 운송취소
+	 */
 	@ApiOperation(value = "의뢰 내역 상태 변경", notes = "의뢰내역 상태를 변경한다.")
 	@PostMapping("/update")
 	public ResponseEntity<?> updateCargoRequestStatus(
-			@RequestParam(value = "status") String status
-			,@RequestParam(value = "reqId")  Long reqId
+			@ApiParam(value = "진행 상태", example = "RO") @RequestParam(value = "status") String status,
+			@ApiParam(value = "의뢰 번호", example = "1") @RequestParam(value = "reqId")  Long reqId
 			) throws Exception {
 		log.info("========================");
 		log.info("의뢰내역 상태 변경");
@@ -58,21 +75,6 @@ public class CargoReqController {
 		return new ResponseEntity<>(cargoReqService.updateStatus(status, reqId), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
-	@PostMapping("/create")
-	public ResponseEntity<?> createCargoRequest(
-			@RequestBody Map<String, Object> param
-			) throws Exception {
-		log.info("========================");
-		log.info("의뢰내역 등록 or 수정");
-		log.info("========================");
-		
-//		param.put("ownerUid", 1L);
-//		param.put("reqComyn", "N");
-//		param.put("status", "RO");
-//		param.put("regDt", new Timestamp(0));
-	
-		return new ResponseEntity<>(cargoReqService.createRequest(param), HttpStatus.OK);
-	}
+
 	
 }

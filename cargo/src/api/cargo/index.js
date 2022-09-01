@@ -1,18 +1,18 @@
 import request from "src/request";
 
-const BASE_URL = "/req"
+const BASE_URL = "/cargo"
 
-export function setCargoRequest(data) {
+export function setRequest(data) {
   return request({
-    url: `${BASE_URL}/cargo`,
+    url: `${BASE_URL}/request`,
     method: "post",
-    body: data
+    data: data
   })
 }
 
-export function getReqList(ownerUid) {
+export function getRequestList(ownerUid) {
   return request({
-    url: `${BASE_URL}/list/${ownerUid}`,
+    url: `${BASE_URL}/request/${ownerUid}`,
     method: "get"
   })
 }

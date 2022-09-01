@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		try {
 			// 헤더에서 JWT를 받아옴
 			String token = getJwtToken((HttpServletRequest) request);
-
+			
 			if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 				Authentication authentication = jwtTokenProvider.getAuthentication(token);
 				

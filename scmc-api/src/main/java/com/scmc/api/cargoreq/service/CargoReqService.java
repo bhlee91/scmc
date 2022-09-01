@@ -12,5 +12,5 @@ public interface CargoReqService {
 	
 	int updateStatus(String status, Long reqId);
 	
-	int createRequest(Map<String, Object> param);
+	int insertAndUpdateRequest(Map<String, Object> param);
 }

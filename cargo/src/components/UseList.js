@@ -10,7 +10,6 @@ import {
   ThemeProvider,
   CardContent,
   Typography,
-  CardActionArea,
   CardActions,
   Box,
   Divider,
@@ -28,23 +27,27 @@ import Button from "@mui/material/Button";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 //import { render } from "react-dom";
 import ImageViewer from "react-simple-image-viewer";
 import {
-  getReqList
+  getRequestList
 } from "src/api/cargo/index";
 import store from 'src/store';
+
+import {
+  formatTimeStamp
+} from "src/utils/commonUtils";
 
 const theme = createTheme();
 
 const ExpandMore = styled(props => {
+  const { expand, ...other } = props
 
-const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return <IconButton {...other} />
 })(({ theme, expand }) => ({
   transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
   marginLeft: "auto",
@@ -70,20 +73,13 @@ function UseList() {
   //ownerUid 받아오기
   const ownerUid = store.getState().user.ownerUid;
 
-  // 상세보기 처리
-  const [expanded, setExpanded] = React.useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
+  const handleExpandClick = (reqId) => {
+    setReqList(reqList.map(req => req.reqId === reqId ? { ...req, expanded: !req.expanded } : req))
+  }
 
   //  이미지 처리
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
-  const images = [
-    "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  ];
 
   const openImageViewer = useCallback((index) => {
     setCurrentImage(index);
@@ -95,33 +91,15 @@ function UseList() {
     setIsViewerOpen(false);
   };
 
-  const convertDate = (date) => {
-    let d = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date)
-    
-    return d;
-      
-  }
-
   useEffect(() => {
-    getReqList(ownerUid)
-      .then(res => {
-        convertDate(res.data[0].departDatetimes)
-        setReqList(res.data)
-        console.log(res)
-      })
-      
-       
-        
-        // let dtimes = new Date(res.data.departDatetimes)
-        // let atimes = new Date(res.data.arrivalDatetimes)
-        // dtimes = dtimes.getFullYear + '년' + dtimes.getMonth + '월' + 
-        //         dtimes.getDay + '일' + dtimes.getHours + '시' + dtimes.getMinutes +'분';
-        // atimes = atimes.getFullYear + '년' + atimes.getMonth + '월' + 
-        //         atimes.getDay + '일' + atimes.getHours + '시' + atimes.getMinutes +'분';
-        
-      
-  },[]);
+    getRequestList(ownerUid)
+    .then(res => {
+      setReqList(res.data)
+    })
+  }, []);
+  console.log(reqList)
   const renderCardContent = reqList.map(data => {
+
     return(
       <Container sx={{ py: 1 }} maxWidth="md"  key={data.reqId}>
       {/* End hero unit */}
@@ -164,7 +142,8 @@ function UseList() {
             </Typography>
             <Divider />
             <Typography gutterBottom variant="body2" component="div">
-              <ArrowRightIcon color="primary" /> 시간 : {data.departDatetimes}
+              <ArrowRightIcon color="primary" />
+              시간 : {formatTimeStamp(data.departDatetimes)}
             </Typography>
             <Divider />
             <Typography gutterBottom variant="body2" component="div">
@@ -174,23 +153,21 @@ function UseList() {
             <Divider />
             <Typography gutterBottom variant="body2" component="div">
               <ArrowRightIcon color="primary" />
-              시간 : {data.arrivalDatetimes}
+              시간 : {formatTimeStamp(data.arrivalDatetimes)}
             </Typography>
           </CardContent>
 
           <CardActions disableSpacing>
             <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="상세보기"
+              expand={data.expanded}
+              onClick={() => handleExpandClick(data.reqId)}
             >
               <ExpandMoreIcon />
             </ExpandMore>
           </CardActions>
 
           {/* 상세보기 */}
-          <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Collapse in={data.expanded} timeout="auto" unmountOnExit>
             <CardContent>
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={3} md={4}>
@@ -205,20 +182,20 @@ function UseList() {
                       }}
                     >
                       <Item>화물정보</Item>
-                      <Typography>크기 : {data.cwidth} M {data.cverticalreal} M {data.cheight}</Typography>
-                      <Typography>중량 : {data.cweight} Kg</Typography>
-                      <Typography>체적 : XX M3</Typography>
+                      <Typography>크기 : {data.cwidth} m {data.cverticalreal} m {data.cheight} m</Typography>
+                      <Typography>중량 : {data.cweight} ㎏</Typography>
+                      <Typography>체적 : {(data.cwidth * data.cverticalreal * data.cheight).toFixed(1)} ㎥</Typography>
                     </Box>
                   </ThemeProvider>
 
                   {/* 화주 이미지  */}
                   <ImageList sx={{ width: 400, height: 200 }}>
-                    {images.map((src, index) => (
+                    {data.images.map(image => (
                       <img
-                        src={src}
-                        onClick={() => openImageViewer(index)}
+                        src={image.contents}
+                        onClick={() => openImageViewer(image.imageId)}
                         width="200"
-                        key={index}
+                        key={image.imageId}
                         style={{ margin: "1px" }}
                         alt=""
                       />
@@ -226,7 +203,7 @@ function UseList() {
 
                     {isViewerOpen && (
                       <ImageViewer
-                        src={images}
+                        src={data.images}
                         currentIndex={currentImage}
                         onClose={closeImageViewer}
                         disableScroll={false}
@@ -292,8 +269,8 @@ function UseList() {
           <Item>1. 현재 진행중인 운송내역</Item>
         </Stack>
       </Container>
-      {renderCardContent}
 
+      {renderCardContent}
 
       <Container sx={{ py: 2 }} maxWidth="md">
         <Stack spacing={1}>

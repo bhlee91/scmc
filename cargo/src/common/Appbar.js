@@ -41,7 +41,7 @@ const ResponsiveAppBar = () => {
   const handleLogout = () => {
     store.dispatch(tokenSlice.actions.SET_DELETE_TOKEN())
     store.dispatch(userSlice.actions.SET_LOGOUT())
-    store.dispatch(cargoSlice.actions.RESET())
+    store.dispatch(cargoSlice.actions.REQUEST_COMPLETE())
     store.dispatch(cargoImageSlice.actions.RESET())
 
     navigate("/", { replace: true })

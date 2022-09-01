@@ -28,7 +28,7 @@ const NaverLogin = () => {
 
       dispatch(
         tokenSlice.actions.SET_TOKEN({
-          accessToken: res.token,
+          accessToken: res.data.token,
           refreshToken: SOCIAL.refresh_token
         })
       )

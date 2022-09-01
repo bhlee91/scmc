@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.jpa.domain.TbMemberCargoOwner;
@@ -26,7 +27,7 @@ public class NaverLoginUtil {
 	
 	private final APIUtil apiUtil;
 	private final AuthService authService;
-	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
 	
 	@Value("${social.naver.client-id}")
 	private String CLIENT_ID;
@@ -86,6 +87,9 @@ public class NaverLoginUtil {
 				res.put("socialToken", socialToken);
 				
 				TbMemberCargoOwner user = this.getProfile(socialToken);
+				
+//				authenticationManager.authenticate(
+//						new UsernamePasswordAuthenticationToken(user.getUserId(), "1234"));
 				
 				res.put("profile", user);
 				res.put("token", authService.generateToken(user.getUserId()));

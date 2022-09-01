@@ -4,7 +4,7 @@ const initialState = {
   step: 0,
   imageList: [],
   cargoName: "",
-  truckUid: null,
+  truckUid: 0,
   cweight: 0,
   cheight: 0,
   cwidth: 0,
@@ -29,8 +29,8 @@ const initialState = {
     name: "선택"
   },
   requestItems: [],
-  transitFare: "",
-  additionalFare: ""
+  transitFare: 0,
+  additionalFare: 0
 }
 
 const cargoSlice = createSlice({

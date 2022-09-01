@@ -1,30 +1,38 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@DynamicInsert @DynamicUpdate
 @Table(name = "tb_cargo_request")
 @Getter
 @Setter
+@NoArgsConstructor
 public class TbCargoRequest {
 
 	@Id
@@ -131,8 +139,44 @@ public class TbCargoRequest {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
+	// 상세보기
+	@Transient
+	private boolean expanded = false;
+	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "tbCargoRequest", fetch = FetchType.LAZY)
+	@OrderBy("image_seq asc")
 	private List<TbCargoImage> images = new ArrayList<TbCargoImage>();
+	
+	public TbCargoRequest(Map<String, Object> request) throws ParseException {
+		SimpleDateFormat formatToMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		this.ownerUid = Long.parseLong(request.get("ownerUid").toString());
+		this.cargoName = request.get("cargoName").toString();
+		this.truckUid = Long.parseLong(request.get("truckUid").toString());
+		this.cweight = Float.parseFloat(request.get("cweight").toString());
+		this.cheight = Float.parseFloat(request.get("cheight").toString());
+		this.cwidth = Float.parseFloat(request.get("cwidth").toString());
+		this.cverticalreal = Float.parseFloat(request.get("cverticalreal").toString());
+		this.departDatetimes = formatToMin.parse(request.get("departDatetimes").toString());
+		this.arrivalDatetimes = formatToMin.parse(request.get("arrivalDatetimes").toString());
+		this.departAddrSt = request.get("departAddrSt").toString();
+		this.departAddrOld = request.get("departAddrOld").toString();
+		this.arrivalAddrSt = request.get("arrivalAddrSt").toString();
+		this.arrivalAddrOld = request.get("arrivalAddrOld").toString();
+		this.receiverPhone = request.get("receiverPhone").toString();
+		this.departLatitude = request.get("departLatitude").toString();
+		this.departLongitude = request.get("departLongitude").toString();
+		this.arrivalLatitude = request.get("arrivalLatitude").toString();
+		this.arrivalLongitude = request.get("arrivalLongitude").toString();
+		this.loadMethod = request.get("loadMethod").toString();
+		this.unloadMethod = request.get("unloadMethod").toString();
+		this.requestItems = request.get("requestItems").toString();
+		this.transitFare = Integer.parseInt(request.get("transitFare").toString());
+		this.additionalFare = Integer.parseInt(request.get("additionalFare").toString());
+		this.status = request.get("status").toString();
+		this.regComDate = format.parse(request.get("regComDate").toString());
+	}
 
 }
