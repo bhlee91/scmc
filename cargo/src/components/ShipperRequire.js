@@ -146,13 +146,13 @@ const ShipperRequire = () => {
     .then(() => {
       console.log(request)
 
-      // dispatch(
-      //   cargoSlice.actions.REQUEST_COMPLETE({})
-      // )
+      dispatch(
+        cargoSlice.actions.REQUEST_COMPLETE({})
+      )
     })
     .finally(() => {
       setLoading(false)
-      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     })
   }
 
@@ -269,8 +269,8 @@ const ShipperRequire = () => {
                   {index === 3 ? (
                     <Container sx={{ py: 1 }} maxWidth="md">
                       <Stack spacing={1}>
-                        <Item>출발지 : 서울특별시 강남구 테헤란로 1</Item>
-                        <Item>도착지 : 서울특별시 강남구 테헤란로 2</Item>
+                        <Item>출발지 : {cargo.departAddrSt}</Item>
+                        <Item>도착지 : {cargo.arrivalAddrSt}</Item>
                       </Stack>
                     </Container>
                   ) : null}

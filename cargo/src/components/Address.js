@@ -1,6 +1,6 @@
 import * as React from "react";
-import Footer from "../common/Footer";
-import Appbar from "../common/Appbar";
+import Footer from "src/common/Footer";
+import Appbar from "src/common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Container, createTheme, Divider, ThemeProvider } from "@mui/material";
 
@@ -17,42 +17,32 @@ import SearchIcon from "@mui/icons-material/Search";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 
-import { useAppDispatch } from 'src/store';
+import store, { useAppDispatch } from 'src/store';
 import cargoSlice from "src/slice/cargo";
 
-import DaumPostcode from "react-daum-postcode";
-import Modal from "react-modal";
+import Modal from "src/common/Modal";
 
 const theme = createTheme();
 
-const customStyles = {
-  overlay: {
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  content: {
-    left: "0",
-    margin: "auto",
-    width: "350px",
-    height: "400px",
-    padding: "0",
-    overflow: "hidden",
-  }
-}
-
 const Address = () => {
-  const dispatch = useAppDispatch();
-  const [ params ] = useSearchParams();
-  const navigate = useNavigate();
+  const cargo = store.getState().cargo
+  const dispatch = useAppDispatch()
+  const [ params ] = useSearchParams()
+  const navigate = useNavigate()
 
   const [isDepartOpen, setIsDepartOpen] = React.useState(false)
   const [isArrivalOpen, setIsArrivalOpen] = React.useState(false)
-  const [departAddrSt, setDepartAddrSt] = React.useState("")
-  const [departAddrOld, setDepartAddrOld] = React.useState("")
-  const [arrivalAddrSt, setArrivalAddrSt] = React.useState("")
-  const [arrivalAddrOld, setArrivalAddrOld] = React.useState("")
+  const [departAddrSt, setDepartAddrSt] = React.useState(cargo.departAddrSt)
+  const [departAddrOld, setDepartAddrOld] = React.useState(cargo.departAddrOld)
+  const [arrivalAddrSt, setArrivalAddrSt] = React.useState(cargo.arrivalAddrSt)
+  const [arrivalAddrOld, setArrivalAddrOld] = React.useState(cargo.arrivalAddrOld)
 
-  const [showDepartAddr, setShowDepartAddr] = React.useState("")
-  const [showArrivalAddr, setShowArrivalAddr] = React.useState("")
+  const [showDepartAddr, setShowDepartAddr] = React.useState(
+    departAddrSt + "\n(지번) " + departAddrOld
+  )
+  const [showArrivalAddr, setShowArrivalAddr] = React.useState(
+    arrivalAddrSt + "\n(지번) " + arrivalAddrOld
+  )
 
   const handleDepartSearchComplete = (data) => {
     setIsDepartOpen(false)
@@ -70,12 +60,12 @@ const Address = () => {
     setShowArrivalAddr(data.roadAddress + "\n(지번) " + data.jibunAddress)
   }
 
-  const handleDepartSearchOpen = () => {
-    setIsDepartOpen(!isDepartOpen)
+  const handleDepartSearchActive = (active) => {
+    setIsDepartOpen(active)
   }
 
-  const handleArrivalSearchOpen = () => {
-    setIsArrivalOpen(!isArrivalOpen)
+  const handleArrivalSearchActive = (active) => {
+    setIsArrivalOpen(active)
   }
 
   const handleChangePage = () => {
@@ -125,13 +115,12 @@ const Address = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="출발지 주소"
               inputProps={{ "aria-label": "search google maps" }}
+              onClick={() => handleDepartSearchActive(true)}
             />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={handleDepartSearchOpen}>
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={() => handleDepartSearchActive(true)}>
               <SearchIcon />
             </IconButton>
-            <Modal isOpen={isDepartOpen} ariaHideApp={false} style={customStyles}>
-              <DaumPostcode onComplete={handleDepartSearchComplete} />
-            </Modal>
+            <Modal isOpen={isDepartOpen} onClose={() => handleDepartSearchActive(false)} onComplete={handleDepartSearchComplete} header="출발지 주소 찾기"></Modal>
           </Paper>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Paper
@@ -169,13 +158,12 @@ const Address = () => {
               sx={{ ml: 1, flex: 1 }}
               placeholder="도착지 주소"
               inputProps={{ "aria-label": "search google maps" }}
+              onClick={() => handleArrivalSearchActive(true)}
             />
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={handleArrivalSearchOpen}>
+            <IconButton type="button" sx={{ p: "10px" }} aria-label="search" onClick={() => handleArrivalSearchActive(true)}>
               <SearchIcon />
             </IconButton>
-            <Modal isOpen={isArrivalOpen} ariaHideApp={false} style={customStyles}>
-              <DaumPostcode onComplete={handleArrivalSearchComplete} />
-            </Modal>
+            <Modal isOpen={isArrivalOpen} onClose={() => handleArrivalSearchActive(false)} onComplete={handleArrivalSearchComplete} header="도착지 주소 찾기"></Modal>
           </Paper>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Paper
