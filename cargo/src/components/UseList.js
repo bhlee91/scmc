@@ -193,7 +193,7 @@ function UseList() {
                     {data.images.map(image => (
                       <img
                         src={image.contents}
-                        onClick={() => openImageViewer(image.imageId)}
+                        onClick={() => openImageViewer(image.imageSeq)}
                         width="200"
                         key={image.imageId}
                         style={{ margin: "1px" }}

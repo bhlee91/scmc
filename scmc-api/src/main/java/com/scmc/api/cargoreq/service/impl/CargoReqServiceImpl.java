@@ -11,8 +11,10 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
+import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
+import com.scmc.api.jpa.repository.TbCargoHistRepository;
 import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
 
@@ -27,6 +29,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 	
 	private final TbCargoRequestRepository tbCargoRequestRepository;
 	private final TbCargoImageRepository tbCargoImageRepository;
+	private final TbCargoHistRepository tbCargoHistReqository;
 
 	@Override
 	@Transactional
@@ -45,6 +48,23 @@ public class CargoReqServiceImpl implements CargoReqService{
 	
 	@Override
 	@Transactional
+	public int insertHistory(Map<String, Object> param) {
+		TbCargoHist tbch = null;
+		
+		try {
+			tbch = new TbCargoHist(param);
+			tbCargoHistReqository.save(tbch);
+			
+			return 1;
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			
+			return 0;
+		}
+	}
+	
+	@Override
+	@Transactional
 	public int updateStatus(String status, Long reqId) {
 		int cnt = em.createQuery("UPDATE TbCargoRequest SET status = :status WHERE reqId = :reqId")
 						.setParameter("status", status)
@@ -52,7 +72,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 						.executeUpdate();
 		return cnt;
 	}
-
+	
 	@Transactional
 	@Override
 	public int insertAndUpdateRequest(Map<String, Object> param) {

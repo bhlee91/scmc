@@ -1,6 +1,9 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,5 +38,14 @@ public class TbCargoHist {
 	
 	@Column(name = "reg_dt")
 	private Date regDt;
+	
+	public TbCargoHist(Map<String, Object> hist) throws ParseException {
+		
+		this.reqId = Long.parseLong(hist.get("reqId").toString());
+		this.ownerUid = Long.parseLong(hist.get("ownerUid").toString());
+		this.truckOwnerUid = Long.parseLong(hist.get("truckOwnerUid").toString());
+		this.status = hist.get("status").toString();
+	}
+
 	
 }

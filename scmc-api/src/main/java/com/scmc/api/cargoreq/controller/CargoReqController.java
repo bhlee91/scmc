@@ -75,6 +75,16 @@ public class CargoReqController {
 		return new ResponseEntity<>(cargoReqService.updateStatus(status, reqId), HttpStatus.OK);
 	}
 	
+	
+	@ApiOperation(value = "의뢰 이력 등록", notes = "의뢰 이력을 등록한다.")
+	@PostMapping("/history")
+	public ResponseEntity<?> createCargoHist(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("========================");
+		log.info("의뢰이력 등록/수정");
+		log.info("========================");
+	
+		return new ResponseEntity<>(cargoReqService.insertHistory(param), HttpStatus.OK);
+	}
 
 	
 }

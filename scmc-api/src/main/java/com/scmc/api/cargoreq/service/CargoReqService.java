@@ -10,7 +10,10 @@ public interface CargoReqService {
 	
 	List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid);
 	
+	int insertHistory(Map<String, Object> param);
+	
 	int updateStatus(String status, Long reqId);
 	
 	int insertAndUpdateRequest(Map<String, Object> param);
+	
 }
