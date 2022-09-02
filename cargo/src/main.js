@@ -41,9 +41,7 @@ const rows = 1;
 
 const Main = () => {
   const navigate = useNavigate();
-  const cargo = store.getState().cargo
-  
-  console.log(cargo)
+  const user = store.getState().user
   
   return (
     <ThemeProvider theme={theme}>

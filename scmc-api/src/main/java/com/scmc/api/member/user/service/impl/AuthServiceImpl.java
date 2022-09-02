@@ -3,7 +3,6 @@ package com.scmc.api.member.user.service.impl;
 import java.util.HashMap;
 
 import org.json.JSONObject;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.common.jwt.JwtTokenProvider;
@@ -21,8 +20,6 @@ public class AuthServiceImpl implements AuthService {
 	private final TbMemberCargoOwnerRepository tbMemberCargoOwnerRepository;
 	
 	private final JwtTokenProvider jwtTokenProvider;
-	
-	private final PasswordEncoder passwordEncoder;
 	
 	private final UserService userService;
 	
@@ -44,14 +41,14 @@ public class AuthServiceImpl implements AuthService {
 		
 		if (json.getString("social").equals("NAVER")) {
 			user.put("userId", json.getString("id"));
-			user.put("phoneNumber", passwordEncoder.encode(json.getString("mobile")));
+			user.put("phoneNumber", json.getString("mobile"));
 			user.put("ownerName", json.getString("name"));
 		} else if(json.getString("social").equals("KAKAO")) {
 			JSONObject account = json.getJSONObject("kakao_account");
 			
 			user.put("userId", json.get("id").toString());
 			if (account.has("phone_number"))
-				user.put("phoneNumber", passwordEncoder.encode(account.getString("phone_number")));
+				user.put("phoneNumber", account.getString("phone_number"));
 			else 
 				user.put("phoneNumber", "");
 			user.put("ownerName", account.getJSONObject("profile").getString("nickname"));

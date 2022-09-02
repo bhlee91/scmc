@@ -41,10 +41,10 @@ const KaKaoLogin = () => {
         })
       )
 
-      navigate("/")
+      navigate("/", { replace: true })
     })
     .catch(() => {
-      navigate("/LogIn")
+      navigate("/LogIn", { replace: true })
       alert("로그인 할 수 없습니다.\n다시 로그인해주세요.")
     })
   })

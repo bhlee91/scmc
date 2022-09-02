@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "src/utils/ProtectedRoute";
 import Customer from "src/components/Customer";
 import UseList from "src/components/UseList";
 import Camera from "src/components/Camera";
@@ -20,7 +21,16 @@ import ShipperRequire from "src/components/ShipperRequire";
 import NaverLogin from "src/components/social/NaverLogin";
 import KaKaoLogin from "src/components/social/KaKaoLogin";
 
-function App() {
+import store from "src/store";
+
+const App = () => {
+  const [authenticated, setAuthenticate] = useState("")
+  const token = store.getState().token.accessToken
+
+  useEffect(() => {
+    setAuthenticate(token)
+  }, [token])
+
   return (
     <BrowserRouter>
       <Routes>
@@ -36,6 +46,8 @@ function App() {
         <Route path="/RequestItem" element={<RequestItem />} />
         <Route path="/TransTerms" element={<TransTerms />} />
         <Route path="/UseTerms" element={<UseTerms />} />
+        {/* <Route element={<ProtectedRoute authenticated={authenticated} />}>
+        </Route> */}
         <Route path="/PersonalPolicy" element={<PersonalPolicy />} />
         <Route path="/LogIn" element={<LogIn />} />
         <Route path="/LogIn/nid" element={<NaverLogin />} />

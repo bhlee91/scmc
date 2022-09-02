@@ -97,7 +97,7 @@ function UseList() {
       setReqList(res.data)
     })
   }, []);
-  console.log(reqList)
+  
   const renderCardContent = reqList.map(data => {
 
     return(

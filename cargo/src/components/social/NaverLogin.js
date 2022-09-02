@@ -22,7 +22,6 @@ const NaverLogin = () => {
 
     getNaverAccessToken(CODE, STATE)
     .then(res => {
-      console.log(res)
       const SOCIAL = JSON.parse(res.data.socialToken)
       const PROFILE = res.data.profile
 
@@ -42,11 +41,12 @@ const NaverLogin = () => {
           isLogin: true
         })
       )
-
-      navigate("/");
+    })
+    .then(() => {
+      navigate("/", { replace: true });
     })
     .catch(() => {
-      navigate("/LogIn")
+      navigate("/LogIn", { replace: true })
       alert("로그인 할 수 없습니다.\n다시 로그인해주세요.")
     });
   })
