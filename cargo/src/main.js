@@ -84,7 +84,7 @@ const Main = () => {
                   <Grid container spacing={1}>
                     <Grid>
                       {/* 상차지 이미지  */}
-                      <Link onClick={() => navigate("/ShipperRequire")}>
+                      <Link onClick={() => navigate("/ShipperRequire?stepIndex=1")}>
                         <ImageList sx={{ width: 800, height: 250 }}>
                           <ImageListItem cols={cols} rows={rows}>
                             <img
