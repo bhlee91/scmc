@@ -58,5 +58,15 @@
     "name": "social.kakao.api.token",
     "type": "java.lang.String",
     "description": "카카오 토큰 api"
+  },
+  {
+    "name": "hiworks.api.office-token",
+    "type": "java.lang.String",
+    "description": "하이웍스 토큰"
+  },
+  {
+    "name": "hiworks.api.sms",
+    "type": "java.lang.String",
+    "description": "하이웍스 문자 발송 api"
   }
 ]}
