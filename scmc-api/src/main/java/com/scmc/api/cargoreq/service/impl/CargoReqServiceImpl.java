@@ -16,9 +16,11 @@ import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
+import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.repository.TbCargoHistRepository;
 import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
+import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 	private final TbCargoRequestRepository tbCargoRequestRepository;
 	private final TbCargoImageRepository tbCargoImageRepository;
 	private final TbCargoHistRepository tbCargoHistReqository;
+	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 
 	@Override
 	@Transactional
@@ -119,6 +122,15 @@ public class CargoReqServiceImpl implements CargoReqService{
 			result = "잘못된 주소입니다.";
 			e.printStackTrace();
 		}
+		
+		return result;
+	}
+	
+	@Override
+	@Transactional
+	public List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid) {
+
+		List<TbMemberTruckOwner> result = tbMemberTruckOwnerRepository.findWithTbCargoHistUsingFetchJoinByTruckownerUid(truckownerUid);
 		
 		return result;
 	}

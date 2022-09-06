@@ -1,16 +1,22 @@
 package com.scmc.api.jpa.domain;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -39,7 +45,7 @@ public class TbMemberTruckOwner {
 	@Column(name = "password")
 	private String password;
 	
-	@Column(name = "owner_name")
+	@Column(name = "truckowner_name")
 	private String truckownerName;
 	
 	@Column(name = "business_no")
@@ -80,6 +86,10 @@ public class TbMemberTruckOwner {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)
+	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>(); 
 	
 	@Builder
 	public TbMemberTruckOwner(long truckownerUid,
