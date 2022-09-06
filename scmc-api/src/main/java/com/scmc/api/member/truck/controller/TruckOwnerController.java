@@ -20,7 +20,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Api(tags = "차주용 API")
+@Api(tags = "차주 회원용")
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
@@ -54,10 +54,10 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(truckOwnerService.getTruckOwner(uid), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "차주 회원정보 조회", notes = "차주의 회원정보를 조회한다.")
+	@ApiOperation(value = "차주 회원가입시 sms 인증", notes = "입력한 휴대폰 번호에 인증 번호 메시지를 보낸다.")
 	@GetMapping("/sms")
 	public ResponseEntity<?> getSmsAuthNumber(
-			@ApiParam(value = "휴대폰번호") @RequestParam(value = "phoneNumber", required = true) String phoneNumber
+			@ApiParam(value = "휴대폰번호('-'없이 입력)") @RequestParam(value = "phoneNumber", required = true) String phoneNumber
 			) throws Exception {
 		String authNumber = truckOwnerService.getSmsAuthNumber(phoneNumber);
 		log.info("==================");

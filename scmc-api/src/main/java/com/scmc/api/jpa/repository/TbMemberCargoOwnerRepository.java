@@ -11,4 +11,5 @@ public interface TbMemberCargoOwnerRepository extends JpaRepository<TbMemberCarg
 	TbMemberCargoOwner findByUserId(String userId);
 	
 	boolean existsByUserId(String userId);
+	boolean existsByUserIdAndPhoneNumber(String userId, String phoneNumber);
 }

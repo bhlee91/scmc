@@ -17,10 +17,11 @@ import Appbar from "src/common/Appbar";
 
 import { 
   initNaverLogin,
-  initKaKaoLogin
+  initKaKaoLogin,
+  adminLogin
 } from 'src/api/member/auth';
 
-function Copyright(props) {
+const Copyright = (props) => {
   return (
     <Typography
       variant="body2"
@@ -33,21 +34,30 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function LogIn() {
+const LogIn = () => {
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
+
+    adminLogin(data.get("email"), data.get("password"))
+    .then((res) => {
+      if (res.data) {
+        window.location.href = "/"
+      } else {
+        alert("이메일 또는 패스워드를 확인해주세요.")
+        return
+      }
+    })
+  }
 
   const handleNaverLogin = () => {
     initNaverLogin()
     .then(res => {
       window.location.href = res.data
+    })
+    .catch(error => {
+      console.log(error)
     })
   }
 
@@ -148,3 +158,5 @@ export default function LogIn() {
     </ThemeProvider>
   );
 }
+
+export default LogIn;

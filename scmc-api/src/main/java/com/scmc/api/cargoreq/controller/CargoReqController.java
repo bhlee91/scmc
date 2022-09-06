@@ -86,5 +86,15 @@ public class CargoReqController {
 		return new ResponseEntity<>(cargoReqService.insertHistory(param), HttpStatus.OK);
 	}
 
-	
+	@ApiOperation(value = "주소로 위도, 경도 조회", notes = "주소로 위도, 경도를 조회한다.")
+	@GetMapping("/address")
+	public ResponseEntity<?> searchAddress(
+			@ApiParam(value = "주소명", example = "") @RequestParam(value = "query") String query
+			) {
+		log.info("========================");
+		log.info("주소로 위도, 경도 찾기");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.searchAddress(query) ,HttpStatus.OK);
+	}
 }

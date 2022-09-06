@@ -1,5 +1,6 @@
 package com.scmc.api.cargoreq.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
+import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
@@ -19,13 +21,17 @@ import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class CargoReqServiceImpl implements CargoReqService{
 	
 	@PersistenceContext
 	private EntityManager em;
+	
+	private final KaKaoLocalUtil kakaoLocalUtil;
 	
 	private final TbCargoRequestRepository tbCargoRequestRepository;
 	private final TbCargoImageRepository tbCargoImageRepository;
@@ -79,6 +85,9 @@ public class CargoReqServiceImpl implements CargoReqService{
 		TbCargoRequest tbcr = null;
 		
 		try {
+			log.info("param => " + param.toString());
+			log.info("departDatetimes => " + param.get("departDatetimes").equals(""));
+			log.info("arrivalDatetimes => " + param.get("arrivalDatetimes").equals(""));
 			tbcr = new TbCargoRequest(param);
 			tbCargoRequestRepository.save(tbcr);
 			
@@ -99,5 +108,18 @@ public class CargoReqServiceImpl implements CargoReqService{
 			System.out.println(e.getMessage());
 			return 0;
 		}
+	}
+
+	@Override
+	public String searchAddress(String query) {
+		String result;
+		try {
+			result = kakaoLocalUtil.searchAddress(query);
+		} catch (UnsupportedEncodingException e) {
+			result = "잘못된 주소입니다.";
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 }

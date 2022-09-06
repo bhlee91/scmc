@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.scmc.api.jpa.domain.TbCargoRequest;
 
-
 public interface CargoReqService {
 	
 	List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid);
@@ -16,4 +15,5 @@ public interface CargoReqService {
 	
 	int insertAndUpdateRequest(Map<String, Object> param);
 	
+	String searchAddress(String query);
 }

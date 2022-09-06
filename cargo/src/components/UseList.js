@@ -98,7 +98,7 @@ function UseList() {
     })
   }, []);
   
-  const renderCardContent = reqList.map(data => {
+  const renderCardContent = reqList?.map(data => {
 
     return(
       <Container sx={{ py: 1 }} maxWidth="md"  key={data.reqId}>

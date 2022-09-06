@@ -129,10 +129,10 @@ const ShipperRequire = () => {
       arrivalAddrSt: cargo.arrivalAddrSt,
       arrivalAddrOld: cargo.arrivalAddrOld,
       receiverPhone: user.phoneNumber,
-      departLatitude: "",
-      departLongitude: "",
-      arrivalLatitude: "",
-      arrivalLongitude: "",
+      departLatitude: cargo.departLatitude,
+      departLongitude: cargo.departLongitude,
+      arrivalLatitude: cargo.arrivalLatitude,
+      arrivalLongitude: cargo.arrivalLongitude,
       loadMethod: cargo.loadMethod.value,
       unloadMethod: cargo.unloadMethod.value,
       requestItems: cargo.requestItems.value === undefined ? "" : cargo.requestItems.value,
@@ -144,13 +144,14 @@ const ShipperRequire = () => {
 
     setRequest(request)
     .then(() => {
-      dispatch(
-        cargoSlice.actions.REQUEST_COMPLETE({})
-      )
+      console.log(request)
+      // dispatch(
+      //   cargoSlice.actions.REQUEST_COMPLETE({})
+      // )
     })
     .finally(() => {
       setLoading(false)
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
     })
   }
 

@@ -19,6 +19,9 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 import store, { useAppDispatch } from 'src/store';
 import cargoSlice from "src/slice/cargo";
+import {
+  searchAddress
+} from "src/api/cargo";
 
 import Modal from "src/common/Modal";
 
@@ -36,6 +39,10 @@ const Address = () => {
   const [departAddrOld, setDepartAddrOld] = React.useState(cargo.departAddrOld)
   const [arrivalAddrSt, setArrivalAddrSt] = React.useState(cargo.arrivalAddrSt)
   const [arrivalAddrOld, setArrivalAddrOld] = React.useState(cargo.arrivalAddrOld)
+  const [departLatitude, setDepartLatitude] = React.useState(cargo.departLatitude)
+  const [departLongitude, setDepartLongitude] = React.useState(cargo.departLongitude)
+  const [arrivalLatitude, setArrivalLatitude] = React.useState(cargo.arrivalLatitude)
+  const [arrivalLongitude, setArrivalLongitude] = React.useState(cargo.arrivalLongitude)
 
   const [showDepartAddr, setShowDepartAddr] = React.useState(
     departAddrSt + "\n(지번) " + departAddrOld
@@ -45,19 +52,47 @@ const Address = () => {
   )
 
   const handleDepartSearchComplete = (data) => {
-    setIsDepartOpen(false)
-    setDepartAddrSt(data.roadAddress)
-    setDepartAddrOld(data.jibunAddress)
 
-    setShowDepartAddr(data.roadAddress + "\n(지번) " + data.jibunAddress)
+    searchAddress(data.roadAddress)
+    .then(res => {
+      /*
+      x: 경도(longitude)
+      y: 위도(latitude)
+      */
+      return res.data.documents[0]
+    })
+    .then((res) => {
+      console.log(res)
+      setIsDepartOpen(false)
+      setDepartAddrSt(data.roadAddress)
+      setDepartAddrOld(data.jibunAddress)
+      setDepartLatitude(res.y)
+      setDepartLongitude(res.x)
+
+      setShowDepartAddr(data.roadAddress + "\n(지번) " + data.jibunAddress)
+    })
   }
 
   const handleArrivalSearchComplete = (data) => {
-    setIsArrivalOpen(false)
-    setArrivalAddrSt(data.roadAddress)
-    setArrivalAddrOld(data.jibunAddress)
 
-    setShowArrivalAddr(data.roadAddress + "\n(지번) " + data.jibunAddress)
+    searchAddress(data.roadAddress)
+    .then(res => {
+      /*
+      x: 경도(longitude)
+      y: 위도(latitude)
+      */
+      return res.data.documents[0]
+    })
+    .then((res) => {
+      setIsArrivalOpen(false)
+      setArrivalAddrSt(data.roadAddress)
+      setArrivalAddrOld(data.jibunAddress)
+      setArrivalLatitude(res.y)
+      setArrivalLongitude(res.x)
+
+      setShowArrivalAddr(data.roadAddress + "\n(지번) " + data.jibunAddress)
+    })
+    
   }
 
   const handleDepartSearchActive = (active) => {
@@ -74,7 +109,11 @@ const Address = () => {
         departAddrSt: departAddrSt,
         departAddrOld: departAddrOld,
         arrivalAddrSt: arrivalAddrSt,
-        arrivalAddrOld: arrivalAddrOld
+        arrivalAddrOld: arrivalAddrOld,
+        departLatitude: departLatitude,
+        departLongitude: departLongitude,
+        arrivalLatitude: arrivalLatitude,
+        arrivalLongitude: arrivalLongitude,
       })
     )
 

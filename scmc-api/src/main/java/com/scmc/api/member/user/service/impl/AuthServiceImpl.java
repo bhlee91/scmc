@@ -61,4 +61,10 @@ public class AuthServiceImpl implements AuthService {
 		
 		return userService.findByUserId(owner.getUserId());
 	}
+
+	@Override
+	public boolean adminLogin(HashMap<String, Object> obj) {
+		
+		return tbMemberCargoOwnerRepository.existsByUserIdAndPhoneNumber(obj.get("id").toString(), obj.get("password").toString());
+	}
 }

@@ -12,14 +12,17 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
 @DynamicInsert @DynamicUpdate
 @Table(name = "tb_member_truckowner")
 @Getter @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TbMemberTruckOwner {
 	
 	@Id
@@ -77,8 +80,6 @@ public class TbMemberTruckOwner {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
-	
-	protected TbMemberTruckOwner() {}
 	
 	@Builder
 	public TbMemberTruckOwner(long truckownerUid,

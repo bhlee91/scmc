@@ -159,8 +159,8 @@ public class TbCargoRequest {
 		this.cheight = Float.parseFloat(request.get("cheight").toString());
 		this.cwidth = Float.parseFloat(request.get("cwidth").toString());
 		this.cverticalreal = Float.parseFloat(request.get("cverticalreal").toString());
-		this.departDatetimes = formatToMin.parse(request.get("departDatetimes").toString());
-		this.arrivalDatetimes = formatToMin.parse(request.get("arrivalDatetimes").toString());
+		this.departDatetimes = request.get("departDatetimes").equals("") ? null : formatToMin.parse(request.get("departDatetimes").toString());
+		this.arrivalDatetimes = request.get("arrivalDatetimes").equals("") ? null : formatToMin.parse(request.get("arrivalDatetimes").toString());
 		this.departAddrSt = request.get("departAddrSt").toString();
 		this.departAddrOld = request.get("departAddrOld").toString();
 		this.arrivalAddrSt = request.get("arrivalAddrSt").toString();

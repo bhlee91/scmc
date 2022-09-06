@@ -16,3 +16,10 @@ export function getRequestList(ownerUid) {
     method: "get"
   })
 }
+
+export function searchAddress(query) {
+  return request({
+    url: `${BASE_URL}/address?query=${query}`,
+    method: "get"
+  })
+}

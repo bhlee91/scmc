@@ -16,10 +16,10 @@ const initialState = {
   arrivalAddrSt: "",
   arrivalAddrOld: "",
   receiverPhone: "",
-  departLatitude: "",
-  departLongitude: "",
-  arrivalLatitude: "",
-  arrivalLongitude: "",
+  departLatitude: "",   // 위도 latitude 
+  departLongitude: "",  // 경도 longitude
+  arrivalLatitude: "",  // 위도 latitude
+  arrivalLongitude: "", // 경도 longitude
   loadMethod: {
     value: "",
     name: "선택"

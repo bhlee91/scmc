@@ -29,3 +29,16 @@ export const getKaKaoAccessToken = (code) => {
     method: "get"
   })
 }
+
+export const adminLogin = (email, password) => {
+  const data = {
+    id: email,
+    password: password
+  }
+  console.log(data)
+  return request({
+    url: `${BASE_URL}/admin`,
+    method: "post",
+    data: data
+  })
+}

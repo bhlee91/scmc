@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.common.utils.KaKaoLoginUtil;
 import com.scmc.api.common.utils.NaverLoginUtil;
+import com.scmc.api.member.user.service.AuthService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,7 @@ public class AuthController {
 	
 	private final NaverLoginUtil naverLoginUtil;
 	private final KaKaoLoginUtil kakaoLoginUtil;
+	private final AuthService authService;
 
 	@ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 통해 사용자 정보 저장 후 토큰 생성")
 	@PostMapping("/kakao")
@@ -93,5 +95,15 @@ public class AuthController {
 		else obj = null;
 		
 		return new ResponseEntity<>(obj, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "화주 관리자 로그인", notes = "화주 관리자 로그인한다.")
+	@PostMapping("/admin")
+	public ResponseEntity<?> adminLogin(@RequestBody HashMap<String, Object> param) {
+		log.info("==================");
+		log.info("관리자 로그인");
+		log.info("==================");
+		
+		return new ResponseEntity<>(authService.adminLogin(param), HttpStatus.OK);
 	}
 }
