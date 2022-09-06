@@ -22,12 +22,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Entity
 @DynamicInsert @DynamicUpdate
 @Table(name = "tb_member_truckowner")
 @Getter @ToString
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TbMemberTruckOwner {
 	
@@ -80,6 +82,9 @@ public class TbMemberTruckOwner {
 	
 	@Column(name = "unregister_yn")
 	private String unregisterYn;
+	
+	@Column(name = "freeyn")
+	private String freeyn;
 	
 	@Column(name = "reg_dt")
 	private Date regDt;
