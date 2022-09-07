@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
-import com.scmc.api.jpa.domain.TbTruckownerCargoinfo;
+import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
@@ -76,7 +76,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	}
 
 	@Override
-	public TbTruckownerCargoinfo setTruckOwnerCargoInfo(HashMap<String, Object> obj) {
+	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(HashMap<String, Object> obj) {
 											
 		return null;
 	}
