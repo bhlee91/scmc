@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
@@ -20,14 +21,13 @@ import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.repository.TbCargoHistRepository;
 import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
+import com.scmc.api.jpa.repository.TbCargoRequestRepositoryCustomImpl;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class CargoReqServiceImpl implements CargoReqService{
 	
 	@PersistenceContext
@@ -39,18 +39,15 @@ public class CargoReqServiceImpl implements CargoReqService{
 	private final TbCargoImageRepository tbCargoImageRepository;
 	private final TbCargoHistRepository tbCargoHistReqository;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
+	
+	@Autowired
+	private TbCargoRequestRepositoryCustomImpl tbCargoRequestRepositoryCustomImpl;
 
 	@Override
 	@Transactional
 	public List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid) {
 		
-		List<TbCargoRequest> result = tbCargoRequestRepository.findWithTbCargoImageUsingFetchJoinByOwnerUid(ownerUid);
-		
-		for (TbCargoRequest obj : result) {
-			for (TbCargoImage images : obj.getImages()) {
-				images.setContents(new String(images.getImageContents()));
-			}
-		}
+		List<TbCargoRequest> result = tbCargoRequestRepositoryCustomImpl.customFindWithTbCargoImageUsingFetchJoinByOwnerUid(ownerUid);
 	
 		return result;
 	}
@@ -88,9 +85,6 @@ public class CargoReqServiceImpl implements CargoReqService{
 		TbCargoRequest tbcr = null;
 		
 		try {
-			log.info("param => " + param.toString());
-			log.info("departDatetimes => " + param.get("departDatetimes").equals(""));
-			log.info("arrivalDatetimes => " + param.get("arrivalDatetimes").equals(""));
 			tbcr = new TbCargoRequest(param);
 			tbCargoRequestRepository.save(tbcr);
 			
