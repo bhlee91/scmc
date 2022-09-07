@@ -97,9 +97,21 @@ public class TbMemberTruckOwner {
 	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>(); 
 	
 	@Builder
-	public TbMemberTruckOwner(long truckownerUid,
-			String carNumber, String phoneNumber, String password,
-			String truckownerName, String businessNo, String truckTons, 
-			String longYn, String refrigeratedFrozen, String stowageType, 
-			String liftType) {}
+	public TbMemberTruckOwner(
+			long truckownerUid, String carNumber, String phoneNumber, String password,
+			String truckownerName, String businessNo, String truckTons, String longYn, 
+			String refrigeratedFrozen, String stowageType, String liftType
+	) {
+		this.truckownerUid = truckownerUid;
+		this.carNumber = carNumber;
+		this.phoneNumber = phoneNumber;
+		this.password = password;
+		this.truckownerName = truckownerName;
+		this.businessNo = businessNo;
+		this.truckTons = truckTons;
+		this.longyn = longYn;
+		this.refrigeratedFrozen = refrigeratedFrozen;
+		this.stowageType = stowageType;
+		this.liftType = liftType;
+	}
 }

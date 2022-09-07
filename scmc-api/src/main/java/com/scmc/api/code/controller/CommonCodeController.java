@@ -2,8 +2,11 @@ package com.scmc.api.code.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -72,5 +75,20 @@ public class CommonCodeController {
 		log.info("================");
 		
 		return new ResponseEntity<>(commonCodeService.selectCommonCodeByRequestItem(), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "api 테스트용", notes = "api 테스트용")
+	@GetMapping("/test")
+	@PostMapping("/test")
+	@PutMapping("/test")
+	@DeleteMapping("/test")
+	public ResponseEntity<?> getpostputdelete() throws Exception {
+		log.info("================");
+		log.info("api 테스트 용");
+		log.info("================");
+		
+		log.info("result => ");
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

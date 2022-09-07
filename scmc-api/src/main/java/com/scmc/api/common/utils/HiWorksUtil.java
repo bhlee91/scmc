@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -11,9 +12,16 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import javax.transaction.Transactional;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.scmc.api.jpa.domain.TbMemberSmsauth;
+import com.scmc.api.jpa.domain.TbSysSmslog;
+import com.scmc.api.jpa.repository.TbMemberSmsauthRepository;
+import com.scmc.api.jpa.repository.TbSysSmslogRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class HiWorksUtil {
 	
 	private final APIUtil apiUtil;
+	private final TbMemberSmsauthRepository tbMemberSmsauthRepository;
+	private final TbSysSmslogRepository tbSysSmslogRepository;
 
 	@Value("${hiworks.api.office-token}")
 	private String TOKEN;
@@ -44,9 +54,12 @@ public class HiWorksUtil {
 		HttpURLConnection con = apiUtil.connect(SMS_URL);
 		
 		try {
+			String authNumber = getSmsAuthNumber();
+			String sendDate = getNowDate();
+			
 			sms.put("subject", "문자 발송 테스트");
-			sms.put("message", String.format("[%s] 꿀차 인증번호입니다.\n해당 입력 칸에 정확하게 입력해주세요.", getSmsAuthNumber()));
-			sms.put("send_date", getNowDate());
+			sms.put("message", String.format("[%s] 꿀차 인증번호입니다.\n해당 입력 칸에 정확하게 입력해주세요.", authNumber));
+			sms.put("send_date", sendDate);
 			sms.put("file", "");
 			
 			String requestBody = getJsonToStringFromMap(sms);
@@ -72,6 +85,7 @@ public class HiWorksUtil {
 			String result;
 			
 			if (responseCode == HttpURLConnection.HTTP_OK) {
+				saveSmsAuth(sms, authNumber);
 				result = apiUtil.readBody(con.getInputStream());
 			} else {
 				result = apiUtil.readBody(con.getInputStream());
@@ -113,5 +127,29 @@ public class HiWorksUtil {
 		}
 		
 		return json.toString();
+	}
+	
+	@Transactional
+	private void saveSmsAuth(LinkedHashMap<String, String> sms, String authNumber) {
+		TbMemberSmsauth tmsa = new TbMemberSmsauth();
+		tmsa.setPhoneNumber(sms.get("receiver"));
+		tmsa.setAuthNumber(authNumber);
+		tmsa.setRegDt(Timestamp.valueOf(sms.get("send_date")));
+		
+		long smsId = tbMemberSmsauthRepository.save(tmsa).getSmsId();
+		
+		TbSysSmslog tssl = TbSysSmslog.builder()
+							.smsId(smsId)
+							.smsType("AU")
+							.senderNumber(sms.get("sender"))
+							.receiverNumber(sms.get("receiver"))
+							.title(sms.get("subject"))
+							.msg(sms.get("message"))
+							.msgType("01")
+							.successCount(1)
+							.regDt(Timestamp.valueOf(sms.get("send_date")))
+							.build();
+		
+		tbSysSmslogRepository.save(tssl);
 	}
 }

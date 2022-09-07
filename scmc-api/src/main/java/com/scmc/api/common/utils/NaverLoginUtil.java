@@ -13,16 +13,17 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.jpa.domain.TbMemberCargoOwner;
 import com.scmc.api.member.user.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NaverLoginUtil {
 	
 	private final APIUtil apiUtil;
@@ -63,6 +64,8 @@ public class NaverLoginUtil {
 				+ "&redirect_uri=%s"
 				+ "&state=%s"
 				, CLIENT_ID, URLEncoder.encode(REDIRECT_URL, "UTF-8"), generateState(request));
+		
+		log.info("url => " + auth_url);
 		
 		return auth_url;
 	}

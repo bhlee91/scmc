@@ -62,7 +62,6 @@ const Address = () => {
       return res.data.documents[0]
     })
     .then((res) => {
-      console.log(res)
       setIsDepartOpen(false)
       setDepartAddrSt(data.roadAddress)
       setDepartAddrOld(data.jibunAddress)

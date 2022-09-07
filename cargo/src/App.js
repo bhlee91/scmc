@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "src/utils/ProtectedRoute";
 import Customer from "src/components/Customer";
@@ -21,22 +21,12 @@ import ShipperRequire from "src/components/ShipperRequire";
 import NaverLogin from "src/components/social/NaverLogin";
 import KaKaoLogin from "src/components/social/KaKaoLogin";
 
-import store from "src/store";
-
 const App = () => {
-  const [authenticated, setAuthenticate] = useState("")
-  const token = store.getState().token.accessToken
-
-  useEffect(() => {
-    setAuthenticate(token)
-  }, [token])
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Main />} />
-        <Route path="/ShipperRequire" element={<ShipperRequire />} />
-        <Route path="/UseList" element={<UseList />} />
         <Route path="/Customer" element={<Customer />} />
         <Route path="/Camera" element={<Camera />} />
         <Route path="/ShipSize" element={<ShipSize />} />
@@ -46,8 +36,10 @@ const App = () => {
         <Route path="/RequestItem" element={<RequestItem />} />
         <Route path="/TransTerms" element={<TransTerms />} />
         <Route path="/UseTerms" element={<UseTerms />} />
-        {/* <Route element={<ProtectedRoute authenticated={authenticated} />}>
-        </Route> */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/ShipperRequire" element={<ShipperRequire />} />
+          <Route path="/UseList" element={<UseList />} />
+        </Route>
         <Route path="/PersonalPolicy" element={<PersonalPolicy />} />
         <Route path="/LogIn" element={<LogIn />} />
         <Route path="/LogIn/nid" element={<NaverLogin />} />

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbTruckownerCargoinfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
@@ -25,7 +26,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	
 	@Transactional
 	@Override
-	public TbMemberTruckOwner postTruckOwner(HashMap<String, Object> obj, String q) {
+	public TbMemberTruckOwner setTruckOwner(HashMap<String, Object> obj, String q) {
 		TbMemberTruckOwner tmto;
 		
 		if (q.equals("password")) {
@@ -72,6 +73,12 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		} catch (UnsupportedEncodingException e) {
 			return e.getMessage();
 		}
+	}
+
+	@Override
+	public TbTruckownerCargoinfo setTruckOwnerCargoInfo(HashMap<String, Object> obj) {
+											
+		return null;
 	}
 
 }

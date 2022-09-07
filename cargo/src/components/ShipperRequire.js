@@ -144,14 +144,13 @@ const ShipperRequire = () => {
 
     setRequest(request)
     .then(() => {
-      console.log(request)
-      // dispatch(
-      //   cargoSlice.actions.REQUEST_COMPLETE({})
-      // )
+      dispatch(
+        cargoSlice.actions.REQUEST_COMPLETE({})
+      )
     })
     .finally(() => {
       setLoading(false)
-      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
     })
   }
 

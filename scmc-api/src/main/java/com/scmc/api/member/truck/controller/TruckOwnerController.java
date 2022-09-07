@@ -36,10 +36,10 @@ public class TruckOwnerController {
 			@ApiParam(value = "등록/수정 구분값", example = "post") @RequestParam(value = "q") String q
 			) throws Exception {
 		log.info("==================");
-		log.info("차주 등록/수정 => " + q);
+		log.info("차주 등록/수정");
 		log.info("==================");
 		
-		return new ResponseEntity<>(truckOwnerService.postTruckOwner(obj, q) ,HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.setTruckOwner(obj, q) ,HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "차주 회원정보 조회", notes = "차주의 회원정보를 조회한다.")
@@ -65,5 +65,15 @@ public class TruckOwnerController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(authNumber, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "차주 화물정보 입력", notes = "차주의 화물정보를 입력한다.")
+	@GetMapping("/cargo")
+	public ResponseEntity<?> setCargoInfo(@RequestBody HashMap<String, Object> obj) throws Exception {
+		log.info("==================");
+		log.info("차주 화물정보 입력");
+		log.info("==================");
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
