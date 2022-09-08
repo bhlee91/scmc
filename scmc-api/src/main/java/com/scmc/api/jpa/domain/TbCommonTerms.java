@@ -26,25 +26,27 @@ public class TbCommonTerms {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long termsUid;
 	
-	@Column(name = "terms_type")
+	@Column(name = "terms_type", nullable = false)
 	private String termsType;
 	
+	@Column(nullable = false)
 	private String versions;
 	
 	@Lob
 	@Type(type = "org.hibernate.type.TextType")
+	@Column(nullable = false)
 	private String contents;
 	
-	@Column(name = "expdiv")
+	@Column(name = "expdiv", nullable = false)
 	private String expDiv;
 	
-	@Column(name = "use_yn")
+	@Column(name = "use_yn", nullable = false)
 	private String useYn;
 	
 	@Column(name = "reg_id")
 	private String regId;
 	
-	@Column(name = "reg_dt")
+	@Column(name = "reg_dt", nullable = false)
 	private Date regDt;
 	
 	@Column(name = "mod_id")

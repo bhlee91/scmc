@@ -6,6 +6,6 @@ import com.scmc.api.jpa.domain.TbCommonTerms;
 
 public interface CommonTermsService {
 
-	List<TbCommonTerms> selectCommonTerms();
-	List<TbCommonTerms> selectCommonTermsByTermsType(String termsType);
+	List<TbCommonTerms> selectTerms(String UseYn);
+	List<TbCommonTerms> selectCommonTermsByTermsType(String termsType, String expDiv, String UseYn);
 }

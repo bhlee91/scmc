@@ -17,14 +17,14 @@ public class CommonTermsServiceImpl implements CommonTermsService{
 	private final TbCommonTermsRepository tbCommonTermsRepository;
 	
 	@Override
-	public List<TbCommonTerms> selectCommonTerms() {
+	public List<TbCommonTerms> selectTerms(String UseYn) {
 		
-		return tbCommonTermsRepository.findAllByOrderByTermsTypeAsc();
+		return tbCommonTermsRepository.findByUseYnOrderByTermsTypeAsc(UseYn);
 	}
 	
 	@Override
-	public List<TbCommonTerms> selectCommonTermsByTermsType(String termsType) {
+	public List<TbCommonTerms> selectCommonTermsByTermsType(String termsType, String expDiv, String useYn) {
 		
-		return tbCommonTermsRepository.findByTermsTypeOrderByVersionsDesc(termsType);
+		return tbCommonTermsRepository.findByTermsTypeAndExpDivAndUseYnOrderByVersionsDesc(termsType, expDiv, useYn);
 	}	
 }
