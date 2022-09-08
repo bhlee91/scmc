@@ -45,8 +45,8 @@ public class SwaggerConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
-                .title("꿀차꿀짐")
-                .description("꿀차꿀짐 REST API")
+                .title("SCMC-API")
+                .description("SCMC REST API")
                 .version("1.0")
                 .build();
     }

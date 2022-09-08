@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { PURGE } from "redux-persist"
 
 const initialState = {
   ownerUid:'',
@@ -30,9 +29,6 @@ const userSlice = createSlice({
       state.social = '';
       state.isLogin = false;
     }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => initialState)
   }
 })
 

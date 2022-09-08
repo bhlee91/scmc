@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { PURGE } from "redux-persist"
 
 const initialState = {
   accessToken: '',
@@ -18,9 +17,6 @@ const tokenSlice = createSlice({
       state.accessToken = '';
       state.refreshToken = '';
     }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => initialState)
   }
 })
 

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { PURGE } from "redux-persist"
 
 const initialState = {
   contents: []
@@ -40,9 +39,6 @@ const cargoImageSlice = createSlice({
     RESET(state) {
       state.contents = []
     }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(PURGE, () => initialState)
   }
 })
 

@@ -1,6 +1,8 @@
 package com.scmc.api.jpa.domain;
 
+import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,13 +18,14 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @DynamicInsert @DynamicUpdate
 @Table(name = "tb_truckowner_cargoinfo")
 @Getter
-@Builder
-public class TbTruckOwnerCargoInfo {
+@NoArgsConstructor
+public class TbTruckownerCargoinfo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,4 +82,26 @@ public class TbTruckOwnerCargoInfo {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
+	@Builder(builderMethodName = "insertTruckOwnerCargoInfo")
+	public TbTruckownerCargoinfo(Map<String, Object> obj) {
+		this.truckownerUid = Long.parseLong(obj.get("truckownerUid").toString());
+		this.loadDt = Timestamp.valueOf(obj.get("loadDt").toString());
+		this.unloadDt = Timestamp.valueOf(obj.get("unLoadDt").toString());
+		this.spaceRate = obj.get("spaceRate").equals(null) ? 0 : Integer.parseInt(obj.get("spaceRate").toString());
+		this.cargoWeight = obj.get("cargoWeight").equals(null) ? 0 : Integer.parseInt(obj.get("cargoWeight").toString());
+		this.departAddrSt = obj.get("departAddrSt").toString();
+		this.departAddrSt2 = obj.get("departAddrSt2").toString();
+		this.departLatitude = obj.get("departLatitude").toString();
+		this.departLongitude = obj.get("departLongitude").toString();
+		this.arrivalAddrSt = obj.get("arrivalAddrSt").toString();
+		this.arrivalAddrSt2 = obj.get("arrivalAddrSt2").toString();
+		this.arrivalLatitude = obj.get("arrivalLatitude").toString();
+		this.arrivalLongitude = obj.get("arrivalLongitude").toString();
+	}
+	
+	@Builder(builderMethodName = "updateCancelYn")
+	public TbTruckownerCargoinfo(long truckownerUid, String cancelyn) {
+		this.truckownerUid = truckownerUid;
+		this.cancelyn = cancelyn;
+	}
 }

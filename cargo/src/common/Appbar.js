@@ -14,9 +14,13 @@ import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
 import "./Appbar.css";
 
 import store from 'src/store';
-import { persistor } from "src/index"; 
+import tokenSlice from "src/slice/token";
+import userSlice from "src/slice/user";
+import cargoSlice from "src/slice/cargo";
+import cargoImageSlice from "src/slice/cargoImage";
 
 const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
+// const linkTo = ["./ShipperRequire", "./UseList", "./Customer"];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();
@@ -34,8 +38,11 @@ const ResponsiveAppBar = () => {
     setAnchorElNav(null);
   };
 
-  const handleLogout = async () => {
-    await persistor.purge()
+  const handleLogout = () => {
+    store.dispatch(tokenSlice.actions.SET_DELETE_TOKEN())
+    store.dispatch(userSlice.actions.SET_LOGOUT())
+    store.dispatch(cargoSlice.actions.REQUEST_COMPLETE())
+    store.dispatch(cargoImageSlice.actions.RESET())
 
     navigate("/", { replace: true })
     alert("로그아웃 되었습니다.")

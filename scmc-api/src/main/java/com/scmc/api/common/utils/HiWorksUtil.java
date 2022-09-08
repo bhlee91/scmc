@@ -5,11 +5,16 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.transaction.Transactional;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -50,14 +55,14 @@ public class HiWorksUtil {
 		
 		try {
 			String authNumber = getSmsAuthNumber();
-			String sendDate = CommonUtil.getNowDate();
+			String sendDate = getNowDate();
 			
 			sms.put("subject", "문자 발송 테스트");
 			sms.put("message", String.format("[%s] 꿀차 인증번호입니다.\n해당 입력 칸에 정확하게 입력해주세요.", authNumber));
 			sms.put("send_date", sendDate);
 			sms.put("file", "");
 			
-			String requestBody = CommonUtil.getJsonToStringFromMap(sms);
+			String requestBody = getJsonToStringFromMap(sms);
 			
 			con.setConnectTimeout(5000);
 			con.setRequestMethod("POST");
@@ -104,7 +109,26 @@ public class HiWorksUtil {
 		
 		return authNumber;
 	}
-
+	
+	private String getNowDate() {
+		Date today = new Date();
+		Locale currentLocale = new Locale("KOREAN", "KOREA");
+		String pattern = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat format = new SimpleDateFormat(pattern, currentLocale);
+		
+		return format.format(today);
+	}
+	
+	private String getJsonToStringFromMap(LinkedHashMap<String, String> map) {
+		JSONObject json = new JSONObject();
+		
+		for (Entry<String, String> entry : map.entrySet()) {
+			json.put(entry.getKey(), entry.getValue());
+		}
+		
+		return json.toString();
+	}
+	
 	@Transactional
 	private void saveSmsAuth(LinkedHashMap<String, String> sms, String authNumber) {
 		TbMemberSmsauth tmsa = new TbMemberSmsauth();
