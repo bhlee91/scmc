@@ -2,6 +2,9 @@ package com.scmc.api.member.truck.controller;
 
 import java.util.HashMap;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,5 +78,21 @@ public class TruckOwnerController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "차주 목록 조회(검색)", notes = "차주목록을 조회한다.")
+	@GetMapping("/truck/ownerList")
+	public ResponseEntity<?> selectTruckOwner(
+			@ApiParam(value = "차량 번호", example = "45오4545") @RequestParam(value = "carNumber", required = false) String carNumber,
+			@ApiParam(value = "차주 성명", example = "") @RequestParam(value = "truckownerName", required = false) String truckownerName,
+			@ApiParam(value = "사업자번호", example = "") @RequestParam(value = "businessNo", required = false) String businessNo,
+			@PageableDefault(sort = {"truckownerUid"}, direction = Sort.Direction.ASC) Pageable page
+			
+			) throws Exception {
+		log.info("==================");
+		log.info("차주 목록 조회(검색)");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.selectTruckOwner(carNumber,truckownerName,businessNo, page), HttpStatus.OK);
 	}
 }

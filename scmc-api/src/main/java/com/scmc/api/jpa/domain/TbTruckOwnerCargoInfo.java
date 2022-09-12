@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "tb_truckowner_cargoinfo")
 @Getter
 @NoArgsConstructor
-public class TbTruckownerCargoinfo {
+public class TbTruckOwnerCargoInfo {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,7 +83,7 @@ public class TbTruckownerCargoinfo {
 	private Date modDt;
 	
 	@Builder(builderMethodName = "insertTruckOwnerCargoInfo")
-	public TbTruckownerCargoinfo(Map<String, Object> obj) {
+	public TbTruckOwnerCargoInfo(Map<String, Object> obj) {
 		this.truckownerUid = Long.parseLong(obj.get("truckownerUid").toString());
 		this.loadDt = Timestamp.valueOf(obj.get("loadDt").toString());
 		this.unloadDt = Timestamp.valueOf(obj.get("unLoadDt").toString());
@@ -100,7 +100,7 @@ public class TbTruckownerCargoinfo {
 	}
 	
 	@Builder(builderMethodName = "updateCancelYn")
-	public TbTruckownerCargoinfo(long truckownerUid, String cancelyn) {
+	public TbTruckOwnerCargoInfo(long truckownerUid, String cancelyn) {
 		this.truckownerUid = truckownerUid;
 		this.cancelyn = cancelyn;
 	}
