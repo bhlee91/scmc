@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
+import { PURGE } from "redux-persist"
 
 const initialState = {
   step: 0,
@@ -86,6 +87,9 @@ const cargoSlice = createSlice({
       state.transitFare = action.payload.transitFare
       state.additionalFare = action.payload.additionalFare
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(PURGE, () => initialState)
   }
 })
 
