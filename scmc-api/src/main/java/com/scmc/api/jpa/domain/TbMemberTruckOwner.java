@@ -18,8 +18,10 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -28,7 +30,7 @@ import lombok.ToString;
 @Table(name = "tb_member_truckowner")
 @Getter @ToString
 @Setter
-@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TbMemberTruckOwner {
 	
 	@Id
@@ -92,7 +94,6 @@ public class TbMemberTruckOwner {
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)
-	@Builder.Default
 	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>(); 
 	
 }
