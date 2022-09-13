@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -41,38 +40,48 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private EntityManager em;
 	
 	QTbMemberTruckOwner tmto = QTbMemberTruckOwner.tbMemberTruckOwner;
+	
 	@Transactional
 	@Override
-	public TbMemberTruckOwner setTruckOwner(HashMap<String, Object> obj, String q) {
-		TbMemberTruckOwner tmto;
-		
-		if (q.equals("password")) {
-			tmto = TbMemberTruckOwner.builder()
-					.truckownerUid(Long.parseLong(obj.get("password").toString()))
-					.password(obj.get("password").toString())
-					.build();
-		} else {
-			tmto = TbMemberTruckOwner.builder()
-					.carNumber(obj.get("carNumber").toString())
-					.phoneNumber(obj.get("phoneNumber").toString())
-					.password(obj.get("passworkd").toString())
-					.truckownerName(obj.get("truckownerName").toString())
-					.businessNo(obj.get("businessNo").toString())
-					.truckTons(obj.get("truckTons").toString())
-					.longyn(obj.get("longYn").toString())
-					.refrigeratedFrozen(obj.get("refrigeratedFrozen").toString())
-					.stowageType(obj.get("stowageType").toString())
-					.liftType(obj.get("liftType").toString())
-					.build();
-		}
+	public String insertTruckOwner(HashMap<String, Object> obj) {
 
-		return tbMemberTruckOwnerRepository.save(tmto);
+		TbMemberTruckOwner tmto = TbMemberTruckOwner.insertBuilder()
+				.carNumber(obj.get("carNumber").toString())
+				.phoneNumber(obj.get("phoneNumber").toString())
+				.password(obj.get("passworkd").toString())
+				.truckownerName(obj.get("truckownerName").toString())
+				.businessNo(obj.get("businessNo").toString())
+				.truckTons(obj.get("truckTons").toString())
+				.longyn(obj.get("longyn").toString())
+				.refrigeratedFrozen(obj.get("refrigeratedFrozen").toString())
+				.stowageType(obj.get("stowageType").toString())
+				.liftType(obj.get("liftType").toString())
+				.build();
+		
+		tmto = tbMemberTruckOwnerRepository.save(tmto);
+		
+		String msg = tmto.getTruckownerName() + " 님의 회원가입이 완료되었습니다.";
+
+		return msg;
+	}
+	
+	@Transactional
+	@Override
+	public String updateTruckOwner(HashMap<String, Object> obj, long uid) {
+		TbMemberTruckOwner tmto = tbMemberTruckOwnerRepository.findByTruckownerUid(uid);
+		tmto.setPassword(obj.get("password").toString());
+		
+		tbMemberTruckOwnerRepository.save(tmto);
+		
+		String msg = "비밀번호 변경이 완료되었습니다.";
+
+		return msg;
 	}
 
 	@Override
-	public Optional<TbMemberTruckOwner> getTruckOwner(long uid) {
+	public TbMemberTruckOwner getTruckOwner(long uid) {
 		
-		return tbMemberTruckOwnerRepository.findById(uid);
+		return tbMemberTruckOwnerRepository.findByTruckownerUid(uid);
 	}
 
 	@Override
@@ -139,29 +148,28 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 									
 		return new PageImpl<>(list);
 	}
-
    
-   private BooleanExpression carNumberEq(String carNumber) {
-	   if(carNumber != null) {
-		   return tmto.carNumber.contains(carNumber);   
-	   }else {
-		  return null;
-	   }
-   }
-   
-   private BooleanExpression truckownerNameEq(String truckownerName) {
-	   if(truckownerName != null) {
-		   return tmto.truckownerName.contains(truckownerName);   
-	   }else {
-		  return null;
-	   }
-   }
- 
-   private BooleanExpression businessNoEq(String businessNo) {
-	   if(businessNo != null) {
-		   return tmto.carNumber.contains(businessNo);   
-	   }else {
-		  return null;
-	   }
-   }
+	private BooleanExpression carNumberEq(String carNumber) {
+		if(carNumber != null) {
+			return tmto.carNumber.contains(carNumber);   
+		} else {
+			return null;
+		}
+	}
+	
+	private BooleanExpression truckownerNameEq(String truckownerName) {
+		if(truckownerName != null) {
+			return tmto.truckownerName.contains(truckownerName);   
+		} else {
+			return null;
+		}
+	}
+	
+	private BooleanExpression businessNoEq(String businessNo) {
+		if(businessNo != null) {
+			return tmto.businessNo.contains(businessNo);   
+		} else {
+			return null;
+		}
+	}
 }

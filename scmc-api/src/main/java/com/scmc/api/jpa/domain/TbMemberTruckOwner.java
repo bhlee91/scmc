@@ -94,6 +94,23 @@ public class TbMemberTruckOwner {
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)
-	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>(); 
+	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();
 	
+	@Builder(builderMethodName = "insertBuilder")
+	public TbMemberTruckOwner(
+			String carNumber, String phoneNumber, String password, String truckownerName
+			, String businessNo, String truckTons, String longyn, String refrigeratedFrozen
+			, String stowageType, String liftType
+		) {
+		this.carNumber = carNumber;
+		this.phoneNumber = phoneNumber;
+		this.password = password;
+		this.truckownerName = truckownerName;
+		this.businessNo = businessNo;
+		this.truckTons = truckTons;
+		this.longyn = longyn;
+		this.refrigeratedFrozen = refrigeratedFrozen;
+		this.stowageType = stowageType;
+		this.liftType = liftType;
+	}
 }
