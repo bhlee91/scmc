@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -68,10 +69,12 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	@Transactional
 	@Override
 	public String updateTruckOwner(HashMap<String, Object> obj, long uid) {
-		TbMemberTruckOwner tmto = tbMemberTruckOwnerRepository.findByTruckownerUid(uid);
-		tmto.setPassword(obj.get("password").toString());
+		Optional<TbMemberTruckOwner> tmto = tbMemberTruckOwnerRepository.findById(uid);
 		
-		tbMemberTruckOwnerRepository.save(tmto);
+		tmto.ifPresent(user -> {
+			user.setPassword(obj.get("password").toString());
+			tbMemberTruckOwnerRepository.save(user);
+		});
 		
 		String msg = "비밀번호 변경이 완료되었습니다.";
 
