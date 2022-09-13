@@ -15,5 +15,6 @@ public interface TruckOwnerService {
 	TbMemberTruckOwner getTruckOwner(long uid);
 	String getSmsAuthNumber(String phoneNumber);
 	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(HashMap<String, Object> obj);
+	String removeTruckOwnerCargoInfo(long uid);
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
 }

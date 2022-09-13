@@ -129,7 +129,14 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		
 		return tbTruckOwnerCargoInfoRepository.save(toci);
 	}
-
+	
+	@Override
+	public String removeTruckOwnerCargoInfo(long uid) {
+		
+		tbTruckOwnerCargoInfoRepository.deleteById(uid);
+		
+		return "해당 화물 정보가 삭제되었습니다.";
+	}
 	
 	@Override
 	@Transactional

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,7 +88,19 @@ public class TruckOwnerController {
 		log.info("차주 화물정보 입력");
 		log.info("==================");
 		
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.setTruckOwnerCargoInfo(obj), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "차주 화물정보 삭제", notes = "차주의 화물정보를 삭제한다.")
+	@DeleteMapping("/cargo/{uid}")
+	public ResponseEntity<?> removeCargoInfo(
+			@ApiParam(value = "차주 uid", example = "1") @PathVariable(value = "uid") Long uid
+		) throws Exception {
+		log.info("==================");
+		log.info("차주 화물정보 삭제");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.removeTruckOwnerCargoInfo(uid), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "차주 목록 조회(검색)", notes = "차주목록을 조회한다.")
