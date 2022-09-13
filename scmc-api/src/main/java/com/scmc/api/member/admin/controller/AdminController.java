@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Api(tags = "관리자용")
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/admin")
 @RequiredArgsConstructor
 @Slf4j
 public class AdminController {
@@ -31,7 +31,7 @@ public class AdminController {
 	private final AdminService adminService;
 	
 	@ApiOperation(value = "관리자 테스트(post method)", notes = "관리자 api 테스트용")
-	@PostMapping("/admin/test")
+	@PostMapping("/test")
 	public ResponseEntity<?> postTest(@RequestBody HashMap<String, Object> obj) {
 		
 		log.info("==================");
@@ -42,7 +42,7 @@ public class AdminController {
 	}
 	
 	@ApiOperation(value = "관리자 테스트(get method)", notes = "관리자 api 테스트용")
-	@GetMapping("/admin/test/{id}")
+	@GetMapping("/test/{id}")
 	public ResponseEntity<?> getTest(
 			@ApiParam(value = "id", example = "1") @PathVariable(value = "id") Long id
 		) {
@@ -55,7 +55,7 @@ public class AdminController {
 	}
 	
 	@ApiOperation(value = "관리자 테스트(put method)", notes = "관리자 api 테스트용")
-	@PutMapping("/admin/test/{id}")
+	@PutMapping("/test/{id}")
 	public ResponseEntity<?> putTest(
 			@ApiParam(value = "id", example = "1") @PathVariable(value = "id") Long id
 		) {
@@ -68,7 +68,7 @@ public class AdminController {
 	}
 	
 	@ApiOperation(value = "관리자 테스트(delete method)", notes = "관리자 api 테스트용")
-	@DeleteMapping("/admin/test/{id}")
+	@DeleteMapping("/test/{id}")
 	public ResponseEntity<?> deleteTest(
 			@ApiParam(value = "id", example = "1") @PathVariable(value = "id") Long id
 		) {

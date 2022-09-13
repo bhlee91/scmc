@@ -31,7 +31,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				Authentication authentication = jwtTokenProvider.getAuthentication(token);
 				
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-			} 
+			} else {
+				log.info("토큰 만료!");
+			}
 		} catch (Exception e) {
 			log.error("Could not set user authentication in security context", e);
 		}

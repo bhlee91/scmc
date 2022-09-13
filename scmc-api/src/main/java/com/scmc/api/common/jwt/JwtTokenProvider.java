@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -74,16 +75,19 @@ public class JwtTokenProvider {
 			return !claims.getBody().getExpiration().before(new Date());
 		} catch (SignatureException ex) {
             log.error("유효하지 않은 JWT signature");
+            throw new JwtException("유효하지 않은 JWT signature", ex);
         } catch (MalformedJwtException ex) {
             log.error("유효하지 않은 JWT token");
+            throw new JwtException("유효하지 않은 JWT token", ex);
         } catch (ExpiredJwtException ex) {
             log.error("JWT token 유효시간이 만료됨");
+            throw new JwtException("JWT token 유효시간이 만료됨", ex);
         } catch (UnsupportedJwtException ex) {
             log.error("제공되지 않는 JWT token");
+            throw new JwtException("제공되지 않는 JWT token", ex);
         } catch (IllegalArgumentException ex) {
             log.error("JWT claims string is empty.");
+            throw new JwtException("JWT claims string is empty", ex);
         }
-		
-		return false;
 	}
 }
