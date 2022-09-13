@@ -67,10 +67,10 @@ public class SwaggerConfig {
     @ApiModel
     static class MyPageable {
 
-    	@ApiModelProperty(value = "페이지번호(0..N)")
+    	@ApiModelProperty(value = "페이지번호(0..N)", example = "0")
     	private Integer page;
     	
-    	@ApiModelProperty(value = "페이지 크기", allowableValues = "range[0,100]")
+    	@ApiModelProperty(value = "페이지 크기", allowableValues = "range[0,100]", example = "10")
     	private Integer size;
     	
     	@ApiModelProperty(value = "정렬(ASC, DESC)")

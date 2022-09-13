@@ -26,7 +26,7 @@ public class ProductController {
 	
 	@ApiOperation(value = "결제 상품 전체 조회", notes = "결제 상품을 조회한다.")
 	@GetMapping({"/list/{useyn}"})
-	public ResponseEntity<?> selectCargoRequest(
+	public ResponseEntity<?> selectProductList(
 			@ApiParam(value = "사용여부", example = "Y") @PathVariable(value = "useyn") String useyn
 			) throws Exception {
 		log.info("========================");
