@@ -1,12 +1,12 @@
 package com.scmc.api.common.config;
 
-import java.awt.print.Pageable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
 
 import com.fasterxml.classmate.TypeResolver;
 
