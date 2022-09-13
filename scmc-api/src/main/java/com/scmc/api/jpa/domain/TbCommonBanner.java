@@ -1,6 +1,9 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +30,7 @@ public class TbCommonBanner {
 	private Date bannerStartDt;
 	
 	@Column(name = "banner_enddt")
-	private Date banneEndDt;
+	private Date bannerEndDt;
 	
 	@Column(name = "banner_name")
 	private String bannerName;
@@ -70,4 +73,27 @@ public class TbCommonBanner {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+	
+	public TbCommonBanner(Map<String, Object> banner) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		this.bannerId = Long.parseLong(banner.get("baannerId").toString());
+		this.bannerStartDt = banner.get("bannerStartDt").equals("") ? null : format.parse(banner.get("bannerStartDt").toString());
+		this.bannerEndDt = banner.get("bannerEndDt").equals("") ? null : format.parse(banner.get("bannerEndDt").toString());
+		this.bannerName = banner.get("bannerName").toString();
+		this.bannerDesc = banner.get("bannerDesc").toString();
+		this.bannerUrl = banner.get("bannerUrl").toString();
+		this.bannerExpdiv = banner.get("bannerExpdiv").toString();
+		this.bannerWidth = Integer.parseInt(banner.get("bannerWidth").toString());
+		this.bannerHeight = Integer.parseInt(banner.get("bannerHeight").toString());
+		this.bannerHit = Integer.parseInt(banner.get("bannerHit").toString());
+		this.bannerOrder = Integer.parseInt(banner.get("bannerOrder").toString());
+		this.bannerImagePath = banner.get("bannerImagePath").toString();
+		this.bannerUseyn = banner.get("bannerUseyn").toString();
+		this.regId = banner.get("regId").toString();
+		this.regDt = banner.get("regDt").equals("") ? null : format.parse(banner.get("regDt").toString());
+		this.modId = banner.get("modId").toString();
+		this.modDt = banner.get("modDt").equals("") ? null : format.parse(banner.get("modDt").toString());
+	
+	}
 }
