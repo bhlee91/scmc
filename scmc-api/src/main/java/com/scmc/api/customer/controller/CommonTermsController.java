@@ -1,9 +1,13 @@
 package com.scmc.api.customer.controller;
 
+import java.util.HashMap;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,4 +70,14 @@ public class CommonTermsController {
 		
 		return new ResponseEntity<>(commonTermsService.selectCommonTermsByTermsType(termsType, expDiv, useYn), HttpStatus.OK);		
 	}
+	
+	@ApiOperation(value = "약관 등록/수정", notes = "약관을 등록/수정 한다.")
+	@PostMapping("/terms/insert")
+	public ResponseEntity<?> createBanner(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("========================");
+		log.info("약관 등록/수정");
+		log.info("========================");
+	
+		return new ResponseEntity<>(commonTermsService.insertAndUpdateTerms(param), HttpStatus.OK);
+	}	
 }

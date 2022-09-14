@@ -1,6 +1,9 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,4 +57,20 @@ public class TbCommonTerms {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+	
+	public TbCommonTerms(Map<String, Object> terms) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		this.termsUid = Long.parseLong(terms.get("termsUid").toString());
+		this.termsType = terms.get("termsType").toString();
+		this.versions = terms.get("version").toString();
+		this.contents = terms.get("contents").toString();
+		this.expDiv = terms.get("expDiv").toString();
+		this.useYn = terms.get("useYn").toString();
+		this.regId = terms.get("regId").toString();
+		this.regDt = terms.get("regDt").equals("") ? null : format.parse(terms.get("regDt").toString());
+		this.modId = terms.get("modId").toString();
+		this.modDt = terms.get("modDt").equals("") ? null : format.parse(terms.get("modDt").toString());		
+		
+	}
 }
