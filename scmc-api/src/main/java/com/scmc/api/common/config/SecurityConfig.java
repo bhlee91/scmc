@@ -44,9 +44,18 @@ public class SecurityConfig {
 					.and()
 				.authorizeHttpRequests()
 				.antMatchers(
+						"/favicon.ico",
+						"/**/*.png",
+						"/**/*.gif",
+						"/**/*.svg",
+						"/**/*.jpg",
+						"/**/*.html",
+						"/**/*.css",
+						"/**/*.js")
+				.permitAll()
+				.antMatchers(
 						"/auth/**",
-						"/swagger/**", 
-		        		"/swagger-ui.html", 
+						"/swagger/**",
 		        		"/swagger-resources/**",
 		        		"/webjars/**", 
 		        		"/v2/api-docs")
