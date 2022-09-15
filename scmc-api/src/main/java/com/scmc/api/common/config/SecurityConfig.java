@@ -53,7 +53,7 @@ public class SecurityConfig {
 						"/**/*.css",
 						"/**/*.js")
 				.permitAll()
-				.antMatchers(
+				.antMatchers("/**",
 						"/auth/**",
 						"/swagger/**",
 		        		"/swagger-resources/**",

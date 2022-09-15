@@ -14,11 +14,16 @@
   "plugins": ["react", "prettier"],
   "rules": {
     "prettier/prettier": [
-      "error",
+      "off",
       {
-        "endOfLine": "auto"
+        "endOfLine": "auto",
+        "semi": true,
+        "parser": "flow"
       }
     ],
+    "indent": [ "off" ],
+    "no-extra-semi": "error",
+    "no-tabs": "error",
     "default-param-last": "off",
     "react/react-in-jsx-scope": "off",
     "no-unused-vars": "off",

@@ -41,6 +41,13 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+import cargorows from "./cargorows.json";
+import columns from "./columns.json";
+
+import { 
+  testApi
+} from "api/truck";
+
 const itemData = [
   {
     img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
@@ -54,101 +61,6 @@ const itemData = [
 ];
 
 // 팝업 끝
-
-// 차주 데이타
-const columns = [
-  {
-    field: "id",
-    headerName: "사용자ID",
-    width: 80,
-    headerClassName: "super-app-theme--header",
-    headerAlign: "center",
-  },
-  {
-    field: "car_number",
-    headerName: "차량번호",
-    width: 130,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "phone_number",
-    headerName: "전화번호",
-    width: 150,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-    editable: true,
-  },
-  {
-    field: "truckowner_Name",
-    headerName: "이름",
-    type: "number",
-    width: 170,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "Business_No",
-    headerName: "사업자등록번호",
-    sortable: false,
-    width: 130,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "addr",
-    headerName: "주소",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "Truck_tons",
-    headerName: "트럭톤수",
-    sortable: false,
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "LongYN",
-    headerName: "장축여부",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 140,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "refrigerated_frozen",
-    headerName: "냉장냉동여부",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 140,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "Stowage_type",
-    headerName: "적재함형태",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 140,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "Lift_type",
-    headerName: "리프트타입",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 140,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-];
 
 const rows = [
   {
@@ -334,31 +246,6 @@ const cargocolumns = [
   },
 ];
 
-const cargorows = [
-  {
-    id: 1,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "운송완료",
-  },
-  {
-    id: 2,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "운송완료",
-  },
-];
-
 function Truckowner() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
@@ -406,6 +293,14 @@ function Truckowner() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    testApi()
+    .then(res => {
+      console.log(res)
+    })
+  }, [])
+
   //  팝업용 끝
   return (
     <DashboardLayout>
