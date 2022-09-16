@@ -32,68 +32,71 @@ import FormControl from "@mui/material/FormControl";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import TextareaAutosize from "@mui/material/TextareaAutosize";
+import Tooltip from "@mui/material/Tooltip";
 
 const columns = [
   { field: "id", headerName: "ID", width: 130, headerClassName: "super-app-theme--header" },
   {
-    field: "t_name",
-    headerName: "차종",
+    field: "terms_type",
+    headerName: "약관 Type",
     width: 200,
     editable: true,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "t_wide",
-    headerName: "차폭(cm)",
+    field: "versions",
+    headerName: "버전",
     width: 150,
     editable: true,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "t_length",
-    headerName: "길이(cm)",
+    field: "contents",
+    headerName: "내용",
+    width: 150,
+    headerClassName: "super-app-theme--header",
+    renderCell: (params) => (
+      <Tooltip title={params.row.contents}>
+        <span className="table-cell-trucate">{params.row.contents}</span>
+      </Tooltip>
+    ),
+  },
+  {
+    field: "expdiv",
+    headerName: "노출채널",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "t_top_height",
-    headerName: "적재가능높이(cm)",
+    field: "useyn",
+    headerName: "사용유무",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "t_availton",
-    headerName: "적재가능톤수",
+    field: "reg_id",
+    headerName: "등록자",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "t_lowheight",
-    headerName: "적재함상고(cm)",
+    field: "reg_dt",
+    headerName: "등록일",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "longyn",
-    headerName: "장축여부",
+    field: "mod_id",
+    headerName: "수정자",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
   {
-    field: "refrigerated_frozen",
-    headerName: "냉장냉동여부",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "stowage_type",
-    headerName: "적재함형태",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "lift_type",
-    headerName: "리프트타입",
+    field: "mod_dt",
+    headerName: "수정일",
     width: 150,
     headerClassName: "super-app-theme--header",
   },
@@ -102,72 +105,44 @@ const columns = [
 const rows = [
   {
     id: 1,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
+    terms_type: "운송약관 ",
+    versions: "1.0",
+    contents:
+      "운송약관 내용 열라 많다....ㅎㅎㅎ ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ",
+    expdiv: "ALLE",
+    useyn: "Y",
+    reg_id: "admin",
+    reg_dt: "2022-09-16",
+    mod_id: "-",
+    mod_dt: "-",
   },
   {
     id: 2,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
+    terms_type: "이용약관 ",
+    versions: "1.0",
+    contents: "이용약관",
+    expdiv: "ALLE",
+    useyn: "Y",
+    reg_id: "admin",
+    reg_dt: "2022-09-16",
+    mod_id: "-",
+    mod_dt: "-",
   },
   {
     id: 3,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 4,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 5,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
+    terms_type: "개읹정보보호방침 ",
+    versions: "1.0",
+    contents: "개읹정보보호방침",
+    expdiv: "ALLE",
+    useyn: "Y",
+    reg_id: "admin",
+    reg_dt: "2022-09-16",
+    mod_id: "-",
+    mod_dt: "-",
   },
 ];
 
-function Stomgmt() {
+function Terms() {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -183,11 +158,10 @@ function Stomgmt() {
   //  팝
 
   const [values, setValues] = React.useState({
-    product_name: "",
-    price: "",
-    discount_rate: "",
-    product_startdt: "",
-    product_enddt: "",
+    terms_type: "T01",
+    versions: "",
+    contents: "",
+    expdiv: "",
     useyn: "Y",
   });
   const inputhandleChange = (prop) => (event) => {
@@ -234,7 +208,7 @@ function Stomgmt() {
       </Stack>
       <Divider />
 
-      {/* <Grid container>
+      <Grid container>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="flex-end">
             <Button color="info" onClick={handleClick}>
@@ -242,8 +216,8 @@ function Stomgmt() {
             </Button>
           </Box>
         </Grid>
-      </Grid> */}
-      {/* <div>
+      </Grid>
+      <div>
         <Dialog
           // fullScreen={fullScreen}
           fullWidth
@@ -280,17 +254,24 @@ function Stomgmt() {
                                     variant="body2"
                                     style={{ fontWeight: 600 }}
                                   >
-                                    상품명
+                                    약관 Type
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={4}>
-                                  <TextField
-                                    id="product_name"
-                                    value={values.product_name}
-                                    onChange={inputhandleChange("product_name")}
-                                    fullWidth
-                                    size="small"
-                                  />
+                                  <FormControl sx={{ m: 1, minWidth: 180 }}>
+                                    <Select
+                                      sx={{ height: 40, minWidth: 180 }}
+                                      id="terms_type"
+                                      value={values.terms_type}
+                                      onChange={inputhandleChange("terms_type")}
+                                      size="small"
+                                      fullwidth
+                                    >
+                                      <MenuItem value={"T01"}>운송약관</MenuItem>
+                                      <MenuItem value={"T02"}>이용약관</MenuItem>
+                                      <MenuItem value={"T03"}>개인정보보호방침</MenuItem>
+                                    </Select>
+                                  </FormControl>
                                 </Grid>
                                 <Grid item xs={2}>
                                   <MDTypography
@@ -298,14 +279,14 @@ function Stomgmt() {
                                     variant="body2"
                                     style={{ fontWeight: 600 }}
                                   >
-                                    가격
+                                    버전
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="price"
-                                    value={values.price}
-                                    onChange={inputhandleChange("price")}
+                                    id="version"
+                                    value={values.version}
+                                    onChange={inputhandleChange("version")}
                                     size="small"
                                     fullWidth
                                   />
@@ -319,63 +300,25 @@ function Stomgmt() {
                                     variant="body2"
                                     style={{ fontWeight: 600 }}
                                   >
-                                    할인율
+                                    노출채널
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={4}>
-                                  <TextField
-                                    id="discount_rate"
-                                    value={values.desc}
-                                    onChange={inputhandleChange("discount_rate")}
-                                    fullWidth
-                                    size="small"
-                                  />
-                                </Grid>
-                                <Grid item xs={2}>
-                                  <MDTypography
-                                    gutterBottom
-                                    variant="body2"
-                                    style={{ fontWeight: 600 }}
-                                  >
-                                    서비스시작일
-                                  </MDTypography>
-                                </Grid>
-                                <Grid item xs={4}>
-                                  <TextField
-                                    id="datetime-local"
-                                    type="datetime-local"
-                                    defaultValue="2017-05-24T10:30"
-                                    value={values.cdate}
-                                    onChange={inputhandleChange("product_startdt")}
-                                    InputLabelProps={{
-                                      shrink: true,
-                                    }}
-                                    fullWidth
-                                    size="small"
-                                  />
-                                </Grid>
-                                <Grid item xs={2}>
-                                  <MDTypography
-                                    gutterBottom
-                                    variant="body2"
-                                    style={{ fontWeight: 600 }}
-                                  >
-                                    서비스종료일
-                                  </MDTypography>
-                                </Grid>
-                                <Grid item xs={4}>
-                                  <TextField
-                                    id="datetime-local"
-                                    type="datetime-local"
-                                    defaultValue="2017-05-24T10:30"
-                                    value={values.cdate}
-                                    size="small"
-                                    onChange={inputhandleChange("product_enddt")}
-                                    InputLabelProps={{
-                                      shrink: true,
-                                    }}
-                                    fullWidth
-                                  />
+                                  <FormControl sx={{ m: 1, minWidth: 180 }}>
+                                    <Select
+                                      sx={{ height: 40, minWidth: 180 }}
+                                      id="expdiv"
+                                      value={values.terms_type}
+                                      onChange={inputhandleChange("expdiv")}
+                                      size="small"
+                                      fullwidth
+                                    >
+                                      <MenuItem value={"MAPP"}>APP</MenuItem>
+                                      <MenuItem value={"MWEb"}>모바일웹</MenuItem>
+                                      <MenuItem value={"PWEB"}>PC WEB</MenuItem>
+                                      <MenuItem value={"ALLE"}>모든채널</MenuItem>
+                                    </Select>
+                                  </FormControl>
                                 </Grid>
                                 <Grid item xs={2}>
                                   <MDTypography
@@ -406,6 +349,23 @@ function Stomgmt() {
                                       />
                                     </RadioGroup>
                                   </FormControl>
+                                </Grid>
+                                <Grid item xs={2}>
+                                  <MDTypography
+                                    gutterBottom
+                                    variant="body2"
+                                    style={{ fontWeight: 600 }}
+                                  >
+                                    내용
+                                  </MDTypography>
+                                </Grid>
+                                <Grid item xs={8}>
+                                  <TextareaAutosize
+                                    aria-label="minimum height"
+                                    minRows={100}
+                                    placeholder=""
+                                    style={{ width: 600 }}
+                                  />
                                 </Grid>
                               </Grid>
                             </Box>
@@ -439,9 +399,9 @@ function Stomgmt() {
             </Button>
           </DialogActions>
         </Dialog>
-      </div> */}
+      </div>
     </MDBox>
   );
 }
 
-export default Stomgmt;
+export default Terms;

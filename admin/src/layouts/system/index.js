@@ -25,6 +25,8 @@ import TabPanel from "@mui/lab/TabPanel";
 import Vermgmt from "./vermgmt";
 import Paymgmt from "./paymgmt";
 import Stomgmt from "./stomgmt";
+import Terms from "./terms";
+import Banner from "./banner";
 
 function System() {
   const [controller] = useMaterialUIController();
@@ -59,6 +61,8 @@ function System() {
               <Tab label="버전관리" value="1" />
               <Tab label="이용료설정" value="2" />
               <Tab label="적재함정보" value="3" />
+              <Tab label="약관관리" value="4" />
+              <Tab label="배너관리" value="5" />
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -69,6 +73,12 @@ function System() {
           </TabPanel>
           <TabPanel value="3">
             <Stomgmt />
+          </TabPanel>
+          <TabPanel value="4">
+            <Terms />
+          </TabPanel>
+          <TabPanel value="5">
+            <Banner />
           </TabPanel>
         </TabContext>
       </Box>

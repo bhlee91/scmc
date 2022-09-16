@@ -39,6 +39,13 @@ import InputAdornment from "@mui/material/InputAdornment";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 
+import cargocolumns from "./test/cargocolumns.json";
+import cargorows from "./test/cargorows.json";
+
+import {
+  searchRequest
+} from "api/cargo";
+
 const images = [
   {
     original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
@@ -69,112 +76,9 @@ const images = [
     thumbnail: "https://picsum.photos/id/1019/250/150/",
   },
 ];
-
 // 팝업 끝
 
-// 화물 데이타
-const cargocolumns = [
-  {
-    field: "id",
-    headerName: "화물ID",
-    width: 100,
-    headerClassName: "super-app-theme--header",
-    headerAlign: "center",
-  },
-  {
-    field: "cargo_name",
-    headerName: "화물명칭",
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "name",
-    headerName: "화주성명",
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-    // editable: true,
-  },
-  {
-    field: "phone_number",
-    headerName: "화주전화번호",
-    type: "number",
-    width: 150,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_datetimes",
-    headerName: "출발일시",
-    sortable: false,
-    width: 180,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_datetimes",
-    headerName: "도착일시",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 180,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_addr_st",
-    headerName: "상차지",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_addr_st",
-    headerName: "하차지",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "status",
-    headerName: "상태",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-];
-
-const cargorows = [
-  {
-    id: 1,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "운송완료",
-  },
-  {
-    id: 2,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "운송완료",
-  },
-];
-
-function Truckowner() {
+const Truckowner = () => {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -229,7 +133,14 @@ function Truckowner() {
   const handleClose = () => {
     setOpen(false);
   };
-  //  팝업용 끝
+
+  React.useEffect(() => {
+    searchRequest()
+    .then(res => {
+      console.log(res)
+    })
+  }, [])
+
   return (
     <DashboardLayout>
       <DashboardNavbar />

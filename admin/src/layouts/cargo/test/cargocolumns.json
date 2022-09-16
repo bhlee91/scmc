@@ -1,0 +1,74 @@
+[
+  {
+    "field": "reqId",
+    "headerName": "화물ID",
+    "width": 100,
+    "headerClassName": "super-app-theme--header",
+    "headerAlign": "center"
+  },
+  {
+    "field": "cargoName",
+    "headerName": "화물 명칭",
+    "width": 250,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "ownerUid",
+    "headerName": "화주UID",
+    "width": 100,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "receiverPhone",
+    "headerName": "화주 휴대폰번호",
+    "type": "number",
+    "width": 150,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "departDatetimes",
+    "headerName": "출발일시",
+    "sortable": false,
+    "width": 180,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "arrivalDatetimes",
+    "headerName": "도착일시",
+    "description": "This column has a value getter and is not sortable.",
+    "sortable": false,
+    "width": 180,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "departAddrSt",
+    "headerName": "상차지",
+    "sortable": false,
+    "width": 250,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "arrivalAddrSt",
+    "headerName": "하차지",
+    "description": "This column has a value getter and is not sortable.",
+    "sortable": false,
+    "width": 250,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "status",
+    "headerName": "상태",
+    "description": "This column has a value getter and is not sortable.",
+    "sortable": false,
+    "width": 100,
+    "headerAlign": "center",
+    "headerClassName": "super-app-theme--header"
+  }
+]
