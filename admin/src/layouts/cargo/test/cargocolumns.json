@@ -2,22 +2,25 @@
   {
     "field": "reqId",
     "headerName": "화물ID",
-    "width": 100,
+    "width": 70,
     "headerClassName": "super-app-theme--header",
-    "headerAlign": "center"
+    "headerAlign": "center",
+    "align": "center"
   },
   {
     "field": "cargoName",
-    "headerName": "화물 명칭",
+    "headerName": "화물명",
     "width": 250,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
     "field": "ownerUid",
     "headerName": "화주UID",
-    "width": 100,
+    "width": 70,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
@@ -26,14 +29,16 @@
     "type": "number",
     "width": 150,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
     "field": "departDatetimes",
     "headerName": "출발일시",
     "sortable": false,
-    "width": 180,
+    "width": 200,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
@@ -41,8 +46,9 @@
     "headerName": "도착일시",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
-    "width": 180,
+    "width": 200,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
@@ -51,6 +57,7 @@
     "sortable": false,
     "width": 250,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
@@ -60,15 +67,28 @@
     "sortable": false,
     "width": 250,
     "headerAlign": "center",
+    "align": "center",
+    "headerClassName": "super-app-theme--header"
+  },
+  {
+    "field": "statusName",
+    "headerName": "상태",
+    "description": "This column has a value getter and is not sortable.",
+    "sortable": false,
+    "width": 130,
+    "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
     "field": "status",
     "headerName": "상태",
     "description": "This column has a value getter and is not sortable.",
+    "hide": true,
     "sortable": false,
     "width": 100,
     "headerAlign": "center",
+    "align": "center",
     "headerClassName": "super-app-theme--header"
   }
 ]

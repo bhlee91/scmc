@@ -40,11 +40,15 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 
 import cargocolumns from "./test/cargocolumns.json";
-import cargorows from "./test/cargorows.json";
 
 import {
   searchRequest
 } from "api/cargo";
+import { 
+  formatTimeStamp, 
+  stringToDateTime,
+  formatFare
+} from "utils/commonUtils";
 
 const images = [
   {
@@ -78,69 +82,71 @@ const images = [
 ];
 // 팝업 끝
 
-const Truckowner = () => {
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+const Cargo = () => {
+  const [controller] = useMaterialUIController()
+  const { darkMode } = controller
 
-  const [values, setValues] = React.useState({
-    price: "",
-    add_price: "",
-    rec_phone: "",
-    weight: "",
-    height: "",
-    cwidth: "",
-    cvertical: "",
-    loadmethod: "FL",
-    unloadmethod: "HJ",
-    cdate: "",
-  });
-  const inputhandleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-
-  const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
-  };
-
-  const handleCargoRowClick = (params) => {
-    setMessage(`cargo Row ID "${params.row.id}" clicked`);
-    setOpen(true);
-  };
-  const [value, setValue] = React.useState("one");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const [svalues, setSvalues] = React.useState({
-    startdate: "",
-    enddate: "",
+  const [rows, setRows] = React.useState([])
+  const [search, setSearch] = React.useState({
+    departDatetimes: "",
+    arrivalDatetimes: "",
     owner_name: "",
     car_no: "",
-  });
+  })
+  const [values, setValues] = React.useState({
+    transitFare: 0,
+    additionalFare: 0,
+    receiverPhone: "",
+    cweight: "",
+    cheight: "",
+    cwidth: "",
+    cverticalreal: "",
+    loadMethod: "",
+    unloadMethod: "",
+    departDatetimes: "",
+    arrivalDatetimes: "",
+    status: "",
+    statusName: ""
+  })
+
+  const handleInputChange = (prop) => (event) => {
+    let val = event.target.value
+
+    if (prop === "transitFare" || prop === "additionalFare") {
+      val = val.replace(/[^0-9]/g, "")
+    }
+
+    setValues({ ...values, [prop]: val })
+  }
+
+  const handleCargoRowClick = (params) => {
+    const nextValue = {}
+    Object.keys(values).forEach(key => nextValue[key] = params.row[key])
+    
+    setOpen(true)
+    setValues({ ...nextValue })
+  }
 
   const searchHandleChange = (prop) => (event) => {
-    setSvalues({ ...svalues, [prop]: event.target.value });
-  };
-  // 아래는 팝업용
+    setSearch({ ...search, [prop]: event.target.value })
+  }
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleInputNumber = (event) => {
+    if(!/[0-9]/.test(event.key)) event.preventDefault()
+  }
 
   React.useEffect(() => {
     searchRequest()
     .then(res => {
-      console.log(res)
+      res.data.map((obj) => {
+        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
+        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+      })
+      setRows(res.data)
     })
   }, [])
-
+  
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -165,9 +171,8 @@ const Truckowner = () => {
                           <TextField
                             id="date"
                             type="date"
-                            label="가입시작일"
-                            defaultValue="2017-05-24"
-                            value={svalues.startdate}
+                            label="출발일"
+                            value={search.departDatetimes}
                             sx={{ m: 1, width: 200 }}
                             onChange={searchHandleChange("startdate")}
                             InputLabelProps={{
@@ -182,9 +187,8 @@ const Truckowner = () => {
                           <TextField
                             id="date"
                             type="date"
-                            defaultValue="2017-05-24"
-                            label="가입종료일"
-                            value={svalues.enddate}
+                            label="도착일"
+                            value={search.arrivalDatetimes}
                             sx={{ m: 1, width: 200 }}
                             onChange={searchHandleChange("enddate")}
                             InputLabelProps={{
@@ -198,7 +202,7 @@ const Truckowner = () => {
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
                             id="owner_name"
-                            value={svalues.product_name}
+                            value={search.product_name}
                             label="차주성명"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
@@ -210,7 +214,7 @@ const Truckowner = () => {
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
                             id="car_no"
-                            value={svalues.car_no}
+                            value={search.car_no}
                             label="차량번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
@@ -258,7 +262,7 @@ const Truckowner = () => {
                       done
                     </Icon>
                     <MDTypography variant="button" fontWeight="regular" color="text">
-                      &nbsp;<strong>총 xx 건</strong> 이 있습니다.
+                      &nbsp;<strong>총 {rows.length} 건</strong> 이 있습니다.
                     </MDTypography>
                   </MDBox>
                 </MDBox>
@@ -280,8 +284,9 @@ const Truckowner = () => {
                 }}
               >
                 <DataGrid
+                  getRowId={(row) => row.reqId}
                   autoHeight
-                  rows={cargorows}
+                  rows={rows}
                   columns={cargocolumns}
                   pageSize={10}
                   rowsPerPageOptions={[10]}
@@ -321,9 +326,9 @@ const Truckowner = () => {
 
                           <Grid item xs={4}>
                             <TextField
-                              id="price"
-                              value={values.price}
-                              onChange={inputhandleChange("price")}
+                              id="transitFare"
+                              value={formatFare(values.transitFare)}
+                              onChange={handleInputChange("transitFare")}
                               sx={{ m: 1, width: "25ch" }}
                               size="small"
                               InputProps={{
@@ -338,11 +343,11 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="add_price"
-                              value={values.add_price}
+                              id="additionalFare"
+                              value={formatFare(values.additionalFare)}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("add_price")}
+                              onChange={handleInputChange("additionalFare")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">원</InputAdornment>,
                               }}
@@ -358,15 +363,16 @@ const Truckowner = () => {
                             <FormControl sx={{ m: 1, minWidth: 180 }}>
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
-                                id="loadmethod"
-                                value={values.loadmethod}
-                                onChange={inputhandleChange("loadmethod")}
+                                id="loadMethod"
+                                value={values.loadMethod.trim()}
+                                onChange={handleInputChange("loadMethod")}
                               >
-                                <MenuItem value={"HJ"}>수작업</MenuItem>
-                                <MenuItem value={"FL"}>지게차</MenuItem>
-                                <MenuItem value={"CR"}>크레인</MenuItem>
-                                <MenuItem value={"HT"}>호이스트</MenuItem>
-                                <MenuItem value={"CV"}>컨베이어</MenuItem>
+                                <MenuItem value="">없음</MenuItem>
+                                <MenuItem value="HJ">수작업</MenuItem>
+                                <MenuItem value="FL">지게차</MenuItem>
+                                <MenuItem value="CR">크레인</MenuItem>
+                                <MenuItem value="HT">호이스트</MenuItem>
+                                <MenuItem value="CV">컨베이어</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
@@ -379,15 +385,16 @@ const Truckowner = () => {
                             <FormControl sx={{ m: 1, minWidth: 180 }}>
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
-                                id="unloadmethod"
-                                value={values.unloadmethod}
-                                onChange={inputhandleChange("unloadmethod")}
+                                id="unloadMethod"
+                                value={values.unloadMethod.trim()}
+                                onChange={handleInputChange("unloadMethod")}
                               >
-                                <MenuItem value={"HJ"}>수작업</MenuItem>
-                                <MenuItem value={"FL"}>지게차</MenuItem>
-                                <MenuItem value={"CR"}>크레인</MenuItem>
-                                <MenuItem value={"HT"}>호이스트</MenuItem>
-                                <MenuItem value={"CV"}>컨베이어</MenuItem>
+                                <MenuItem value="">없음</MenuItem>
+                                <MenuItem value="HJ">수작업</MenuItem>
+                                <MenuItem value="FL">지게차</MenuItem>
+                                <MenuItem value="CR">크레인</MenuItem>
+                                <MenuItem value="HT">호이스트</MenuItem>
+                                <MenuItem value="CV">컨베이어</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
@@ -398,11 +405,11 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="rec_phone"
-                              value={values.rec_phone}
+                              id="receiverPhone"
+                              value={values.receiverPhone}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("rec_phone")}
+                              onChange={handleInputChange("receiverPhone")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end"></InputAdornment>,
                               }}
@@ -415,11 +422,11 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="weight"
-                              value={values.weight}
+                              id="cweight"
+                              value={values.cweight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("weight")}
+                              onChange={handleInputChange("cweight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">KG</InputAdornment>,
                               }}
@@ -432,11 +439,11 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="height"
-                              value={values.height}
+                              id="cheight"
+                              value={values.cheight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("height")}
+                              onChange={handleInputChange("cheight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -453,7 +460,7 @@ const Truckowner = () => {
                               value={values.cwidth}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cwidth")}
+                              onChange={handleInputChange("cwidth")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -466,11 +473,11 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="cvertical"
-                              value={values.cvertical}
+                              id="cverticalreal"
+                              value={values.cverticalreal}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cvertical")}
+                              onChange={handleInputChange("cverticalreal")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -486,10 +493,9 @@ const Truckowner = () => {
                               <TextField
                                 id="datetime-local"
                                 type="datetime-local"
-                                defaultValue="2017-05-24T10:30"
-                                value={values.cdate}
+                                value={stringToDateTime(values.arrivalDatetimes)}
                                 sx={{ m: 1, width: 200 }}
-                                onChange={inputhandleChange("cdate")}
+                                onChange={handleInputChange("arrivalDatetimes")}
                                 InputLabelProps={{
                                   shrink: true,
                                 }}
@@ -513,7 +519,9 @@ const Truckowner = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <Stack direction="row" spacing={1}>
-                              <Chip label="운송완료" color="primary" />
+                              <div style={{ marginLeft: "8px" }}>
+                                <Chip label={values.statusName} color="primary" />
+                              </div>
                             </Stack>
                           </Grid>
                         </Grid>
@@ -571,4 +579,4 @@ const Truckowner = () => {
   );
 }
 
-export default Truckowner;
+export default Cargo;

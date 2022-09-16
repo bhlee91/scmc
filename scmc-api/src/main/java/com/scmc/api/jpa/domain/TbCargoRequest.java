@@ -139,6 +139,10 @@ public class TbCargoRequest {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
+	// 상태명
+	@Transient
+	private String statusName;
+	
 	// 상세보기
 	@Transient
 	private boolean expanded = false;

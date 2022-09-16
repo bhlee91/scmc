@@ -21,4 +21,5 @@ public interface TbCommonCdRepository extends JpaRepository<TbCommonCd, String> 
 	
 	List<TbCommonCd> findAllByOrderByCodeTypeAscSortOrderAsc();
 	List<TbCommonCd> findByCodeTypeOrderBySortOrderAsc(String codeType);
+	TbCommonCd findByCdid(String cdid);
 }

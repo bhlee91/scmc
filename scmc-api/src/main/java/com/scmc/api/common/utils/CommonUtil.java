@@ -21,6 +21,12 @@ public class CommonUtil {
 		return format.format(today);
 	}
 	
+	public static String getFormatDate(Date date) {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		
+		return format.format(date);
+	}
+	
 	// LinkedHashMap : 삽입 순서 보장 map
 	// map -> json string 변환
 	public static String getJsonToStringFromMap(LinkedHashMap<String, String> map) {

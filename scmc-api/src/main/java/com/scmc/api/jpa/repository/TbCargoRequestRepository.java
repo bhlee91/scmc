@@ -10,5 +10,6 @@ import com.scmc.api.jpa.domain.TbCargoRequest;
 @Repository
 public interface TbCargoRequestRepository extends JpaRepository<TbCargoRequest, Long> {
 	
-	List<TbCargoRequest> findWithTbCargoImageUsingFetchJoinByOwnerUid(Long ownerUid);
+	List<TbCargoRequest> findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(Long ownerUid);
+	List<TbCargoRequest> findAllByOrderByReqIdAsc();
 }

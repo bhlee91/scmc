@@ -22,6 +22,7 @@ import com.scmc.api.jpa.repository.TbCargoHistRepository;
 import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepositoryCustomImpl;
+import com.scmc.api.jpa.repository.TbCommonCdRepository;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 	
 	private final KaKaoLocalUtil kakaoLocalUtil;
 	
+	private final TbCommonCdRepository tbCommonCdRepository;
 	private final TbCargoRequestRepository tbCargoRequestRepository;
 	private final TbCargoImageRepository tbCargoImageRepository;
 	private final TbCargoHistRepository tbCargoHistReqository;
@@ -46,8 +48,21 @@ public class CargoReqServiceImpl implements CargoReqService{
 	@Override
 	@Transactional
 	public List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid) {
+		List<TbCargoRequest> result;
 		
-		List<TbCargoRequest> result = tbCargoRequestRepositoryCustomImpl.customFindWithTbCargoImageUsingFetchJoinByOwnerUid(ownerUid);
+		if (ownerUid == null) {
+			result = tbCargoRequestRepository.findAllByOrderByReqIdAsc();
+		} else {
+			result = tbCargoRequestRepositoryCustomImpl.dynamicFindWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
+		}
+		
+		for (TbCargoRequest obj : result) {
+			obj.setStatusName(tbCommonCdRepository.findByCdid(obj.getStatus()).getCodeName());
+			
+			for (TbCargoImage images : obj.getImages()) {
+				images.setContents(new String(images.getImageContents()));
+			}
+		}
 	
 		return result;
 	}

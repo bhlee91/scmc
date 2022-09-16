@@ -6,5 +6,5 @@ import com.scmc.api.jpa.domain.TbCargoRequest;
 
 public interface TbCargoRequestRepositoryCustom {
 
-	List<TbCargoRequest> customFindWithTbCargoImageUsingFetchJoinByOwnerUid(Long ownerUid);
+	List<TbCargoRequest> dynamicFindWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(Long ownerUid);
 }

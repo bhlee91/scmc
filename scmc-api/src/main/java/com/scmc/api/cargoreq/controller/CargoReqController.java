@@ -32,10 +32,10 @@ public class CargoReqController {
 	@ApiOperation(value = "화주별 이용내역 전체 조회", notes = "화주별 이용내역 리스트를 조회한다.")
 	@GetMapping({"/request", "/request/{ownerUid}"})
 	public ResponseEntity<?> selectCargoRequest(
-			@ApiParam(value = "화주 uid", example = "1") @PathVariable(value = "ownerUid") Long ownerUid
+			@ApiParam(value = "화주 uid", example = "1") @PathVariable(value = "ownerUid", required = false) Long ownerUid
 			) throws Exception {
 		log.info("========================");
-		log.info("사용자별 이용내역 리스트 조회");
+		log.info("사용자별 이용내역 리스트 조회 => ");
 		log.info("========================");
 		
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByOwnerUid(ownerUid), HttpStatus.OK);
@@ -63,10 +63,10 @@ public class CargoReqController {
 	 * TN: 운송취소
 	 */
 	@ApiOperation(value = "의뢰 내역 상태 변경", notes = "의뢰내역 상태를 변경한다.")
-	@PostMapping("/update")
+	@PostMapping("/status")
 	public ResponseEntity<?> updateCargoRequestStatus(
 			@ApiParam(value = "진행 상태", example = "RO") @RequestParam(value = "status") String status,
-			@ApiParam(value = "의뢰 번호", example = "1") @RequestParam(value = "reqId")  Long reqId
+			@ApiParam(value = "의뢰 번호", example = "1") @RequestParam(value = "reqId") Long reqId
 			) throws Exception {
 		log.info("========================");
 		log.info("의뢰내역 상태 변경");
