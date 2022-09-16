@@ -1,20 +1,20 @@
 [
   {
-    "field": "id",
+    "field": "truckownerUid",
     "headerName": "사용자ID",
     "width": 80,
     "headerClassName": "super-app-theme--header",
     "headerAlign": "center"
   },
   {
-    "field": "car_number",
+    "field": "carNumber",
     "headerName": "차량번호",
     "width": 130,
     "headerAlign": "center",
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "phone_number",
+    "field": "phoneNumber",
     "headerName": "전화번호",
     "width": 150,
     "headerAlign": "center",
@@ -22,7 +22,7 @@
     "editable": true
   },
   {
-    "field": "truckowner_Name",
+    "field": "truckownerName",
     "headerName": "이름",
     "type": "number",
     "width": 170,
@@ -30,7 +30,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "Business_No",
+    "field": "businessNo",
     "headerName": "사업자등록번호",
     "sortable": false,
     "width": 130,
@@ -38,7 +38,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "addr",
+    "field": "addrSt",
     "headerName": "주소",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
@@ -47,7 +47,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "Truck_tons",
+    "field": "truckTons",
     "headerName": "트럭톤수",
     "sortable": false,
     "width": 100,
@@ -55,7 +55,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "LongYN",
+    "field": "longyn",
     "headerName": "장축여부",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
@@ -64,7 +64,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "refrigerated_frozen",
+    "field": "refrigeratedFrozen",
     "headerName": "냉장냉동여부",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
@@ -73,7 +73,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "Stowage_type",
+    "field": "stowageType",
     "headerName": "적재함형태",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
@@ -82,7 +82,7 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "Lift_type",
+    "field": "liftType",
     "headerName": "리프트타입",
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,

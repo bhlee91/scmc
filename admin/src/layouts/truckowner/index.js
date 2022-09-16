@@ -45,7 +45,7 @@ import cargorows from "./cargorows.json";
 import columns from "./columns.json";
 
 import { 
-  testApi
+  getTruckOwnerList, getTruckOwner
 } from "api/truck";
 
 const itemData = [
@@ -57,115 +57,6 @@ const itemData = [
   },
   {
     img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-  },
-];
-
-// 팝업 끝
-
-const rows = [
-  {
-    id: 1,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 2,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 3,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 4,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 5,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 6,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 7,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
-  },
-  {
-    id: 8,
-    car_number: "122가1234",
-    phone_number: "010-123-456",
-    truckowner_Name: "홍길동",
-    Business_No: "123456789",
-    addr: "경기도 성남시 탄천상로",
-    Truck_tons: "1톤",
-    LongYN: "장축",
-    refrigerated_frozen: "해당없음",
-    Stowage_type: "호로",
-    Lift_type: "해당없음",
   },
 ];
 
@@ -247,6 +138,8 @@ const cargocolumns = [
 ];
 
 function Truckowner() {
+  const [rows, setRows] = React.useState([]);
+
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -254,7 +147,12 @@ function Truckowner() {
   const [open, setOpen] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
+    setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
+    getTruckOwner(params.row.truckownerUid)
+      .then(res => {
+        console.log(res);
+        setValues(res.data)
+      })
     setVisible(true);
   };
 
@@ -263,40 +161,35 @@ function Truckowner() {
     setOpen(true);
   };
   // 상세정보
-  const [values, setValues] = React.useState({
-    business_no: "",
-    cname: "",
-    free_yn: "N",
-    loryn: "ONA",
-    rfofz: "RNA",
-    STOTY: "SCG",
-    LFTYN: "LNA",
-    pay_remain: "",
-    car_number: "",
-    phone_number: "",
-  });
+  const [values, setValues] = React.useState([]);
   const inputhandleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
   // 상세정보 끝
 
   const [svalues, setSvalues] = React.useState({
-    startdate: "",
-    enddate: "",
-    owner_name: "",
-    car_no: "",
+    truckownerName: "",
+    carNumber: "",
+    businessNo: ""
   });
 
   const handleChange = (prop) => (event) => {
-    setSvalues({ ...svalues, [prop]: event.target.value });
+    setSvalues({ ...svalues, [prop]: event.target.value }); 
   };
   const handleClose = () => {
     setOpen(false);
   };
 
   React.useEffect(() => {
-    testApi()
+    getTruckOwnerList(
+      0,
+      10,
+      svalues.carNumber == "" ? null : svalues.carNumber,
+      svalues.businessNo == "" ? null : svalues.businessNo,
+      svalues.truckownerName == "" ? null : svalues.truckownerName,
+      )
     .then(res => {
+      setRows(res.data.content)
       console.log(res)
     })
   }, [])
@@ -323,42 +216,8 @@ function Truckowner() {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="date"
-                            type="date"
-                            label="가입시작일"
-                            defaultValue="2017-05-24"
-                            value={svalues.startdate}
-                            sx={{ m: 1, width: 200 }}
-                            onChange={handleChange("startdate")}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            size="small"
-                          />
-                        </Stack>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Stack component="form" noValidate spacing={1}>
-                          <TextField
-                            id="date"
-                            type="date"
-                            defaultValue="2017-05-24"
-                            label="가입종료일"
-                            value={svalues.enddate}
-                            sx={{ m: 1, width: 200 }}
-                            onChange={handleChange("enddate")}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            size="small"
-                          />
-                        </Stack>
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Stack component="form" noValidate spacing={1}>
-                          <TextField
                             id="owner_name"
-                            value={svalues.product_name}
+                            value={svalues.truckownerName}
                             label="차주성명"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
@@ -370,7 +229,7 @@ function Truckowner() {
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
                             id="car_no"
-                            value={svalues.car_no}
+                            value={svalues.carNumber}
                             label="차량번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
@@ -378,7 +237,18 @@ function Truckowner() {
                           />
                         </Stack>
                       </Grid>
-
+                      <Grid item xs={2}>
+                        <Stack component="form" noValidate spacing={1}>
+                          <TextField
+                            id="business_no"
+                            value={svalues.businessNo}
+                            label=" 사업자 번호"
+                            size="small"
+                            sx={{ m: 1, width: "25ch" }}
+                            onChange={handleChange("car_no")}
+                          />
+                        </Stack>
+                      </Grid>
                       <Grid item container xs={2} display="flex" justify="center">
                         <Stack justifyContent="center" spacing={2}>
                           <Button variant="contained" size="small" color="info">
@@ -415,6 +285,7 @@ function Truckowner() {
           <DataGrid
             autoHeight
             rows={rows}
+            getRowId={(obj) => obj.truckownerUid}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
@@ -449,7 +320,7 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="car_number"
-                            value={values.car_number}
+                            value={values.carNumber || ''}
                             sx={{ m: 1, width: "25ch" }}
                             size="small"
                             onChange={inputhandleChange("car_number")}
@@ -465,7 +336,7 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={4}>
                           <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
-                            홍길동
+                            {values.truckownerName}
                           </MDTypography>
                         </Grid>
 
@@ -477,7 +348,7 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="phone_number"
-                            value={values.phone_number}
+                            value={values.phoneNumber || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={inputhandleChange("phone_number")}
@@ -494,9 +365,9 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="business_no"
-                            value={values.business_no}
+                            value={values.businessNo || ''}
                             size="small"
-                            fullwidth
+                            fullwidth = "true"
                             onChange={inputhandleChange("business_no")}
                             InputProps={{
                               endAdornment: <InputAdornment position="end"></InputAdornment>,
@@ -513,11 +384,13 @@ function Truckowner() {
                             <Select
                               sx={{ height: 40, minWidth: 180 }}
                               id="cname"
-                              value={values.loadmethod}
+                              value={values.truckTons || ''}
                               onChange={inputhandleChange("cname")}
                               size="small"
-                              fullwidth
+                              fullwidth = "true"
+                              defaultValue={""}
                             >
+                              <MenuItem value={""}>해당없음</MenuItem>
                               <MenuItem value={"0P55T"}>0.55톤</MenuItem>
                               <MenuItem value={"1000T"}>1톤</MenuItem>
                               <MenuItem value={"1P04T"}>1.4톤</MenuItem>
@@ -541,7 +414,7 @@ function Truckowner() {
                             <RadioGroup
                               row
                               id="rfofz"
-                              value={values.LORYN}
+                              value={values.longyn || ''}
                               onChange={inputhandleChange("loryn")}
                             >
                               <FormControlLabel value="LOY" control={<Radio />} label="초장축" />
@@ -559,7 +432,7 @@ function Truckowner() {
                             <RadioGroup
                               row
                               id="STOTY"
-                              value={values.ctype}
+                              value={values.stowageType || ''}
                               onChange={inputhandleChange("STOTY")}
                             >
                               <FormControlLabel value="SCG" control={<Radio />} label="카고" />
@@ -579,7 +452,7 @@ function Truckowner() {
                             <RadioGroup
                               row
                               id="rfofz"
-                              value={values.rfofz}
+                              value={values.refrigeratedFrozen || ''}
                               onChange={inputhandleChange("rfofz")}
                             >
                               <FormControlLabel value="rrf" control={<Radio />} label="냉장" />
@@ -598,7 +471,7 @@ function Truckowner() {
                             <RadioGroup
                               row
                               id="LFTYN"
-                              value={values.LFTYN}
+                              value={values.liftType || ''}
                               onChange={inputhandleChange("LFTYN")}
                             >
                               <FormControlLabel value="LLF" control={<Radio />} label="리프트" />
@@ -614,7 +487,7 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="business_copy"
-                            value={values.height}
+                            value={values.height || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={inputhandleChange("business_copy")}
@@ -630,7 +503,7 @@ function Truckowner() {
                             <RadioGroup
                               row
                               id="free_yn"
-                              value={values.LORYN}
+                              value={values.freeyn || ''}
                               onChange={inputhandleChange("loryn")}
                             >
                               <FormControlLabel value="N" control={<Radio />} label="유료" />
@@ -646,7 +519,7 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="pay_remain"
-                            value={values.cvertical}
+                            value={values.cvertical || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={inputhandleChange("pay_remain")}
@@ -762,7 +635,7 @@ function Truckowner() {
       <div>
         <Dialog
           // fullScreen={fullScreen}
-          fullWidth
+          fullWidth = "true"
           open={open}
           onClose={handleClose}
           sx={{
