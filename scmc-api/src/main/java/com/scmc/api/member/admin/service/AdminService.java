@@ -1,5 +1,8 @@
 package com.scmc.api.member.admin.service;
 
-public interface AdminService {
+import java.util.HashMap;
 
+public interface AdminService {
+	
+	HashMap<String, Object> getDashboardInfo();
 }

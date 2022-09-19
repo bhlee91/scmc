@@ -12,6 +12,7 @@ Coded by www.creative-tim.com
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
+import * as React from "react";
 
 // @mui material components
 import Grid from "@mui/material/Grid";
@@ -36,8 +37,26 @@ import Projects from "layouts/dashboard/components/Projects";
 
 import { Truckowner } from "layouts/truckowner";
 
-function Dashboard() {
+import {
+  getDashboardInfo
+} from "api/dashboard/index";
+
+const Dashboard = () => {
   const { sales, tasks } = reportsLineChartData;
+
+  const [ dashboardInfo, setDashboardInfo ] = React.useState({
+    count_by_month: [],
+    request_count: 0,
+    tf_count: 0,
+    truckowner_count: 0
+  })
+
+  React.useEffect(() => {
+    getDashboardInfo()
+    .then(res => {
+      setDashboardInfo({ ...res.data })
+    })
+  }, [])
 
   return (
     <DashboardLayout>
@@ -50,7 +69,7 @@ function Dashboard() {
                 color="dark"
                 icon="weekend"
                 title="화물운송완료"
-                count={281}
+                count={dashboardInfo.tf_count}
                 percentage={{
                   color: "success",
                   amount: "+55%",
@@ -64,7 +83,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="person_add"
                 title="차주수"
-                count="2,300"
+                count={dashboardInfo.truckowner_count}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -79,7 +98,7 @@ function Dashboard() {
                 color="success"
                 icon="store"
                 title="화물등록수"
-                count="34k"
+                count={dashboardInfo.request_count}
                 percentage={{
                   color: "success",
                   amount: "+1%",
