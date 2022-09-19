@@ -41,7 +41,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-import cargorows from "./cargorows.json";
+//import cargorows from "./cargorows.json";
+import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
 import { 
@@ -60,86 +61,11 @@ const itemData = [
   },
 ];
 
-// 차주 화물 데이타
-const cargocolumns = [
-  {
-    field: "id",
-    headerName: "화물ID",
-    width: 50,
-    headerClassName: "super-app-theme--header",
-    headerAlign: "center",
-  },
-  {
-    field: "cargo_name",
-    headerName: "화물명칭",
-    width: 240,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "name",
-    headerName: "화주성명",
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-    // editable: true,
-  },
-  {
-    field: "phone_number",
-    headerName: "화주전화번호",
-    type: "number",
-    width: 150,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_datetimes",
-    headerName: "출발일시",
-    sortable: false,
-    width: 190,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_datetimes",
-    headerName: "도착일시",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 190,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_addr_st",
-    headerName: "상차지",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_addr_st",
-    headerName: "하차지",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "status",
-    headerName: "상태",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-];
+
 
 function Truckowner() {
   const [rows, setRows] = React.useState([]);
-
+  const [cargorows, setCargorows] = React.useState([]);
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -150,9 +76,12 @@ function Truckowner() {
     setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
     getTruckOwner(params.row.truckownerUid)
       .then(res => {
-        console.log(res);
         setValues(res.data)
-      })
+        
+        const hist = res.data.hist
+        hist.map((key) =>
+          setCargorows(key.reqId)
+      )})
     setVisible(true);
   };
 
@@ -190,7 +119,6 @@ function Truckowner() {
       )
     .then(res => {
       setRows(res.data.content)
-      console.log(res)
     })
   }, [])
 
@@ -615,6 +543,7 @@ function Truckowner() {
                     autoHeight
                     rows={cargorows}
                     columns={cargocolumns}
+                    getRowId={(obj) => obj.reqId}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                     rowSpacingType="border"
