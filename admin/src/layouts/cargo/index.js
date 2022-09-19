@@ -550,7 +550,7 @@ const Cargo = () => {
                       <MDTypography gutterBottom variant="h5" component="div">
                         상차지이미지
                       </MDTypography>
-                      <ImageGallery items={images} />;
+                      <ImageGallery items={images} />
                     </CardContent>
                   </CardActionArea>
                 </Card>
@@ -564,7 +564,7 @@ const Cargo = () => {
                       <MDTypography gutterBottom variant="h5" component="div">
                         하차지이미지
                       </MDTypography>
-                      <ImageGallery items={images} />;
+                      <ImageGallery items={images} />
                     </CardContent>
                   </CardActionArea>
                 </Card>
