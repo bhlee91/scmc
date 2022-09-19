@@ -5,7 +5,6 @@ import DashboardNavbar from "pages/Navbars/DashboardNavbar";
 import Footer from "pages/Footer";
 import Box from "@mui/material/Box";
 import Alert from "@mui/material/Alert";
-
 import Stack from "@mui/material/Stack";
 
 import { Card, CardContent, CardActionArea, CardActions } from "@mui/material";
@@ -39,48 +38,17 @@ import InputAdornment from "@mui/material/InputAdornment";
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 
-import cargocolumns from "./test/cargocolumns.json";
+import cargocolumns from "./json/cargocolumns.json";
+import images from "./json/images.json";
 
 import {
-  searchRequest
+  searchAllRequest
 } from "api/cargo";
 import { 
   formatTimeStamp, 
   stringToDateTime,
   formatFare
 } from "utils/commonUtils";
-
-const images = [
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
-  },
-];
-// 팝업 끝
 
 const Cargo = () => {
   const [controller] = useMaterialUIController()
@@ -89,12 +57,13 @@ const Cargo = () => {
   const [open, setOpen] = React.useState(false);
   const [rows, setRows] = React.useState([])
   const [search, setSearch] = React.useState({
-    departDatetimes: "",
-    arrivalDatetimes: "",
-    owner_name: "",
-    car_no: "",
+    departDate: "",
+    arrivalDate: "",
+    phoneNumber: "",
+    status: "all",
   })
   const [values, setValues] = React.useState({
+    reqId: 0,
     transitFare: 0,
     additionalFare: 0,
     receiverPhone: "",
@@ -107,8 +76,20 @@ const Cargo = () => {
     departDatetimes: "",
     arrivalDatetimes: "",
     status: "",
-    statusName: ""
+    statusName: "",
+    regId: "ADMIN"
   })
+
+  React.useEffect(() => {
+    searchAllRequest(search)
+    .then(res => {
+      res.data.map((obj) => {
+        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
+        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+      })
+      setRows(res.data)
+    })
+  }, [])
 
   const handleInputChange = (prop) => (event) => {
     let val = event.target.value
@@ -132,12 +113,8 @@ const Cargo = () => {
     setSearch({ ...search, [prop]: event.target.value })
   }
 
-  const handleInputNumber = (event) => {
-    if(!/[0-9]/.test(event.key)) event.preventDefault()
-  }
-
-  React.useEffect(() => {
-    searchRequest()
+  const handleSearchRequest = () => {
+    searchAllRequest(search)
     .then(res => {
       res.data.map((obj) => {
         obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
@@ -145,7 +122,11 @@ const Cargo = () => {
       })
       setRows(res.data)
     })
-  }, [])
+  }
+
+  const handleSaveRequest = () => {
+    console.log(values)
+  }
   
   return (
     <DashboardLayout>
@@ -169,12 +150,12 @@ const Cargo = () => {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="date"
+                            id="departDate"
                             type="date"
                             label="출발일"
-                            value={search.departDatetimes}
+                            value={search.departDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("startdate")}
+                            onChange={searchHandleChange("departDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -185,12 +166,12 @@ const Cargo = () => {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="date"
+                            id="arrivalDate"
                             type="date"
                             label="도착일"
-                            value={search.arrivalDatetimes}
+                            value={search.arrivalDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("enddate")}
+                            onChange={searchHandleChange("arrivalDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -201,31 +182,41 @@ const Cargo = () => {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="owner_name"
-                            value={search.product_name}
-                            label="차주성명"
+                            id="phoneNumber"
+                            value={search.phoneNumber}
+                            label="화주 휴대폰번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={searchHandleChange("owner_name")}
+                            onChange={searchHandleChange("phoneNumber")}
                           />
                         </Stack>
                       </Grid>
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
-                          <TextField
-                            id="car_no"
-                            value={search.car_no}
-                            label="차량번호"
+                          <Select
+                            id="status"
+                            value={search.status}
+                            label="상태"
                             size="small"
-                            sx={{ m: 1, width: "25ch" }}
-                            onChange={searchHandleChange("car_no")}
-                          />
+                            sx={{ m: 1, height: 37.25, width: "25ch" }}
+                            onChange={searchHandleChange("status")}
+                          >
+                            <MenuItem value="all">전체</MenuItem>
+                            <MenuItem value="RO">준비/등록중</MenuItem>
+                            <MenuItem value="MO">최적차량검색</MenuItem>
+                            <MenuItem value="MF">매칭완료</MenuItem>
+                            <MenuItem value="LC">상차완료</MenuItem>
+                            <MenuItem value="TO">운송중</MenuItem>
+                            <MenuItem value="UC">하차완료</MenuItem>
+                            <MenuItem value="TF">운송완료</MenuItem>
+                            <MenuItem value="TN">운송취소</MenuItem>
+                          </Select>
                         </Stack>
                       </Grid>
 
                       <Grid item container xs={2} display="flex" justify="center">
                         <Stack justifyContent="center" spacing={2}>
-                          <Button variant="contained" size="small" color="info">
+                          <Button variant="contained" size="small" color="info" onClick={handleSearchRequest}>
                             검색
                           </Button>
                         </Stack>
@@ -400,57 +391,6 @@ const Cargo = () => {
                           </Grid>
                           <Grid item xs={2}>
                             <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
-                              수취인정보
-                            </MDTypography>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <TextField
-                              id="receiverPhone"
-                              value={values.receiverPhone}
-                              size="small"
-                              sx={{ m: 1, width: "25ch" }}
-                              onChange={handleInputChange("receiverPhone")}
-                              InputProps={{
-                                endAdornment: <InputAdornment position="end"></InputAdornment>,
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={2}>
-                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
-                              중량
-                            </MDTypography>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <TextField
-                              id="cweight"
-                              value={values.cweight}
-                              size="small"
-                              sx={{ m: 1, width: "25ch" }}
-                              onChange={handleInputChange("cweight")}
-                              InputProps={{
-                                endAdornment: <InputAdornment position="end">KG</InputAdornment>,
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={2}>
-                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
-                              높이
-                            </MDTypography>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <TextField
-                              id="cheight"
-                              value={values.cheight}
-                              size="small"
-                              sx={{ m: 1, width: "25ch" }}
-                              onChange={handleInputChange("cheight")}
-                              InputProps={{
-                                endAdornment: <InputAdornment position="end">M</InputAdornment>,
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={2}>
-                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
                               가로
                             </MDTypography>
                           </Grid>
@@ -485,6 +425,57 @@ const Cargo = () => {
                           </Grid>
                           <Grid item xs={2}>
                             <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
+                              높이
+                            </MDTypography>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <TextField
+                              id="cheight"
+                              value={values.cheight}
+                              size="small"
+                              sx={{ m: 1, width: "25ch" }}
+                              onChange={handleInputChange("cheight")}
+                              InputProps={{
+                                endAdornment: <InputAdornment position="end">M</InputAdornment>,
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={2}>
+                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
+                              중량
+                            </MDTypography>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <TextField
+                              id="cweight"
+                              value={values.cweight}
+                              size="small"
+                              sx={{ m: 1, width: "25ch" }}
+                              onChange={handleInputChange("cweight")}
+                              InputProps={{
+                                endAdornment: <InputAdornment position="end">KG</InputAdornment>,
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={2}>
+                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
+                              수취인정보
+                            </MDTypography>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <TextField
+                              id="receiverPhone"
+                              value={values.receiverPhone}
+                              size="small"
+                              sx={{ m: 1, width: "25ch" }}
+                              onChange={handleInputChange("receiverPhone")}
+                              InputProps={{
+                                endAdornment: <InputAdornment position="end"></InputAdornment>,
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={2}>
+                            <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
                               운송완료일
                             </MDTypography>
                           </Grid>
@@ -509,7 +500,9 @@ const Cargo = () => {
                           </Grid>
                           <Grid item xs={4}>
                             <MDTypography gutterBottom variant="body2">
-                              안전하게 배송해 주세요
+                              <div style={{ marginLeft: "8px" }}>
+                                안전하게 배송해 주세요
+                              </div>
                             </MDTypography>
                           </Grid>
                           <Grid item xs={2}>
@@ -531,7 +524,7 @@ const Cargo = () => {
                   <MDBox alignItems="right" justifyContent="right">
                     <CardActions>
                       <Box display="flex" justifyContent="flex-end">
-                        <Button variant="contained" color="info" size="small">
+                        <Button variant="contained" color="info" size="small" onClick={handleSaveRequest}>
                           저장
                         </Button>
                       </Box>

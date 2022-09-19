@@ -1,6 +1,7 @@
 package com.scmc.api.cargoreq.service.impl;
 
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-public class CargoReqServiceImpl implements CargoReqService{
+public class CargoReqServiceImpl implements CargoReqService {
 	
 	@PersistenceContext
 	private EntityManager em;
@@ -47,13 +48,13 @@ public class CargoReqServiceImpl implements CargoReqService{
 
 	@Override
 	@Transactional
-	public List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid) {
+	public List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException {
 		List<TbCargoRequest> result;
 		
 		if (ownerUid == null) {
-			result = tbCargoRequestRepository.findAllByOrderByReqIdAsc();
+			result = tbCargoRequestRepositoryCustomImpl.dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(departDate, arrivalDate, phoneNumber, status);
 		} else {
-			result = tbCargoRequestRepositoryCustomImpl.dynamicFindWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
+			result = tbCargoRequestRepository.findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
 		}
 		
 		for (TbCargoRequest obj : result) {
@@ -96,7 +97,7 @@ public class CargoReqServiceImpl implements CargoReqService{
 	
 	@Transactional
 	@Override
-	public int insertAndUpdateRequest(Map<String, Object> param) {
+	public int saveRequest(Map<String, Object> param) {
 		TbCargoRequest tbcr = null;
 		
 		try {

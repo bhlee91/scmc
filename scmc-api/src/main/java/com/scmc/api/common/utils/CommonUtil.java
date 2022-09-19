@@ -1,5 +1,6 @@
 package com.scmc.api.common.utils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -25,6 +26,13 @@ public class CommonUtil {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		
 		return format.format(date);
+	}
+	
+	// String to Date
+	public static Date getStringToDate(String dateString) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		return format.parse(dateString);
 	}
 	
 	// LinkedHashMap : 삽입 순서 보장 map

@@ -22,6 +22,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.scmc.api.common.utils.CommonUtil;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -156,6 +157,7 @@ public class TbCargoRequest {
 		SimpleDateFormat formatToMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
+		this.reqId = request.get("reqId").equals(null) ? 0 : Long.parseLong(request.get("reqId").toString());
 		this.ownerUid = Long.parseLong(request.get("ownerUid").toString());
 		this.cargoName = request.get("cargoName").toString();
 		this.truckUid = Long.parseLong(request.get("truckUid").toString());
@@ -181,6 +183,10 @@ public class TbCargoRequest {
 		this.additionalFare = Integer.parseInt(request.get("additionalFare").toString());
 		this.status = request.get("status").toString();
 		this.regComDate = format.parse(request.get("regComDate").toString());
+		
+		if (request.containsKey("regId")) {
+			this.modDt = format.parse(CommonUtil.getNowDate().toString());
+		}
 	}
 
 }

@@ -29,26 +29,30 @@ public class CargoReqController {
 
 	private final CargoReqService cargoReqService;
 	
-	@ApiOperation(value = "화주별 이용내역 전체 조회", notes = "화주별 이용내역 리스트를 조회한다.")
+	@ApiOperation(value = "화주별 이용내역 조회", notes = "화주별 이용내역 리스트를 조회한다.")
 	@GetMapping({"/request", "/request/{ownerUid}"})
 	public ResponseEntity<?> selectCargoRequest(
-			@ApiParam(value = "화주 uid", example = "1") @PathVariable(value = "ownerUid", required = false) Long ownerUid
+			@ApiParam(value = "화주 uid", example = "1") @PathVariable(value = "ownerUid", required = false) Long ownerUid,
+			@ApiParam(value = "출발일", example = "2022-01-01") @RequestParam(value = "departDate", required = false) String departDate,
+			@ApiParam(value = "도착일", example = "2022-12-31") @RequestParam(value = "arrivalDate", required = false) String arrivalDate,
+			@ApiParam(value = "화주 휴대폰번호", example = "010-1234-5678") @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+			@ApiParam(value = "상태", example = "MO") @RequestParam(value = "status", required = false) String status
 			) throws Exception {
 		log.info("========================");
-		log.info("사용자별 이용내역 리스트 조회 => ");
+		log.info("사용자별 이용내역 리스트 조회 => " + departDate + ", " + arrivalDate + ", " + phoneNumber + ", " + status);
 		log.info("========================");
 		
-		return new ResponseEntity<>(cargoReqService.selectCargoRequestByOwnerUid(ownerUid), HttpStatus.OK);
+		return new ResponseEntity<>(cargoReqService.selectCargoRequestByOwnerUid(ownerUid, departDate, arrivalDate, phoneNumber, status), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
 	@PostMapping("/request")
-	public ResponseEntity<?> createCargoRequest(@RequestBody HashMap<String, Object> param) throws Exception {
+	public ResponseEntity<?> saveCargoRequest(@RequestBody HashMap<String, Object> param) throws Exception {
 		log.info("========================");
 		log.info("의뢰내역 등록/수정");
 		log.info("========================");
 	
-		return new ResponseEntity<>(cargoReqService.insertAndUpdateRequest(param), HttpStatus.OK);
+		return new ResponseEntity<>(cargoReqService.saveRequest(param), HttpStatus.OK);
 	}
 	
 	/*

@@ -2,6 +2,7 @@ export const nowDateTime = () => {
   return new Date(+new Date() + 3240 * 10000).toISOString().replace("T", " ").replace(/\..*/, '');
 }
 
+// yyyy년MM월dd일 hh:mm
 export const formatTimeStamp = (dateString) => {
   const date = new Date(dateString)
 
@@ -9,9 +10,10 @@ export const formatTimeStamp = (dateString) => {
 
   const formatDate = date.toISOString().replace("T", " ")
 
-  return `${formatDate.substring(0, 4)}년${formatDate.substring(5, 7)}월${formatDate.substring(8, 10)}일 ${formatDate.substring(11, 19)}`
+  return `${formatDate.substring(0, 4)}년${formatDate.substring(5, 7)}월${formatDate.substring(8, 10)}일 ${formatDate.substring(11, 16)}`
 }
 
+// yyyy년MM월dd일 hh:mm -> yyyy-MM-dd hh:mm
 export const stringToDateTime = (dateString) => {
   dateString = dateString.replace(" ", "")
 
