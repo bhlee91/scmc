@@ -53,6 +53,7 @@
     "width": 100,
     "headerAlign": "center",
     "headerClassName": "super-app-theme--header"
+
   },
   {
     "field": "longyn",
@@ -61,7 +62,8 @@
     "sortable": false,
     "width": 140,
     "headerAlign": "center",
-    "headerClassName": "super-app-theme--header"
+    "headerClassName": "super-app-theme--header",
+    "valueGetter":  "getColumnValue"
   },
   {
     "field": "refrigeratedFrozen",
@@ -84,6 +86,8 @@
   {
     "field": "liftType",
     "headerName": "리프트타입",
+    "type" : "singleSelect",
+    "valueOptions" : ["LOY", "ONA"],
     "description": "This column has a value getter and is not sortable.",
     "sortable": false,
     "width": 140,

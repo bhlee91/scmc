@@ -155,7 +155,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 									.offset(page.getOffset())
 									.limit(page.getPageSize())
 									.fetch();
-									
+
 		return new PageImpl<>(list);
 	}
    

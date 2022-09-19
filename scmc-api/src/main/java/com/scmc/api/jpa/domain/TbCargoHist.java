@@ -37,7 +37,7 @@ public class TbCargoHist {
 	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)	
 	@JoinColumn(name = "req_id", referencedColumnName = "req_id")
-	private TbCargoRequest reqId;
+	private TbCargoRequest requests;
 	
 	@Column(name = "owner_uid")
 	private Long ownerUid;
@@ -55,7 +55,7 @@ public class TbCargoHist {
 	
 	public TbCargoHist(Map<String, Object> hist) throws ParseException {
 		
-		this.reqId = (TbCargoRequest) hist.get("reqId");
+		this.requests = (TbCargoRequest) hist.get("reqId");
 		this.ownerUid = Long.parseLong(hist.get("ownerUid").toString());
 		this.tbMemberTruckOwner = (TbMemberTruckOwner) hist.get("tbMemberTruckOwner");
 		this.status = hist.get("status").toString();

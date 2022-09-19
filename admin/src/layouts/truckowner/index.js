@@ -41,7 +41,6 @@ import ImageListItem from "@mui/material/ImageListItem";
 
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-//import cargorows from "./cargorows.json";
 import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
@@ -72,19 +71,27 @@ function Truckowner() {
   const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
+  const [data, setData] = React.useState([]);
   const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
-    getTruckOwner(params.row.truckownerUid)
-      .then(res => {
-        setValues(res.data)
-        
-        const hist = res.data.hist
-        hist.map((key) =>
-          setCargorows(key.reqId)
-      )})
     setVisible(true);
-  };
+    setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
 
+    getTruckOwner(params.row.truckownerUid)
+      .then(res => { 
+        setValues(res.data)
+        const hist = res.data.hist
+        setData([])
+        hist.map(key =>
+          {
+            if(hist.length !== 0){
+              setData(data => [...data, key.requests])
+            }
+          }
+        )
+
+    })
+    setCargorows(() => data)
+  }; 
   const handleCargoRowClick = (params) => {
     setMessage(`cargo Row ID "${params.row.id}" clicked`);
     setOpen(true);
@@ -95,6 +102,24 @@ function Truckowner() {
     setValues({ ...values, [prop]: event.target.value });
   };
   // 상세정보 끝
+
+  const getColumnValue = (data) => {
+    const longyn = data.longyn
+    const liftType = data.liftType
+    const stowageType = data.stowageType
+    const truckTons = data.truckTons
+    const refrigeratedFrozen = data.refrigeratedFrozen
+    
+    data.map((longyn) => {
+      switch(longyn) {
+        case 'ONA' :
+          return '해당없음'
+        case 'LOY' :
+          return '초장축'
+      }
+
+    })
+  }
 
   const [svalues, setSvalues] = React.useState({
     truckownerName: "",
@@ -118,8 +143,10 @@ function Truckowner() {
       svalues.truckownerName == "" ? null : svalues.truckownerName,
       )
     .then(res => {
+      console.log(res.data)
       setRows(res.data.content)
     })
+    
   }, [])
 
   //  팝업용 끝
@@ -220,6 +247,7 @@ function Truckowner() {
             rowSpacingType="border"
             density="compact"
             onRowClick={handleRowClick}
+            on
             sx={{ fontSize: 14, fontFamily: "-apple-system", fontWeight: 400 }}
           />
         </Box>
@@ -334,7 +362,7 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={2}>
                           <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
-                            초장작여부
+                            초장축여부
                           </MDTypography>
                         </Grid>
                         <Grid item xs={4}>
@@ -518,7 +546,7 @@ function Truckowner() {
                         done
                       </Icon>
                       <MDTypography variant="button" fontWeight="regular" color="text">
-                        &nbsp;<strong>총 xx 건</strong> 이 있습니다.
+                        &nbsp;<strong>총 {cargorows.length} 건</strong> 이 있습니다.
                       </MDTypography>
                     </MDBox>
                   </MDBox>
@@ -541,7 +569,7 @@ function Truckowner() {
                 >
                   <DataGrid
                     autoHeight
-                    rows={cargorows}
+                    rows={data}
                     columns={cargocolumns}
                     getRowId={(obj) => obj.reqId}
                     pageSize={5}
