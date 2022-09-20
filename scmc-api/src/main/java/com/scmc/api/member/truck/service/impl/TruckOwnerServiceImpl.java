@@ -73,10 +73,19 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		
 		tmto.ifPresent(user -> {
 			user.setPassword(obj.get("password").toString());
+			user.setCarNumber(obj.get("carNumber").toString());
+			user.setPhoneNumber(obj.get("phoneNumber").toString());
+			user.setStowageType(obj.get("stowageType").toString());
+			//user.setBusinessNo(obj.get("businessNo").toString());
+			user.setLongyn(obj.get("longyn").toString());
+			user.setRefrigeratedFrozen(obj.get("refrigeratedFrozen").toString());
+			user.setLiftType(obj.get("liftType").toString());
+			user.setTruckTons(obj.get("truckTons").toString());
+			user.setFreeyn(obj.get("freeyn").toString());
 			tbMemberTruckOwnerRepository.save(user);
 		});
 		
-		String msg = "비밀번호 변경이 완료되었습니다.";
+		String msg = "회원정보 변경이 완료되었습니다.";
 
 		return msg;
 	}
@@ -155,7 +164,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 									.offset(page.getOffset())
 									.limit(page.getPageSize())
 									.fetch();
-
+		
 		return new PageImpl<>(list);
 	}
    

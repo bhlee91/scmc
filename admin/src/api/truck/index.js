@@ -9,16 +9,24 @@ export const getTruckOwner = (truckownerUid) => {
   });
 };
 
-export const getTruckOwnerList = (page, size, carNumber, truckownerName, businessNo) => {
+export const getTruckOwnerList = (page, size, truckownerName, carNumber,  businessNo) => {
   return request({
     url: `${BASE_URL}/truck/ownerList`,
     method: "get",
     params: {
       page,
       size,
-      carNumber,
       truckownerName,
+      carNumber,
       businessNo
     }
-  });
+  })
+}
+
+export const modTruckOwner = (obj, uid) => {
+  return request({
+    url: `${BASE_URL}/truck/${uid}`,
+    method: "put",
+    data: obj
+  })
 }

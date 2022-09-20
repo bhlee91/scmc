@@ -8,7 +8,7 @@ import Alert from "@mui/material/Alert";
 
 import Stack from "@mui/material/Stack";
 
-import { Card, CardContent, CardActionArea } from "@mui/material";
+import { Card, CardContent, CardActionArea, AlertTitle } from "@mui/material";
 
 import { DataGrid } from "@mui/x-data-grid";
 import MDBox from "components/MDBox";
@@ -45,8 +45,9 @@ import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
 import { 
-  getTruckOwnerList, getTruckOwner
+  getTruckOwnerList, getTruckOwner, modTruckOwner
 } from "api/truck";
+import { formatTimeStamp } from "utils/commonUtils";
 
 const itemData = [
   {
@@ -64,10 +65,10 @@ const itemData = [
 
 function Truckowner() {
   const [rows, setRows] = React.useState([]);
-  const [cargorows, setCargorows] = React.useState([]);
+  
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
-
+  const [rowId, setRowId] = React.useState(0);
   const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
@@ -75,7 +76,8 @@ function Truckowner() {
   const handleRowClick = (params) => {
     setVisible(true);
     setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
-
+    setRowId(params.row.truckownerUid)
+    
     getTruckOwner(params.row.truckownerUid)
       .then(res => { 
         setValues(res.data)
@@ -84,13 +86,14 @@ function Truckowner() {
         hist.map(key =>
           {
             if(hist.length !== 0){
-              setData(data => [...data, key.requests])
+              const requests = key.requests
+              getCargoColumnValue(requests)
+              setData(data => [...data, requests])
             }
           }
         )
-
-    })
-    setCargorows(() => data)
+      })
+    
   }; 
   const handleCargoRowClick = (params) => {
     setMessage(`cargo Row ID "${params.row.id}" clicked`);
@@ -103,21 +106,100 @@ function Truckowner() {
   };
   // 상세정보 끝
 
-  const getColumnValue = (data) => {
-    const longyn = data.longyn
-    const liftType = data.liftType
-    const stowageType = data.stowageType
-    const truckTons = data.truckTons
-    const refrigeratedFrozen = data.refrigeratedFrozen
-    
-    data.map((longyn) => {
-      switch(longyn) {
-        case 'ONA' :
-          return '해당없음'
-        case 'LOY' :
-          return '초장축'
-      }
+  const getCargoColumnValue = data => {
+    [data].map((obj) => {
+      obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
+      obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+    });
 
+    [data].map((obj) => {
+      switch(obj.status) {
+        case 'RO' :
+          return obj.status = '준비/등록중'
+        case 'MO' :
+          return obj.status = '최적차량검색'
+        case 'MF' :
+          return obj.status = '매칭완료'
+        case 'LC' :
+          return obj.status = '상차완료'
+        case 'TO' :
+          return obj.status = '운송중'
+        case 'UC' :
+          return obj.status = '하차완료'          
+        case 'TF' :
+          return obj.status = '운송완료'
+        case 'TN' :
+          return obj.status = '운송취소'
+      }
+    });
+  }
+
+  const getColumnValue = data => {
+    data.map((obj) => {
+      switch(obj.longyn) {
+        case 'LOY' :
+          return obj.longyn = '초장축'
+        case 'ONA' :
+          return obj.longyn = '해당없음'
+      }
+    })
+    
+    data.map((obj) => {
+      switch(obj.refrigeratedFrozen) {
+        case 'rrf' :
+          return obj.refrigeratedFrozen = '냉장'
+        case 'ffz' :
+          return obj.refrigeratedFrozen = '냉동'
+        case 'rna' :
+          return obj.refrigeratedFrozen = '해당없음'
+      } 
+    })
+
+    data.map((obj) => {
+      switch(obj.truckTons) {
+        case '0P55T' :
+          return obj.truckTons = '0.55톤'
+        case '1000T' :
+          return obj.truckTons = '1톤'
+        case '1P04T' :
+          return obj.truckTons = '1.4톤'
+        case '2P05T' :
+          return obj.truckTons = '2.5톤'
+        case '3P05T' :
+          return obj.truckTons = '3.5톤'
+        case '5000T' :
+          return obj.truckTons = '5톤'
+        case '500PT' :
+          return obj.truckTons = '5톤 플러스'
+        case '500XT' :
+          return obj.truckTons = '5톤 축'
+        case '1100T' :
+          return obj.truckTons = '11톤'
+        case '1800T' :
+          return obj.truckTons = '18톤'
+      } 
+    })
+
+    data.map((obj) => {
+      switch(obj.stowageType) {
+        case 'SCG' :
+          return obj.stowageType = '카고'
+        case 'SWB' :
+          return obj.stowageType = '윙바디'
+        case 'STC' :
+          return obj.stowageType = '탑차'
+        case 'STT' :
+          return obj.stowageType = '천막/호루'
+      } 
+    })
+
+    data.map((obj) => {
+      switch(obj.liftType) {
+        case 'LLF' :
+          return obj.liftType = '리프트'
+        case 'LNA' :
+          return obj.liftType = '해당없음'
+      } 
     })
   }
 
@@ -133,6 +215,40 @@ function Truckowner() {
   const handleClose = () => {
     setOpen(false);
   };
+  
+  const searchTruckOwner = () => {
+    getTruckOwnerList(
+      0,
+      10,
+      svalues.truckownerName == "" ? null : svalues.truckownerName,
+      svalues.carNumber == "" ? null : svalues.carNumber,
+      svalues.businessNo == "" ? null : svalues.businessNo
+      )
+    .then(res => {
+      getColumnValue(res.data.content)
+      const result = res.data.content
+      return result
+    })
+    .then(result => {
+      setRows(result)
+    })
+  };
+
+  const updateTruckOwner = () => {
+    if(rowId !== 0){
+      modTruckOwner(values, rowId)
+      .then(res => {
+        console.log(res)
+        return(
+          <Alert serverity="success">
+            <AlertTitle>Success</AlertTitle>
+            {res.data}
+          </Alert>
+        )
+      })
+    }
+      
+  }
 
   React.useEffect(() => {
     getTruckOwnerList(
@@ -143,10 +259,13 @@ function Truckowner() {
       svalues.truckownerName == "" ? null : svalues.truckownerName,
       )
     .then(res => {
-      console.log(res.data)
-      setRows(res.data.content)
+      getColumnValue(res.data.content)
+      const result = res.data.content
+      return result
     })
-    
+    .then(result => {
+      setRows(result)
+    })
   }, [])
 
   //  팝업용 끝
@@ -171,42 +290,45 @@ function Truckowner() {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="owner_name"
+                            id="truckownerName"
                             value={svalues.truckownerName}
                             label="차주성명"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={handleChange("owner_name")}
+                            onChange={handleChange("truckownerName")}
                           />
                         </Stack>
                       </Grid>
+
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="car_no"
+                            id="carNumber"
                             value={svalues.carNumber}
                             label="차량번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={handleChange("car_no")}
+                            onChange={handleChange("carNumber")}
                           />
                         </Stack>
                       </Grid>
+                      
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="business_no"
+                            id="businessNo"
                             value={svalues.businessNo}
-                            label=" 사업자 번호"
+                            label=" 사업자 번호"  
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={handleChange("car_no")}
+                            onChange={handleChange("businessNo")}
                           />
                         </Stack>
                       </Grid>
+
                       <Grid item container xs={2} display="flex" justify="center">
                         <Stack justifyContent="center" spacing={2}>
-                          <Button variant="contained" size="small" color="info">
+                          <Button variant="contained" size="small" color="info" onClick = {searchTruckOwner}>
                             검색
                           </Button>
                         </Stack>
@@ -264,9 +386,17 @@ function Truckowner() {
                   <CardContent>
                     <MDTypography gutterBottom variant="h5" color="success">
                       상세정보
+                      <Grid item container xs={12} display="flex" justify="right">
+                        <Stack justifyContent="center" spacing={2}>
+                          <Button variant="contained" size="small" color="info" onClick = {updateTruckOwner}>
+                            수정
+                          </Button>
+                        </Stack>
+                      </Grid>
                     </MDTypography>
+
                     <Box sx={{ width: "100%" }}>
-                      <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                      <Grid container columnSpacing={{ xs: 1, sm: 2,  md: 3 }}>
                         <Grid item xs={2}>
                           <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>
                             차량번호
@@ -275,11 +405,11 @@ function Truckowner() {
 
                         <Grid item xs={4}>
                           <TextField
-                            id="car_number"
+                            id="carNumber"
                             value={values.carNumber || ''}
                             sx={{ m: 1, width: "25ch" }}
                             size="small"
-                            onChange={inputhandleChange("car_number")}
+                            onChange={inputhandleChange("carNumber")}
                             InputProps={{
                               endAdornment: <InputAdornment position="end"></InputAdornment>,
                             }}
@@ -303,11 +433,11 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={4}>
                           <TextField
-                            id="phone_number"
+                            id="phoneNumber"
                             value={values.phoneNumber || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={inputhandleChange("phone_number")}
+                            onChange={inputhandleChange("phoneNumber")}
                             InputProps={{
                               endAdornment: <InputAdornment position="end"></InputAdornment>,
                             }}
@@ -320,11 +450,11 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={4}>
                           <TextField
-                            id="business_no"
+                            id="businessNo"
                             value={values.businessNo || ''}
                             size="small"
                             fullwidth = "true"
-                            onChange={inputhandleChange("business_no")}
+                            onChange={inputhandleChange("businessNo")}
                             InputProps={{
                               endAdornment: <InputAdornment position="end"></InputAdornment>,
                             }}
@@ -339,9 +469,9 @@ function Truckowner() {
                           <FormControl sx={{ m: 1, minWidth: 180 }}>
                             <Select
                               sx={{ height: 40, minWidth: 180 }}
-                              id="cname"
+                              id="truckTons"
                               value={values.truckTons || ''}
-                              onChange={inputhandleChange("cname")}
+                              onChange={inputhandleChange("truckTons")}
                               size="small"
                               fullwidth = "true"
                               defaultValue={""}
@@ -369,9 +499,9 @@ function Truckowner() {
                           <FormControl>
                             <RadioGroup
                               row
-                              id="rfofz"
+                              id="longyn"
                               value={values.longyn || ''}
-                              onChange={inputhandleChange("loryn")}
+                              onChange={inputhandleChange("longyn")}
                             >
                               <FormControlLabel value="LOY" control={<Radio />} label="초장축" />
                               <FormControlLabel value="ONA" control={<Radio />} label="해당없음" />
@@ -387,9 +517,9 @@ function Truckowner() {
                           <FormControl>
                             <RadioGroup
                               row
-                              id="STOTY"
+                              id="stowageType"
                               value={values.stowageType || ''}
-                              onChange={inputhandleChange("STOTY")}
+                              onChange={inputhandleChange("stowageType")}
                             >
                               <FormControlLabel value="SCG" control={<Radio />} label="카고" />
                               <FormControlLabel value="SWB" control={<Radio />} label="윙바디" />
@@ -407,9 +537,9 @@ function Truckowner() {
                           <FormControl>
                             <RadioGroup
                               row
-                              id="rfofz"
+                              id="refrigeratedFrozen"
                               value={values.refrigeratedFrozen || ''}
-                              onChange={inputhandleChange("rfofz")}
+                              onChange={inputhandleChange("refrigeratedFrozen")}
                             >
                               <FormControlLabel value="rrf" control={<Radio />} label="냉장" />
                               <FormControlLabel value="ffz" control={<Radio />} label="냉동" />
@@ -426,9 +556,9 @@ function Truckowner() {
                           <FormControl>
                             <RadioGroup
                               row
-                              id="LFTYN"
+                              id="liftType"
                               value={values.liftType || ''}
-                              onChange={inputhandleChange("LFTYN")}
+                              onChange={inputhandleChange("liftType")}
                             >
                               <FormControlLabel value="LLF" control={<Radio />} label="리프트" />
                               <FormControlLabel value="LNA" control={<Radio />} label="해당없음" />
@@ -458,9 +588,9 @@ function Truckowner() {
                           <FormControl>
                             <RadioGroup
                               row
-                              id="free_yn"
+                              id="freeyn"
                               value={values.freeyn || ''}
-                              onChange={inputhandleChange("loryn")}
+                              onChange={inputhandleChange("freeyn")}
                             >
                               <FormControlLabel value="N" control={<Radio />} label="유료" />
                               <FormControlLabel value="Y" control={<Radio />} label="무료" />
@@ -546,7 +676,7 @@ function Truckowner() {
                         done
                       </Icon>
                       <MDTypography variant="button" fontWeight="regular" color="text">
-                        &nbsp;<strong>총 {cargorows.length} 건</strong> 이 있습니다.
+                        &nbsp;<strong>총 {data.length} 건</strong> 이 있습니다.
                       </MDTypography>
                     </MDBox>
                   </MDBox>
