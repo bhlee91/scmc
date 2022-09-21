@@ -47,7 +47,8 @@ import columns from "./columns.json";
 import { 
   getTruckOwnerList, getTruckOwner, modTruckOwner
 } from "api/truck";
-import { formatTimeStamp, formatFare } from "utils/commonUtils";
+import { formatFare } from "utils/commonUtils";
+import { formatInKorea } from "utils/dateUtils";
 
 const itemData = [
   {
@@ -147,8 +148,8 @@ function Truckowner() {
 
   const getCargoColumnValue = data => {
     [data].map((obj) => {
-      obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
-      obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+      obj.departDatetimes = formatInKorea(obj.departDatetimes)
+      obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
     });
 
     [data].map((obj) => {

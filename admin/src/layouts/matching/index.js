@@ -45,10 +45,12 @@ import {
   getRequestsForMatching
 } from "api/matching";
 import { 
-  formatTimeStamp, 
-  stringToDateTime,
   formatFare
 } from "utils/commonUtils";
+import {
+  nowDateTime,
+  formatInKorea
+} from "utils/dateUtils";
 
 const rows = [
   {
@@ -86,7 +88,7 @@ const rows = [
 const Matching = () => {
   const [controller] = useMaterialUIController()
   const { darkMode } = controller
-
+  
   const [cargorows, setCargorows] = React.useState([])
   const [radius, setRadius] = React.useState("5")
   const [open, setOpen] = React.useState(false)
@@ -120,8 +122,8 @@ const Matching = () => {
     getRequestsForMatching(search)
     .then(res => {
       res.data.map((obj) => {
-        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
-        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+        obj.departDatetimes = formatInKorea(obj.departDatetimes)
+        obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
       })
 
       setCargorows(res.data)
@@ -155,8 +157,8 @@ const Matching = () => {
     getRequestsForMatching(search)
     .then(res => {
       res.data.map((obj) => {
-        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
-        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+        obj.departDatetimes = formatInKorea(obj.departDatetimes)
+        obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
       })
       setCargorows(res.data)
     })

@@ -45,10 +45,12 @@ import {
   searchAllRequest
 } from "api/cargo";
 import { 
-  formatTimeStamp, 
-  stringToDateTime,
   formatFare
 } from "utils/commonUtils";
+import {
+  formatInKorea,
+  formatStringToDateTime
+} from "utils/dateUtils";
 
 const Cargo = () => {
   const [controller] = useMaterialUIController()
@@ -84,9 +86,10 @@ const Cargo = () => {
     searchAllRequest(search)
     .then(res => {
       res.data.map((obj) => {
-        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
-        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+        obj.departDatetimes = formatInKorea(obj.departDatetimes)
+        obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
       })
+      console.log(res.data)
       setRows(res.data)
     })
   }, [])
@@ -117,8 +120,8 @@ const Cargo = () => {
     searchAllRequest(search)
     .then(res => {
       res.data.map((obj) => {
-        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
-        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+        obj.departDatetimes = formatInKorea(obj.departDatetimes)
+        obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
       })
       setRows(res.data)
     })
@@ -484,7 +487,7 @@ const Cargo = () => {
                               <TextField
                                 id="datetime-local"
                                 type="datetime-local"
-                                value={stringToDateTime(values.arrivalDatetimes)}
+                                value={formatStringToDateTime(values.arrivalDatetimes)}
                                 sx={{ m: 1, width: 200 }}
                                 onChange={handleInputChange("arrivalDatetimes")}
                                 InputLabelProps={{
