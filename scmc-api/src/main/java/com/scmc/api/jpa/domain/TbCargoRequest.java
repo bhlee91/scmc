@@ -44,6 +44,9 @@ public class TbCargoRequest {
 	@Column(name = "owner_uid")
 	private Long ownerUid;
 	
+	@Transient
+	private String cargoownerName;
+	
 	@Column(name = "cargo_name")
 	private String cargoName;
 	

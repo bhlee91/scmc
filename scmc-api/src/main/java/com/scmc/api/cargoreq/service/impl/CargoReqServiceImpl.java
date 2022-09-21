@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
@@ -19,10 +18,11 @@ import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.dto.MatchingDto;
 import com.scmc.api.jpa.repository.TbCargoHistRepository;
 import com.scmc.api.jpa.repository.TbCargoImageRepository;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
-import com.scmc.api.jpa.repository.TbCargoRequestRepositoryCustomImpl;
+import com.scmc.api.jpa.repository.TbCargoRequestRepositoryCustom;
 import com.scmc.api.jpa.repository.TbCommonCdRepository;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 
@@ -42,17 +42,15 @@ public class CargoReqServiceImpl implements CargoReqService {
 	private final TbCargoImageRepository tbCargoImageRepository;
 	private final TbCargoHistRepository tbCargoHistReqository;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
-	
-	@Autowired
-	private TbCargoRequestRepositoryCustomImpl tbCargoRequestRepositoryCustomImpl;
+	private final TbCargoRequestRepositoryCustom tbCargoRequestRepositoryCustom;
 
 	@Override
 	@Transactional
-	public List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException {
+	public List<TbCargoRequest> selectCargoRequest(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException {
 		List<TbCargoRequest> result;
 		
 		if (ownerUid == null) {
-			result = tbCargoRequestRepositoryCustomImpl.dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(departDate, arrivalDate, phoneNumber, status);
+			result = tbCargoRequestRepositoryCustom.dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(departDate, arrivalDate, phoneNumber, status);
 		} else {
 			result = tbCargoRequestRepository.findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
 		}
@@ -141,6 +139,15 @@ public class CargoReqServiceImpl implements CargoReqService {
 	public List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid) {
 
 		List<TbMemberTruckOwner> result = tbMemberTruckOwnerRepository.findWithTbCargoHistUsingFetchJoinByTruckownerUid(truckownerUid);
+		
+		return result;
+	}
+
+	@Override
+	public List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber,
+			String cargoName, String status) throws ParseException {
+		
+		List<MatchingDto> result = tbCargoRequestRepositoryCustom.dynamicByMatching(departDate, arrivalDate, phoneNumber, cargoName, status);
 		
 		return result;
 	}

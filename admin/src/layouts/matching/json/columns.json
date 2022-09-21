@@ -1,0 +1,26 @@
+[
+  { "field": "id", "headerName": "id", "width": 50 },
+  { "field": "names", "headerName": "이름", "width": 70 },
+  { "field": "tons", "headerName": "톤수", "width": 30 },
+  { "field": "loaddate", "headerName": "상차일시", "width": 130 },
+  {
+    "field": "unloaddate",
+    "headerName": "하차일시",
+    "width": 130
+  },
+  {
+    "field": "depart_addr",
+    "headerName": "상차지주소",
+    "width": 150
+  },
+  {
+    "field": "depart_addr",
+    "headerName": "하차지",
+    "width": 150
+  },
+  {
+    "field": "load_rate",
+    "headerName": "적재율",
+    "width": 150
+  }
+]

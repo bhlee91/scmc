@@ -1,10 +1,8 @@
 import request from "request";
 
-const BASE_URL = "/"
-
-export const getTest = () => {
+export const getRequestsForMatching = (params) => {
   return request({
-    url: `${BASE_URL}/`,
+    url: `/cargo/request/matching?departDate=${params.departDate}&arrivalDate=${params.arrivalDate}&phoneNumber=${params.phoneNumber}&cargoName=${params.cargoName}&status=${params.status}&`,
     method: "get",
   })
 }

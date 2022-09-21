@@ -109,7 +109,7 @@ const Cargo = () => {
     setValues({ ...nextValue })
   }
 
-  const searchHandleChange = (prop) => (event) => {
+  const handleSearchChange = (prop) => (event) => {
     setSearch({ ...search, [prop]: event.target.value })
   }
 
@@ -155,7 +155,7 @@ const Cargo = () => {
                             label="출발일"
                             value={search.departDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("departDate")}
+                            onChange={handleSearchChange("departDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -171,7 +171,7 @@ const Cargo = () => {
                             label="도착일"
                             value={search.arrivalDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("arrivalDate")}
+                            onChange={handleSearchChange("arrivalDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -187,7 +187,7 @@ const Cargo = () => {
                             label="화주 휴대폰번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={searchHandleChange("phoneNumber")}
+                            onChange={handleSearchChange("phoneNumber")}
                           />
                         </Stack>
                       </Grid>
@@ -199,7 +199,7 @@ const Cargo = () => {
                             label="상태"
                             size="small"
                             sx={{ m: 1, height: 37.25, width: "25ch" }}
-                            onChange={searchHandleChange("status")}
+                            onChange={handleSearchChange("status")}
                           >
                             <MenuItem value="all">전체</MenuItem>
                             <MenuItem value="RO">준비/등록중</MenuItem>

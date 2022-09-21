@@ -46,4 +46,10 @@ public class CommonUtil {
 		
 		return json.toString();
 	}
+	
+	// String type
+	// null or 공백 체크
+	public static boolean isStringEmpty(String str) {
+		return str == null || str.isBlank();
+	}
 }

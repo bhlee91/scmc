@@ -6,10 +6,11 @@ import java.util.Map;
 
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.dto.MatchingDto;
 
 public interface CargoReqService {
 	
-	List<TbCargoRequest> selectCargoRequestByOwnerUid(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException;
+	List<TbCargoRequest> selectCargoRequest(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException;
 	
 	int insertHistory(Map<String, Object> param);
 	
@@ -20,4 +21,6 @@ public interface CargoReqService {
 	String searchAddress(String query);
 	
 	List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid);
+	
+	List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber, String cargoName, String status) throws ParseException;
 }

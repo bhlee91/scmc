@@ -42,7 +42,7 @@ public class CargoReqController {
 		log.info("사용자별 이용내역 리스트 조회 => " + departDate + ", " + arrivalDate + ", " + phoneNumber + ", " + status);
 		log.info("========================");
 		
-		return new ResponseEntity<>(cargoReqService.selectCargoRequestByOwnerUid(ownerUid, departDate, arrivalDate, phoneNumber, status), HttpStatus.OK);
+		return new ResponseEntity<>(cargoReqService.selectCargoRequest(ownerUid, departDate, arrivalDate, phoneNumber, status), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
@@ -113,4 +113,21 @@ public class CargoReqController {
 		log.info("파라미터 = "+truckownerUid);
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByTruckOwnerUid(truckownerUid), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "매칭관리 테스트", notes = "매칭관리 리스트 조회 테스트 용입니다.")
+	@GetMapping("/request/matching")
+	public ResponseEntity<?> selectRequestMatching(
+			@ApiParam(value = "출발일", example = "2022-01-01") @RequestParam(value = "departDate", required = false) String departDate,
+			@ApiParam(value = "도착일", example = "2022-12-31") @RequestParam(value = "arrivalDate", required = false) String arrivalDate,
+			@ApiParam(value = "화주 휴대폰번호", example = "010-1234-5678") @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+			@ApiParam(value = "화물명", example = "화물명") @RequestParam(value = "cargoName", required = false) String cargoName,
+			@ApiParam(value = "상태", example = "MO") @RequestParam(value = "status", required = false) String status
+			) throws Exception {
+		
+		log.info("========================");
+		log.info("매칭관리 리스트 조회 테스트 용");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.selectRequestMatching(departDate, arrivalDate, phoneNumber, cargoName, status), HttpStatus.OK);	
+	}	
 }

@@ -39,34 +39,18 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import DialogContentText from "@mui/material/DialogContentText";
 
-// 팝업용
+import images from "./json/images.json";
+import columns from "./json/columns.json";
+import cargocolumns from "./json/cargocolumns.json";
 
-const columns = [
-  { field: "id", headerName: "id", width: 50 },
-  { field: "names", headerName: "이름", width: 70 },
-  { field: "tons", headerName: "톤수", width: 30 },
-  { field: "loaddate", headerName: "상차일시", width: 130 },
-  {
-    field: "unloaddate",
-    headerName: "하차일시",
-    width: 130,
-  },
-  {
-    field: "depart_addr",
-    headerName: "상차지주소",
-    width: 150,
-  },
-  {
-    field: "depart_addr",
-    headerName: "하차지",
-    width: 150,
-  },
-  {
-    field: "load_rate",
-    headerName: "적재율",
-    width: 150,
-  },
-];
+import {
+  getRequestsForMatching
+} from "api/matching";
+import { 
+  formatTimeStamp, 
+  stringToDateTime,
+  formatFare
+} from "utils/commonUtils";
 
 const rows = [
   {
@@ -101,218 +85,104 @@ const rows = [
   },
 ];
 
-// 팝업용 끝
+const Matching = () => {
+  const [controller] = useMaterialUIController()
+  const { darkMode } = controller
 
-const images = [
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-    thumbnail: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    original: "https://picsum.photos/id/1018/1000/600/",
-    thumbnail: "https://picsum.photos/id/1018/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1015/1000/600/",
-    thumbnail: "https://picsum.photos/id/1015/250/150/",
-  },
-  {
-    original: "https://picsum.photos/id/1019/1000/600/",
-    thumbnail: "https://picsum.photos/id/1019/250/150/",
-  },
-];
-
-// 화물 데이타
-const cargocolumns = [
-  {
-    field: "id",
-    headerName: "화물ID",
-    width: 100,
-    headerClassName: "super-app-theme--header",
-    headerAlign: "center",
-  },
-  {
-    field: "cargo_name",
-    headerName: "화물명칭",
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "name",
-    headerName: "화주성명",
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-    // editable: true,
-  },
-  {
-    field: "phone_number",
-    headerName: "화주전화번호",
-    type: "number",
-    width: 150,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_datetimes",
-    headerName: "출발일시",
-    sortable: false,
-    width: 190,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_datetimes",
-    headerName: "도착일시",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 190,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "depart_addr_st",
-    headerName: "상차지",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "arrival_addr_st",
-    headerName: "하차지",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 250,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "status",
-    headerName: "상태",
-    description: "This column has a value getter and is not sortable.",
-    sortable: false,
-    width: 100,
-    headerAlign: "center",
-    headerClassName: "super-app-theme--header",
-  },
-];
-
-const cargorows = [
-  {
-    id: 1,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "차량검색중",
-  },
-  {
-    id: 2,
-    cargo_name: "과일 상자 10개",
-    name: "홍길동",
-    phone_number: "010-1234-56789",
-    depart_datetimes: "2022-09-09 12시 00분",
-    arrival_datetimes: "022-09-09 18시 00분",
-    depart_addr_st: "경기도 성남시 탄천상로",
-    arrival_addr_st: "충남 천안시 백석동",
-    status: "차량검색중",
-  },
-];
-
-function Matching() {
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
-
+  const [cargorows, setCargorows] = React.useState([])
+  const [radius, setRadius] = React.useState("5")
+  const [message, setMessage] = React.useState("")
+  const [open, setOpen] = React.useState(false)
+  const [visible, setVisible] = React.useState(false)
+  const [search, setSearch] = React.useState({
+    departDate: "",
+    arrivalDate: "",
+    phoneNumber: "",
+    cargoName: "",
+    status: "all",
+  })
   const [values, setValues] = React.useState({
-    price: "",
-    add_price: "",
-    rec_phone: "",
-    weight: "",
-    height: "",
-    cwidth: "",
-    cvertical: "",
-    loadmethod: "FL",
-    unloadmethod: "HJ",
-    cdate: "",
-  });
+    reqId: 0,
+    transitFare: 0,
+    additionalFare: 0,
+    receiverPhone: "",
+    cweight: 0,
+    cheight: 0,
+    cwidth: 0,
+    cverticalreal: 0,
+    loadMethod: "FL",
+    unloadMethod: "HJ",
+    arrivalDatetimes: "",
+    status: "",
+    statusName: "",
+  })
+
+  React.useEffect(() => {
+    getRequestsForMatching(search)
+    .then(res => {
+      console.log(res.data)
+      res.data.map((obj) => {
+        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
+        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+      })
+
+      setCargorows(res.data)
+    })
+  }, [])
+
   const inputhandleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-  const [radius, setRadius] = React.useState("5");
+    setValues({ ...values, [prop]: event.target.value })
+  }
 
   const radiusHandleChange = (prop) => (event) => {
-    setRadius({ radius, [prop]: event.target.value });
+    setRadius({ radius, [prop]: event.target.value })
     //선택 시 바로 저장
-  };
-
-  const [message, setMessage] = React.useState("");
-  const [open, setOpen] = React.useState(false);
-  const [visible, setVisible] = React.useState(false);
+  }
 
   const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
-  };
+    setMessage(`Row ID "${params.row.id}" clicked`)
+  }
 
   const handleCargoRowClick = (params) => {
-    setMessage(`cargo Row ID "${params.row.id}" clicked`);
-    setVisible(true);
-  };
+    setMessage(`cargo Row ID "${params.row.id}" clicked`)
+    setVisible(true)
+  }
 
-  const [value, setValue] = React.useState("one");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const handleSearchRequest = () => {
+    getRequestsForMatching(search)
+    .then(res => {
+      res.data.map((obj) => {
+        obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
+        obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
+      })
+      setCargorows(res.data)
+    })
+  }
 
   // 팝업용
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = React.useState(0)
+  const [rowsPerPage, setRowsPerPage] = React.useState(10)
 
   const handleClick = (params) => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
   const handleClose = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const [svalues, setSvalues] = React.useState({
-    startdate: "",
-    enddate: "",
-    owner_name: "",
-    cargo_name: "",
-    statu: "RO",
-  });
-
-  const searchHandleChange = (prop) => (event) => {
-    setSvalues({ ...svalues, [prop]: event.target.value });
-  };
+    setRowsPerPage(+event.target.value)
+    setPage(0)
+  }
   // 팝업용 끝
+
+  const handleSearchChange = (prop) => (event) => {
+    setSearch({ ...search, [prop]: event.target.value })
+  }
 
   return (
     <DashboardLayout>
@@ -337,13 +207,12 @@ function Matching() {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="date"
+                            id="departDate"
                             type="date"
-                            label="가입시작일"
-                            defaultValue="2017-05-24"
-                            value={svalues.startdate}
+                            label="출발일"
+                            value={search.departDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("startdate")}
+                            onChange={handleSearchChange("departDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -354,13 +223,12 @@ function Matching() {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="date"
+                            id="arrivalDate"
                             type="date"
-                            defaultValue="2017-05-24"
-                            label="가입종료일"
-                            value={svalues.enddate}
+                            label="도착일"
+                            value={search.arrivalDate}
                             sx={{ m: 1, width: 200 }}
-                            onChange={searchHandleChange("enddate")}
+                            onChange={handleSearchChange("arrivalDate")}
                             InputLabelProps={{
                               shrink: true,
                             }}
@@ -371,24 +239,24 @@ function Matching() {
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="owner_name"
-                            value={svalues.product_name}
-                            label="차주성명"
+                            id="phoneNumber"
+                            value={search.phoneNumber}
+                            label="화주 휴대폰번호"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={searchHandleChange("owner_name")}
+                            onChange={handleSearchChange("phoneNumber")}
                           />
                         </Stack>
                       </Grid>
                       <Grid item xs={2}>
                         <Stack component="form" noValidate spacing={1}>
                           <TextField
-                            id="cargo_name"
-                            value={svalues.cargo_name}
-                            label="화물명칭"
+                            id="cargoName"
+                            value={search.cargoName}
+                            label="화물명"
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={searchHandleChange("cargo_name")}
+                            onChange={handleSearchChange("cargo_name")}
                           />
                         </Stack>
                       </Grid>
@@ -396,11 +264,12 @@ function Matching() {
                         <FormControl sx={{ m: 1, minWidth: 180 }}>
                           <Select
                             sx={{ height: 40, minWidth: 180 }}
-                            id="statu"
+                            id="status"
                             size="small"
-                            value={svalues.statu}
-                            onChange={searchHandleChange("statu")}
+                            value={search.status}
+                            onChange={handleSearchChange("status")}
                           >
+                            <MenuItem value={"all"}>전체</MenuItem>
                             <MenuItem value={"RO"}>준비/등록중</MenuItem>
                             <MenuItem value={"MO"}>최적차량검색중</MenuItem>
                             <MenuItem value={"MF"}>매칭완료</MenuItem>
@@ -415,7 +284,7 @@ function Matching() {
 
                       <Grid item container xs={2} display="flex" justify="center">
                         <Stack justifyContent="center" spacing={2}>
-                          <Button variant="contained" size="small" color="info">
+                          <Button variant="contained" size="small" color="info" onClick={handleSearchRequest}>
                             검색
                           </Button>
                         </Stack>
@@ -472,6 +341,7 @@ function Matching() {
                 }}
               >
                 <DataGrid
+                  getRowId={obj => obj.reqId}
                   autoHeight
                   rows={cargorows}
                   columns={cargocolumns}
@@ -513,9 +383,9 @@ function Matching() {
 
                           <Grid item xs={4}>
                             <TextField
-                              id="price"
-                              value={values.price}
-                              onChange={inputhandleChange("price")}
+                              id="transitFare"
+                              value={values.transitFare}
+                              onChange={inputhandleChange("transitFare")}
                               sx={{ m: 1, width: "25ch" }}
                               size="small"
                               InputProps={{
@@ -532,11 +402,11 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="add_price"
-                              value={values.add_price}
+                              id="additionalFare"
+                              value={values.additionalFare}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("add_price")}
+                              onChange={inputhandleChange("additionalFare")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">원</InputAdornment>,
                               }}
@@ -552,9 +422,9 @@ function Matching() {
                             <FormControl sx={{ m: 1, minWidth: 180 }}>
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
-                                id="loadmethod"
-                                value={values.loadmethod}
-                                onChange={inputhandleChange("loadmethod")}
+                                id="loadMethod"
+                                value={values.loadMethod}
+                                onChange={inputhandleChange("loadMethod")}
                               >
                                 <MenuItem value={"HJ"}>수작업</MenuItem>
                                 <MenuItem value={"FL"}>지게차</MenuItem>
@@ -573,9 +443,9 @@ function Matching() {
                             <FormControl sx={{ m: 1, minWidth: 180 }}>
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
-                                id="unloadmethod"
-                                value={values.unloadmethod}
-                                onChange={inputhandleChange("unloadmethod")}
+                                id="unloadMethod"
+                                value={values.unloadMethod}
+                                onChange={inputhandleChange("unloadMethod")}
                               >
                                 <MenuItem value={"HJ"}>수작업</MenuItem>
                                 <MenuItem value={"FL"}>지게차</MenuItem>
@@ -592,11 +462,11 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="rec_phone"
-                              value={values.rec_phone}
+                              id="receiverPhone"
+                              value={values.receiverPhone}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("rec_phone")}
+                              onChange={inputhandleChange("receiverPhone")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end"></InputAdornment>,
                               }}
@@ -609,11 +479,11 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="weight"
-                              value={values.weight}
+                              id="cweight"
+                              value={values.cweight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("weight")}
+                              onChange={inputhandleChange("cweight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">KG</InputAdornment>,
                               }}
@@ -626,11 +496,11 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="height"
-                              value={values.height}
+                              id="cheight"
+                              value={values.cheight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("height")}
+                              onChange={inputhandleChange("cheight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -660,11 +530,11 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <TextField
-                              id="cvertical"
-                              value={values.cvertical}
+                              id="cverticalreal"
+                              value={values.cverticalreal}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cvertical")}
+                              onChange={inputhandleChange("cverticalreal")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -678,7 +548,9 @@ function Matching() {
                           </Grid>
                           <Grid item xs={4}>
                             <MDTypography gutterBottom variant="body2">
-                              안전하게 배송해 주세요
+                              <div style={{ marginLeft: "8px" }}>
+                                안전하게 배송해 주세요
+                              </div>
                             </MDTypography>
                           </Grid>
                           <Grid item xs={2}>
@@ -689,7 +561,9 @@ function Matching() {
                           <Grid item xs={4}>
                             <Grid item xs={2}>
                               <Stack direction="row" spacing={1}>
-                                <Chip label="차량검색중" color="success" />
+                                <div style={{ marginLeft: "8px" }}>
+                                  <Chip label="차량검색중" color="success" />
+                                </div>
                               </Stack>
                             </Grid>
                           </Grid>
