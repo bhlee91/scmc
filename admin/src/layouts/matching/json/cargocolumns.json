@@ -16,8 +16,8 @@
     "headerClassName": "super-app-theme--header"
   },
   {
-    "field": "cargoOwnerName",
-    "headerName": "화주성명",
+    "field": "cargoownerName",
+    "headerName": "화주 이름",
     "width": 100,
     "headerAlign": "center",
     "align": "center",
