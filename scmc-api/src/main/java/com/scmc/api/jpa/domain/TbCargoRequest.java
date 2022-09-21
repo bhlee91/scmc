@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.scmc.api.common.utils.CommonUtil;
@@ -43,9 +44,6 @@ public class TbCargoRequest {
 	
 	@Column(name = "owner_uid")
 	private Long ownerUid;
-	
-	@Transient
-	private String cargoownerName;
 	
 	@Column(name = "cargo_name")
 	private String cargoName;
@@ -144,8 +142,11 @@ public class TbCargoRequest {
 	private Date modDt;
 	
 	// 상태명
-	@Transient
+	@Formula("(SELECT com.code_name FROM tb_common_cd com WHERE com.cdid = status)")
 	private String statusName;
+	
+	@Formula("(SELECT cargo.owner_name FROM tb_member_cargoowner cargo WHERE cargo.owner_uid = owner_uid)")
+	private String cargoownerName;
 	
 	// 상세보기
 	@Transient

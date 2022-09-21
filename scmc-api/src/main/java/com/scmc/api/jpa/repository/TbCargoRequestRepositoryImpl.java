@@ -10,15 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.group.GroupBy;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.jpa.domain.QTbCargoImage;
 import com.scmc.api.jpa.domain.QTbCargoRequest;
-import com.scmc.api.jpa.domain.QTbCommonCd;
-import com.scmc.api.jpa.domain.QTbMemberCargoOwner;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.dto.MatchingDto;
@@ -68,8 +64,6 @@ public class TbCargoRequestRepositoryImpl implements TbCargoRequestRepositoryCus
 			String cargoName, String status) throws ParseException {
 		
 		QTbCargoRequest request = QTbCargoRequest.tbCargoRequest;
-		QTbMemberCargoOwner cargoOwner = QTbMemberCargoOwner.tbMemberCargoOwner;
-		QTbCommonCd common = QTbCommonCd.tbCommonCd;
 		QTbCargoImage images = QTbCargoImage.tbCargoImage; 
 		
 		BooleanBuilder builder = new BooleanBuilder();
@@ -96,101 +90,14 @@ public class TbCargoRequestRepositoryImpl implements TbCargoRequestRepositoryCus
 		}
 		
 		Map<TbCargoRequest, List<TbCargoImage>> resultMap = queryFactory
-										.select(
-												Projections.fields(
-													MatchingDto.class,
-													request.reqId, 
-													request.ownerUid, 
-													Expressions.as(
-															JPAExpressions
-																.select(cargoOwner.ownerName)
-																.from(cargoOwner)
-																.where(cargoOwner.ownerUid.eq(request.ownerUid))
-															, "cargoownerName"),
-													request.cargoName,
-													request.truckUid,
-													request.cweight,
-													request.cheight,
-													request.cwidth,
-													request.cverticalreal,
-													request.departDatetimes,
-													request.arrivalDatetimes,
-													request.departAddrSt,
-													request.arrivalAddrSt,
-													request.receiverPhone,
-													request.departLatitude,
-													request.departLongitude,
-													request.arrivalLatitude,
-													request.arrivalLongitude,
-													request.loadMethod,
-													request.unloadMethod,
-													request.requestItems,
-													request.transitFare,
-													request.additionalFare,
-													request.reqComyn,
-													request.status,
-													Expressions.as(
-															JPAExpressions
-																.select(common.codeName)
-																.from(common)
-																.where(common.cdid.eq(request.status))
-															, "statusName")
-												)
-										)
-										.from(request)
-										.leftJoin(request.images, images).fetchJoin()
-										.where(builder)
-										.orderBy(request.reqId.asc())
-										.transform(GroupBy.groupBy(request).as(GroupBy.list(images)));
+																.from(request)
+																.leftJoin(request.images, images)
+																.where(builder)
+																.orderBy(request.reqId.asc())
+																.transform(GroupBy.groupBy(request).as(GroupBy.list(images)));
 		
 		return resultMap.entrySet().stream()
 				.map(entry -> new MatchingDto(entry.getKey(), entry.getValue()))
 				.collect(Collectors.toList());
-		
-//		List<MatchingDto> result = queryFactory
-//									.select(Projections.fields(
-//												MatchingDto.class,
-//												request.reqId, 
-//												request.ownerUid, 
-//												Expressions.as(
-//														JPAExpressions
-//															.select(cargoOwner.ownerName)
-//															.from(cargoOwner)
-//															.where(cargoOwner.ownerUid.eq(request.ownerUid))
-//														, "cargoownerName"),
-//												request.cargoName,
-//												request.truckUid,
-//												request.cweight,
-//												request.cheight,
-//												request.cwidth,
-//												request.cverticalreal,
-//												request.departDatetimes,
-//												request.arrivalDatetimes,
-//												request.departAddrSt,
-//												request.arrivalAddrSt,
-//												request.receiverPhone,
-//												request.departLatitude,
-//												request.departLongitude,
-//												request.arrivalLatitude,
-//												request.arrivalLongitude,
-//												request.loadMethod,
-//												request.unloadMethod,
-//												request.requestItems,
-//												request.transitFare,
-//												request.additionalFare,
-//												request.reqComyn,
-//												request.status,
-//												Expressions.as(
-//														JPAExpressions
-//															.select(common.codeName)
-//															.from(common)
-//															.where(common.cdid.eq(request.status))
-//														, "statusName")
-//											))
-//									.from(request)
-//									.where(builder)
-//									.orderBy(request.reqId.asc())
-//									.fetch();
-		
 	}
 }

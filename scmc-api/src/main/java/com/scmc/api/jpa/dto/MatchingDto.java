@@ -1,17 +1,15 @@
 package com.scmc.api.jpa.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
-@Getter @Setter @ToString @RequiredArgsConstructor
+@Data
 public class MatchingDto {
 
 	private Long reqId;
@@ -48,7 +46,7 @@ public class MatchingDto {
 	private String status;
 	private String statusName;
 	
-	private List<ImageDto> images;
+	private List<ImageDto> images = new ArrayList<ImageDto>();
 
 	public MatchingDto(TbCargoRequest request, List<TbCargoImage> images) {
 		this.reqId = request.getReqId();

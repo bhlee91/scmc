@@ -91,7 +91,6 @@ const Matching = () => {
 
   const [cargorows, setCargorows] = React.useState([])
   const [radius, setRadius] = React.useState("5")
-  const [message, setMessage] = React.useState("")
   const [open, setOpen] = React.useState(false)
   const [visible, setVisible] = React.useState(false)
   const [search, setSearch] = React.useState({
@@ -104,7 +103,8 @@ const Matching = () => {
   const [values, setValues] = React.useState({
     reqId: 0,
     transitFare: 0,
-    additionalFare: 0,
+    additionalFare: 0, 
+    cargoownerName: "",
     receiverPhone: "",
     cweight: 0,
     cheight: 0,
@@ -115,12 +115,12 @@ const Matching = () => {
     arrivalDatetimes: "",
     status: "",
     statusName: "",
+    images: [],
   })
 
   React.useEffect(() => {
     getRequestsForMatching(search)
     .then(res => {
-      console.log(res.data)
       res.data.map((obj) => {
         obj.departDatetimes = formatTimeStamp(obj.departDatetimes)
         obj.arrivalDatetimes = formatTimeStamp(obj.arrivalDatetimes)
@@ -130,22 +130,27 @@ const Matching = () => {
     })
   }, [])
 
-  const inputhandleChange = (prop) => (event) => {
+  const handleInputChange = (prop) => (event) => {
+    let val = event.target.value
+
+    if (prop === "transitFare" || prop === "additionalFare") {
+      val = val.replace(/[^0-9]/g, "")
+    }
+
     setValues({ ...values, [prop]: event.target.value })
   }
 
-  const radiusHandleChange = (prop) => (event) => {
+  const handleRadiusChange = (prop) => (event) => {
     setRadius({ radius, [prop]: event.target.value })
     //선택 시 바로 저장
   }
 
-  const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`)
-  }
-
   const handleCargoRowClick = (params) => {
-    setMessage(`cargo Row ID "${params.row.id}" clicked`)
+    const nextValue = {}
+    Object.keys(values).forEach(key => nextValue[key] = params.row[key])
+
     setVisible(true)
+    setValues({ ...nextValue })
   }
 
   const handleSearchRequest = () => {
@@ -384,8 +389,8 @@ const Matching = () => {
                           <Grid item xs={4}>
                             <TextField
                               id="transitFare"
-                              value={values.transitFare}
-                              onChange={inputhandleChange("transitFare")}
+                              value={formatFare(values.transitFare)}
+                              onChange={handleInputChange("transitFare")}
                               sx={{ m: 1, width: "25ch" }}
                               size="small"
                               InputProps={{
@@ -403,10 +408,10 @@ const Matching = () => {
                           <Grid item xs={4}>
                             <TextField
                               id="additionalFare"
-                              value={values.additionalFare}
+                              value={formatFare(values.additionalFare)}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("additionalFare")}
+                              onChange={handleInputChange("additionalFare")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">원</InputAdornment>,
                               }}
@@ -423,14 +428,15 @@ const Matching = () => {
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
                                 id="loadMethod"
-                                value={values.loadMethod}
-                                onChange={inputhandleChange("loadMethod")}
+                                value={values.loadMethod.trim()}
+                                onChange={handleInputChange("loadMethod")}
                               >
-                                <MenuItem value={"HJ"}>수작업</MenuItem>
-                                <MenuItem value={"FL"}>지게차</MenuItem>
-                                <MenuItem value={"CR"}>크레인</MenuItem>
-                                <MenuItem value={"HT"}>호이스트</MenuItem>
-                                <MenuItem value={"CV"}>컨베이어</MenuItem>
+                                <MenuItem value="">없음</MenuItem>
+                                <MenuItem value="HJ">수작업</MenuItem>
+                                <MenuItem value="FL">지게차</MenuItem>
+                                <MenuItem value="CR">크레인</MenuItem>
+                                <MenuItem value="HT">호이스트</MenuItem>
+                                <MenuItem value="CV">컨베이어</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
@@ -444,14 +450,15 @@ const Matching = () => {
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
                                 id="unloadMethod"
-                                value={values.unloadMethod}
-                                onChange={inputhandleChange("unloadMethod")}
+                                value={values.unloadMethod.trim()}
+                                onChange={handleInputChange("unloadMethod")}
                               >
-                                <MenuItem value={"HJ"}>수작업</MenuItem>
-                                <MenuItem value={"FL"}>지게차</MenuItem>
-                                <MenuItem value={"CR"}>크레인</MenuItem>
-                                <MenuItem value={"HT"}>호이스트</MenuItem>
-                                <MenuItem value={"CV"}>컨베이어</MenuItem>
+                                <MenuItem value="">없음</MenuItem>
+                                <MenuItem value="HJ">수작업</MenuItem>
+                                <MenuItem value="FL">지게차</MenuItem>
+                                <MenuItem value="CR">크레인</MenuItem>
+                                <MenuItem value="HT">호이스트</MenuItem>
+                                <MenuItem value="CV">컨베이어</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
@@ -466,7 +473,7 @@ const Matching = () => {
                               value={values.receiverPhone}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("receiverPhone")}
+                              onChange={handleInputChange("receiverPhone")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end"></InputAdornment>,
                               }}
@@ -483,7 +490,7 @@ const Matching = () => {
                               value={values.cweight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cweight")}
+                              onChange={handleInputChange("cweight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">KG</InputAdornment>,
                               }}
@@ -500,7 +507,7 @@ const Matching = () => {
                               value={values.cheight}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cheight")}
+                              onChange={handleInputChange("cheight")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -517,7 +524,7 @@ const Matching = () => {
                               value={values.cwidth}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cwidth")}
+                              onChange={handleInputChange("cwidth")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -534,7 +541,7 @@ const Matching = () => {
                               value={values.cverticalreal}
                               size="small"
                               sx={{ m: 1, width: "25ch" }}
-                              onChange={inputhandleChange("cverticalreal")}
+                              onChange={handleInputChange("cverticalreal")}
                               InputProps={{
                                 endAdornment: <InputAdornment position="end">M</InputAdornment>,
                               }}
@@ -611,19 +618,19 @@ const Matching = () => {
                               <Select
                                 sx={{ height: 40, minWidth: 180 }}
                                 id="radius"
-                                value={radius.radiusValue}
-                                onChange={radiusHandleChange("radius")}
+                                value={radius}
+                                onChange={handleRadiusChange("radius")}
                               >
-                                <MenuItem value={"5"}>5KM</MenuItem>
-                                <MenuItem value={"10"}>10KM</MenuItem>
-                                <MenuItem value={"15"}>15KM</MenuItem>
-                                <MenuItem value={"20"}>20KM</MenuItem>
-                                <MenuItem value={"25"}>25KM</MenuItem>
-                                <MenuItem value={"30"}>30KM</MenuItem>
-                                <MenuItem value={"35"}>35KM</MenuItem>
-                                <MenuItem value={"40"}>40KM</MenuItem>
-                                <MenuItem value={"45"}>45KM</MenuItem>
-                                <MenuItem value={"50"}>50KM</MenuItem>
+                                <MenuItem value="5">5KM</MenuItem>
+                                <MenuItem value="10">10KM</MenuItem>
+                                <MenuItem value="15">15KM</MenuItem>
+                                <MenuItem value="20">20KM</MenuItem>
+                                <MenuItem value="25">25KM</MenuItem>
+                                <MenuItem value="30">30KM</MenuItem>
+                                <MenuItem value="35">35KM</MenuItem>
+                                <MenuItem value="40">40KM</MenuItem>
+                                <MenuItem value="45">45KM</MenuItem>
+                                <MenuItem value="50">50KM</MenuItem>
                               </Select>
                             </FormControl>
                           </Grid>
@@ -648,7 +655,7 @@ const Matching = () => {
                           </Grid>
                           <Grid item xs={2}>
                             <MDTypography gutterBottom variant="h5" component="div">
-                              xxxx
+                              {values.cargoownerName === null ? "없음" : values.cargoownerName}
                             </MDTypography>
                           </Grid>
                         </Grid>
@@ -662,7 +669,7 @@ const Matching = () => {
 
                           <Grid item xs={2}>
                             <MDTypography gutterBottom variant="h5" component="div">
-                              010-1234-4567
+                              {values.receiverPhone === "" ? "없음" : values.receiverPhone}
                             </MDTypography>
                           </Grid>
                         </Grid>
@@ -680,9 +687,9 @@ const Matching = () => {
                   <CardActionArea>
                     <CardContent>
                       <MDTypography gutterBottom variant="h5" component="div">
-                        상차지이미지
+                        화물이미지
                       </MDTypography>
-                      <ImageGallery items={images} />;
+                      <ImageGallery items={values.images} showFullscreenButton={values.images.length > 0} showPlayButton={false} />
                     </CardContent>
                   </CardActionArea>
                 </Card>
