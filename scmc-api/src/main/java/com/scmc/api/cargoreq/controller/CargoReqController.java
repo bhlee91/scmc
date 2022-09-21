@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,6 +54,34 @@ public class CargoReqController {
 		log.info("========================");
 	
 		return new ResponseEntity<>(cargoReqService.saveRequest(param), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "매칭관리 조회", notes = "매칭관리 리스트 조회한다.")
+	@GetMapping("/request/matching")
+	public ResponseEntity<?> selectRequestMatching(
+			@ApiParam(value = "출발일", example = "2022-01-01") @RequestParam(value = "departDate", required = false) String departDate,
+			@ApiParam(value = "도착일", example = "2022-12-31") @RequestParam(value = "arrivalDate", required = false) String arrivalDate,
+			@ApiParam(value = "화주 휴대폰번호", example = "010-1234-5678") @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+			@ApiParam(value = "화물명", example = "화물명") @RequestParam(value = "cargoName", required = false) String cargoName,
+			@ApiParam(value = "상태", example = "MO") @RequestParam(value = "status", required = false) String status
+			) throws Exception {
+		
+		log.info("========================");
+		log.info("매칭관리 리스트 조회 테스트 용");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.selectRequestMatching(departDate, arrivalDate, phoneNumber, cargoName, status), HttpStatus.OK);	
+	}
+	
+	@ApiOperation(value = "", notes = "매칭관리 리스트 조회 테스트 용입니다.")
+	@PutMapping("/request/fare")
+	public ResponseEntity<?> saveRequestFareInAdmin(@RequestBody HashMap<String, Object> obj) throws Exception {
+		
+		log.info("========================");
+		log.info("관리자 화물관리 저장 (요금 수정)");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.saveRequestFare(obj), HttpStatus.OK);	
 	}
 	
 	/*
@@ -113,21 +142,4 @@ public class CargoReqController {
 		log.info("파라미터 = "+truckownerUid);
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByTruckOwnerUid(truckownerUid), HttpStatus.OK);
 	}
-	
-	@ApiOperation(value = "매칭관리 테스트", notes = "매칭관리 리스트 조회 테스트 용입니다.")
-	@GetMapping("/request/matching")
-	public ResponseEntity<?> selectRequestMatching(
-			@ApiParam(value = "출발일", example = "2022-01-01") @RequestParam(value = "departDate", required = false) String departDate,
-			@ApiParam(value = "도착일", example = "2022-12-31") @RequestParam(value = "arrivalDate", required = false) String arrivalDate,
-			@ApiParam(value = "화주 휴대폰번호", example = "010-1234-5678") @RequestParam(value = "phoneNumber", required = false) String phoneNumber,
-			@ApiParam(value = "화물명", example = "화물명") @RequestParam(value = "cargoName", required = false) String cargoName,
-			@ApiParam(value = "상태", example = "MO") @RequestParam(value = "status", required = false) String status
-			) throws Exception {
-		
-		log.info("========================");
-		log.info("매칭관리 리스트 조회 테스트 용");
-		log.info("========================");
-		
-		return new ResponseEntity<>(cargoReqService.selectRequestMatching(departDate, arrivalDate, phoneNumber, cargoName, status), HttpStatus.OK);	
-	}	
 }

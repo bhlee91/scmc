@@ -21,7 +21,7 @@ import Button from "components/MDButton";
 import DownloadIcon from "@mui/icons-material/Download";
 import MDBox from "components/MDBox";
 
-// 파업용 시작
+// 팝업용 시작
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -33,173 +33,22 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 130, headerClassName: "super-app-theme--header" },
-  {
-    field: "t_name",
-    headerName: "차종",
-    width: 200,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "t_wide",
-    headerName: "차폭(cm)",
-    width: 150,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "t_length",
-    headerName: "길이(cm)",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "t_top_height",
-    headerName: "적재가능높이(cm)",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "t_availton",
-    headerName: "적재가능톤수",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "t_lowheight",
-    headerName: "적재함상고(cm)",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "longyn",
-    headerName: "장축여부",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "refrigerated_frozen",
-    headerName: "냉장냉동여부",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "stowage_type",
-    headerName: "적재함형태",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "lift_type",
-    headerName: "리프트타입",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-];
+import columns from "./json/stomgmtColumns.json";
 
-const rows = [
-  {
-    id: 1,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 2,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 3,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 4,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-  {
-    id: 5,
-    t_name: "1톤 ",
-    t_wide: "160",
-    t_length: "280",
-    t_top_height: "170",
-    t_availton: "1.1톤",
-    t_lowheight: "80",
-    longyn: "해당없음",
-    refrigerated_frozen: "해당없음",
-    stowage_type: "카고",
-    lift_type: "해당없음",
-  },
-];
+import { 
+  getTruckSpec
+} from "api/system/index";
 
-function Stomgmt() {
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+const Stomgmt = () => {
+  const [ controller ] = useMaterialUIController()
+  const [ rows, setRows ] = React.useState([])
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  //  팝
-
-  const [values, setValues] = React.useState({
-    product_name: "",
-    price: "",
-    discount_rate: "",
-    product_startdt: "",
-    product_enddt: "",
-    useyn: "Y",
-  });
-  const inputhandleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-  // 상세정보 끝
-
-  const [message, setMessage] = React.useState("");
-  const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
-    setOpen(true);
-  };
+  React.useEffect(() => {
+    getTruckSpec()
+    .then(res => {
+      setRows(res.data)
+    })
+  }, [])
 
   return (
     <MDBox>
@@ -227,7 +76,6 @@ function Stomgmt() {
             rowsPerPageOptions={[5]}
             rowSpacingType="border"
             density="compact"
-            onRowClick={handleRowClick}
             sx={{ fontSize: 14, fontFamily: "-apple-system", fontWeight: 400 }}
           />
         </MDBox>

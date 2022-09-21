@@ -42,7 +42,8 @@ import cargocolumns from "./json/cargocolumns.json";
 import images from "./json/images.json";
 
 import {
-  searchAllRequest
+  searchAllRequest,
+  saveRequestFare
 } from "api/cargo";
 import { 
   formatFare
@@ -128,7 +129,16 @@ const Cargo = () => {
   }
 
   const handleSaveRequest = () => {
-    console.log(values)
+    
+    if (confirm("저장하겠습니까?")) {
+      saveRequestFare(values)
+      .then(res => {
+        res.data === 1 ? alert("저장되었습니다.") : alert("저장에 실패했습니다.")
+      })
+      .then(() => {
+        location.reload()
+      })
+    }
   }
   
   return (

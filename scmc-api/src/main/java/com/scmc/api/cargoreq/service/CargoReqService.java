@@ -12,15 +12,17 @@ public interface CargoReqService {
 	
 	List<TbCargoRequest> selectCargoRequest(Long ownerUid, String departDate, String arrivalDate, String phoneNumber, String status) throws ParseException;
 	
-	int insertHistory(Map<String, Object> param);
+	List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber, String cargoName, String status) throws ParseException;
+	
+	int insertHistory(Map<String, Object> obj);
 	
 	int updateStatus(String status, Long reqId);
 	
-	int saveRequest(Map<String, Object> param);
+	int saveRequest(Map<String, Object> obj);
+	
+	int saveRequestFare(Map<String, Object> obj);
 	
 	String searchAddress(String query);
 	
 	List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid);
-	
-	List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber, String cargoName, String status) throws ParseException;
 }

@@ -2,6 +2,7 @@ package com.scmc.api.cargoreq.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.service.CargoReqService;
+import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
@@ -67,6 +69,15 @@ public class CargoReqServiceImpl implements CargoReqService {
 	}
 	
 	@Override
+	public List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber,
+			String cargoName, String status) throws ParseException {
+		
+		List<MatchingDto> result = tbCargoRequestRepositoryCustom.dynamicByMatching(departDate, arrivalDate, phoneNumber, cargoName, status);
+		
+		return result;
+	}
+	
+	@Override
 	@Transactional
 	public int insertHistory(Map<String, Object> param) {
 		TbCargoHist tbch = null;
@@ -115,7 +126,29 @@ public class CargoReqServiceImpl implements CargoReqService {
 			}
 			
 			return 1;
-		}catch(Exception e) {
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return 0;
+		}
+	}
+	
+	@Override
+	public int saveRequestFare(Map<String, Object> obj) {
+		TbCargoRequest tbcr = null;
+		
+		try {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
+			tbcr = tbCargoRequestRepository.findByReqId(Long.parseLong(obj.get("reqId").toString()));
+			
+			tbcr.setTransitFare(Integer.parseInt(obj.get("transitFare").toString()));
+			tbcr.setAdditionalFare(Integer.parseInt(obj.get("additionalFare").toString()));
+			tbcr.setModDt(format.parse(CommonUtil.getNowDate()));
+			
+			tbCargoRequestRepository.save(tbcr);
+			
+			return 1;
+		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			return 0;
 		}
@@ -139,15 +172,6 @@ public class CargoReqServiceImpl implements CargoReqService {
 	public List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid) {
 
 		List<TbMemberTruckOwner> result = tbMemberTruckOwnerRepository.findWithTbCargoHistUsingFetchJoinByTruckownerUid(truckownerUid);
-		
-		return result;
-	}
-
-	@Override
-	public List<MatchingDto> selectRequestMatching(String departDate, String arrivalDate, String phoneNumber,
-			String cargoName, String status) throws ParseException {
-		
-		List<MatchingDto> result = tbCargoRequestRepositoryCustom.dynamicByMatching(departDate, arrivalDate, phoneNumber, cargoName, status);
 		
 		return result;
 	}

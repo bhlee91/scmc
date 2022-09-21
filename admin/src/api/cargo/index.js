@@ -9,10 +9,10 @@ export const searchAllRequest = (param) => {
   })
 }
 
-export const saveRequest = (obj) => {
+export const saveRequestFare = (obj) => {
   return request({
-    url: `${BASE_URL}/request`,
-    method: "post",
+    url: `${BASE_URL}/request/fare`,
+    method: "put",
     data: obj
   })
 }
