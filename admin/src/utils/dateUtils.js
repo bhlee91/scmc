@@ -15,8 +15,6 @@ export const formatInKorea = (dateString) => {
 
 // yyyy년MM월dd일 hh:mm -> return yyyy-mm-dd hh:mm
 export const formatStringToDateTime = (dateString) => {
-  dateString = dateString.replace(" ", "")
-
   if (dateString.includes("년")) {
     dateString = dateString.replace("년", "-")
   }
@@ -26,7 +24,7 @@ export const formatStringToDateTime = (dateString) => {
   }
 
   if (dateString.includes("일")) {
-    dateString = dateString.replace("일", "T")
+    dateString = dateString.replace("일 ", "T")
   }
 
   return dateString.substring(0, 16)

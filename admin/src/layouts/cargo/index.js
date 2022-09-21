@@ -17,7 +17,7 @@ import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import MDTypography from "components/MDTypography";
 
-// 파업용 시작
+// 팝업용 시작
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -89,7 +89,7 @@ const Cargo = () => {
         obj.departDatetimes = formatInKorea(obj.departDatetimes)
         obj.arrivalDatetimes = formatInKorea(obj.arrivalDatetimes)
       })
-      console.log(res.data)
+      
       setRows(res.data)
     })
   }, [])
