@@ -18,7 +18,6 @@ import Divider from "@mui/material/Divider";
 import Icon from "@mui/material/Icon";
 import MDTypography from "components/MDTypography";
 
-// 파업용 시작
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -39,7 +38,6 @@ import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
 import DialogContentText from "@mui/material/DialogContentText";
 
-import images from "./json/images.json";
 import columns from "./json/columns.json";
 import cargocolumns from "./json/cargocolumns.json";
 
