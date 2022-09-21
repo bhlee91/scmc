@@ -47,7 +47,7 @@ import columns from "./columns.json";
 import { 
   getTruckOwnerList, getTruckOwner, modTruckOwner
 } from "api/truck";
-import { formatTimeStamp } from "utils/commonUtils";
+import { formatTimeStamp, formatFare } from "utils/commonUtils";
 
 const itemData = [
   {
@@ -58,24 +58,22 @@ const itemData = [
   },
   {
     img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-  },
-];
-
-
+  },];
 
 function Truckowner() {
   const [rows, setRows] = React.useState([]);
-  
+  const [cargoLoadImages, setCargoLoadImages] = React.useState([]);
+  const [cargoUnLoadImages, setCargoUnLoadImages] = React.useState([]);
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const [rowId, setRowId] = React.useState(0);
-  const [message, setMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [cargoData, setCargoData] = React.useState([]);
+  
   const handleRowClick = (params) => {
     setVisible(true);
-    setMessage(`Row ID "${params.row.truckownerUid}" clicked`);
     setRowId(params.row.truckownerUid)
     
     getTruckOwner(params.row.truckownerUid)
@@ -96,7 +94,48 @@ function Truckowner() {
     
   }; 
   const handleCargoRowClick = (params) => {
-    setMessage(`cargo Row ID "${params.row.id}" clicked`);
+    const cdata = params.row;
+    [cdata].map((obj) => {
+      switch(obj.loadMethod) {
+        case 'HJ' :
+          return obj.loadMethod = '수작업'
+        case 'FL' :
+          return obj.loadMethod = '지게차'
+        case 'CR' :
+          return obj.loadMethod = '크레인'
+        case 'HT' :
+          return obj.loadMethod = '호이스트'
+        case 'CV' :
+            return obj.loadMethod = '컨베이어'
+      } 
+    });
+
+    [cdata].map((obj) => {
+      switch(obj.unloadMethod) {
+        case 'HJ' :
+          return obj.unloadMethod = '수작업'
+        case 'FL' :
+          return obj.unloadMethod = '지게차'
+        case 'CR' :
+          return obj.unloadMethod = '크레인'
+        case 'HT' :
+          return obj.unloadMethod = '호이스트'
+        case 'CV' :
+          return obj.unloadMethod = '컨베이어'
+      } 
+    });
+
+    [cdata].map((obj) => {
+      obj.transitFare = formatFare(obj.transitFare)
+      obj.additionalFare = formatFare(obj.additionalFare)
+    })
+
+    const loadImages = cdata.images.filter(item => item.memDiv !== "M02")
+    const unLoadImages = cdata.images.filter(item => item.memDiv !== "M01")
+    setCargoLoadImages(loadImages)
+    console.log(loadImages)
+    setCargoUnLoadImages(unLoadImages)
+    setCargoData(cdata)
     setOpen(true);
   };
   // 상세정보
@@ -238,7 +277,7 @@ function Truckowner() {
     if(rowId !== 0){
       modTruckOwner(values, rowId)
       .then(res => {
-        console.log(res)
+        //console.log(res)
         return(
           <Alert serverity="success">
             <AlertTitle>Success</AlertTitle>
@@ -373,7 +412,6 @@ function Truckowner() {
             sx={{ fontSize: 14, fontFamily: "-apple-system", fontWeight: 400 }}
           />
         </Box>
-        {message && <Alert severity="info">{message}</Alert>}
       </Stack>
       <Divider />
       {/* 차주 상세정보 시작 */}
@@ -764,7 +802,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    100,000원
+                                    {cargoData.transitFare}원
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={2}>
@@ -778,7 +816,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    100,000원
+                                  {cargoData.additionalFare}원
                                   </MDTypography>
                                 </Grid>
                                 <Divider />
@@ -793,7 +831,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    지게차
+                                    {cargoData.loadMethod}
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={2}>
@@ -807,7 +845,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    지게차
+                                    {cargoData.unloadMethod}
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={2}>
@@ -816,12 +854,12 @@ function Truckowner() {
                                     variant="body2"
                                     style={{ fontWeight: 600 }}
                                   >
-                                    수취인정보
+                                    의뢰인번호
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    010-1234-5678
+                                    {cargoData.receiverPhone}
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={2}>
@@ -835,7 +873,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <MDTypography gutterBottom variant="body2">
-                                    2022-09-12
+                                    {cargoData.regComDate}
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={2}>
@@ -849,7 +887,7 @@ function Truckowner() {
                                 </Grid>
                                 <Grid item xs={6}>
                                   <MDTypography gutterBottom variant="body2">
-                                    안전하게 배송해 주세요
+                                    {cargoData.requestItems}
                                   </MDTypography>
                                 </Grid>
                               </Grid>
@@ -868,12 +906,12 @@ function Truckowner() {
                     상차지 이미지
                   </MDTypography>
                   <ImageList sx={{ width: 700, height: 500 }}>
-                    {itemData.map((item) => (
-                      <ImageListItem key={item.img}>
+                    {cargoLoadImages.map((item) => (
+                      <ImageListItem key={item.imageId}>
                         <img
-                          src={`${item.img}?w=248&fit=crop&auto=format`}
-                          srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                          alt={item.title}
+                          src={item.imageContents}
+                          srcSet={item.imageContents}
+                          alt={item.imageSeq}
                           loading="lazy"
                         />
                       </ImageListItem>
@@ -887,16 +925,18 @@ function Truckowner() {
                   <MDTypography gutterBottom variant="h5">
                     하차지 이미지
                   </MDTypography>
-                  <ImageList sx={{ width: 700, height: 500 }}>
-                    {itemData.map((item) => (
-                      <ImageListItem key={item.img}>
+                  <ImageList sx={{ width: 700, height: 500 }} >
+                    
+                    {cargoUnLoadImages.map((item) => (
+                      <ImageListItem key={item.imageId}>
                         <img
-                          src={`${item.img}?w=248&fit=crop&auto=format`}
-                          srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                          alt={item.title}
+                          src={item.imagecontents}
+                          srcSet={item.imageContents}
+                          alt={item.imageSeq}
                           loading="lazy"
+                          
                         />
-                      </ImageListItem>
+                      </ImageListItem> 
                     ))}
                   </ImageList>
                 </MDBox>
