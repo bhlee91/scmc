@@ -1,6 +1,6 @@
 package com.scmc.api.jpa.domain;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,11 +66,11 @@ public class TbInfoTruckSpec {
 	private String regId;
 	
 	@Column(name = "reg_dt")
-	private Timestamp regDt;
+	private Date regDt;
 	
 	@Column(name = "mod_id")
 	private String modId;
 	
 	@Column(name = "mod_dt")
-	private Timestamp modDt;
+	private Date modDt;
 }
