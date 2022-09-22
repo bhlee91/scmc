@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
+public class DashBoardRepositoryCustomImpl implements DashBoardRepositoryCustom {
 
 	private final TbCargoRequestRepository tbCargoRequestRepository;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;

@@ -10,15 +10,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@DynamicInsert
+@DynamicInsert @DynamicUpdate
 @Table(name = "tb_sys_adminuser")
 @Getter
-@Builder
+@Setter
+@ToString
+@NoArgsConstructor
 public class TbSysAdminUser {
 
 	@Id
@@ -40,4 +46,24 @@ public class TbSysAdminUser {
 	
 	@Column(name = "reg_dt")
 	private Date regDt;
+	
+	@Builder(builderMethodName = "loginBuilder")
+	public TbSysAdminUser(String email) {
+		this.email = email;
+	}
+	
+	@Builder(builderMethodName = "signupBuilder")
+	public TbSysAdminUser(String email, String passwd, int passwdFailCnt) {
+		this.email = email;
+		this.passwd = passwd;
+		this.passwdFailCnt = passwdFailCnt;
+	}
+	
+	public void successLogin() {
+		this.passwdFailCnt = 0;
+	}
+	
+	public void addPasswdFailCnt(int passwdFailCnt) {
+		this.passwdFailCnt = passwdFailCnt;
+	}
 }

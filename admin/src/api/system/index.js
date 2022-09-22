@@ -6,5 +6,12 @@ export const getTruckSpec = () => {
   return request({
     url: `${BASE_URL}/truck/spec`,
     method: "get",
-  });
-};
+  })
+}
+
+export const getDashboardInfo = () => {
+  return request({
+    url: `${BASE_URL}/dashboard`,
+    method: "get",
+  })
+}

@@ -39,7 +39,7 @@ import { Truckowner } from "layouts/truckowner";
 
 import {
   getDashboardInfo
-} from "api/dashboard/index";
+} from "api/system/index";
 
 const Dashboard = () => {
   const { sales, tasks } = reportsLineChartData;

@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -17,7 +19,39 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
 
-function Cover() {
+import {
+  signup
+} from "api/system/admin";
+
+const Cover = () => {
+  const [ user, setUser ] = useState({
+    email: "",
+    password: ""
+  })
+
+  const handleSearchChange = (prop) => (event) => {
+    setUser({ ...user, [prop]: event.target.value })
+  }
+
+  const handleSignUp = () => {
+
+    signup(user)
+    .then(res => {
+      if (res.data.data === null) {
+        alert(`${res.data.msg}`)
+        setUser({email: "", password: ""})
+        return
+      } 
+      
+      location.href = "/"
+      alert(`${res.data.msg}`)
+    })
+    .catch(err => {
+      console.log(err)
+      location.href = "/"
+    })
+  }
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -39,14 +73,14 @@ function Cover() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput type="email" label="Email" variant="standard" value={user.email} fullWidth onChange={handleSearchChange("email")}/>
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput type="password" label="Password" variant="standard" value={user.password} fullWidth onChange={handleSearchChange("password")}/>
             </MDBox>
 
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleSignUp}>
                 회원가입
               </MDButton>
             </MDBox>
