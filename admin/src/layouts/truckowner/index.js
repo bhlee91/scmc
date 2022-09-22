@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import {Buffer} from 'buffer';
 import DashboardLayout from "pages/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "pages/Navbars/DashboardNavbar";
 import Footer from "pages/Footer";
@@ -48,7 +48,7 @@ import {
   getTruckOwnerList, getTruckOwner, modTruckOwner
 } from "api/truck";
 import { formatFare } from "utils/commonUtils";
-import { formatInKorea } from "utils/dateUtils";
+import { formatInKorea, getDateDiff } from "utils/dateUtils";
 
 const itemData = [
   {
@@ -79,6 +79,15 @@ function Truckowner() {
     
     getTruckOwner(params.row.truckownerUid)
       .then(res => { 
+        const payment = res.data.payment  
+        payment.map((key) =>{
+          if(payment.length !== 0){
+            const today = new Date()
+            const payRemain = getDateDiff(key.svcEndDt, today)
+            res.data.payRemain = payRemain
+            res.data.productName = key.product.productName
+          }
+        })
         setValues(res.data)
         const hist = res.data.hist
         setData([])
@@ -93,7 +102,7 @@ function Truckowner() {
         )
       })
     
-  }; 
+  };
   const handleCargoRowClick = (params) => {
     const cdata = params.row;
     [cdata].map((obj) => {
@@ -133,8 +142,16 @@ function Truckowner() {
 
     const loadImages = cdata.images.filter(item => item.memDiv !== "M02")
     const unLoadImages = cdata.images.filter(item => item.memDiv !== "M01")
+
+    loadImages.map((obj) => {
+      obj.contents = Buffer.from(obj.imageContents, 'base64')
+    })
+
+    unLoadImages.map((obj) => {
+      obj.contents = Buffer.from(obj.imageContents, 'base64')
+    })
+
     setCargoLoadImages(loadImages)
-    console.log(loadImages)
     setCargoUnLoadImages(unLoadImages)
     setCargoData(cdata)
     setOpen(true);
@@ -290,6 +307,10 @@ function Truckowner() {
       
   }
 
+  const businessCopyUpload = () => {
+
+  }
+  
   React.useEffect(() => {
     getTruckOwnerList(
       0,
@@ -612,10 +633,12 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="business_copy"
-                            value={values.height || ''}
+                            value={''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={inputhandleChange("business_copy")}
+                            onClick = {businessCopyUpload}
+                            type="file"
+                            accept="image/jpg, image/jpeg, image/png"
                           />
                         </Grid>
                         <Grid item xs={2}>
@@ -643,11 +666,11 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={4}>
                           <TextField
-                            id="pay_remain"
-                            value={values.cvertical || ''}
+                            id="payRemain"
+                            value={values.payRemain || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onChange={inputhandleChange("pay_remain")}
+                            onChange={inputhandleChange("payRemain")}
                             InputProps={{
                               endAdornment: <InputAdornment position="end">일</InputAdornment>,
                             }}
@@ -910,8 +933,8 @@ function Truckowner() {
                     {cargoLoadImages.map((item) => (
                       <ImageListItem key={item.imageId}>
                         <img
-                          src={item.imageContents}
-                          srcSet={item.imageContents}
+                          src={item.contents}
+                          srcSet={item.contents}
                           alt={item.imageSeq}
                           loading="lazy"
                         />
@@ -931,8 +954,8 @@ function Truckowner() {
                     {cargoUnLoadImages.map((item) => (
                       <ImageListItem key={item.imageId}>
                         <img
-                          src={item.imagecontents}
-                          srcSet={item.imageContents}
+                          src={item.contents}
+                          srcSet={item.contents}
                           alt={item.imageSeq}
                           loading="lazy"
                           

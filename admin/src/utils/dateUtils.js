@@ -43,3 +43,14 @@ export const formatDate = (dateTimeString) => {
 
   return dateTimeString.format("YYYY-MM-DD")
 }
+
+//두 날짜 사이 일 수 계산
+export const getDateDiff = (d1, d2) =>{
+
+  const date1 = new Date(d1)
+  const date2 = new Date(d2)
+
+  const diffDate = date1.getTime() - date2.getTime()
+  
+  return Math.abs(Math.trunc(diffDate / (1000 * 60 * 60 * 24)))
+}

@@ -5,12 +5,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,15 +31,18 @@ import lombok.Setter;
 public class TbTruckOwnerPayment {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)  
 	@Column(name = "pay_uid")
 	private Long payUid;
 	
-	@Column(name = "truckowner_uid")
-	private Long truckownerUid;
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "truckowner_uid")
+	@JsonBackReference
+	private TbMemberTruckOwner truckownerUid;
 	
-	@Column(name = "product_uid")
-	private Long productUid;
+	@OneToOne
+	@JoinColumn(name = "product_uid")
+	private TbInfoProduct product;
 	
 	@Column(name = "free_startdt")
 	private Date freeStartDt;
@@ -59,8 +69,8 @@ public class TbTruckOwnerPayment {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		
 		this.payUid = Long.parseLong(pm.get("payUid").toString());
-		this.truckownerUid = Long.parseLong(pm.get("truckownerUid").toString());
-		this.productUid = Long.parseLong(pm.get("productUid").toString());
+		this.truckownerUid = (TbMemberTruckOwner)pm.get("truckownerUid");
+		this.product = (TbInfoProduct)pm.get("productUid");
 		this.freeStartDt = pm.get("freeStartDt").toString().equals("")? null : format.parse(pm.get("freeStartDt").toString());
 		this.freeEndDt = pm.get("freeEndDt").toString().equals("")? null : format.parse(pm.get("freeEndDt").toString());
 		this.svcStartDt = pm.get("svcStartDt").toString().equals("")? null : format.parse(pm.get("svcStartDt").toString());

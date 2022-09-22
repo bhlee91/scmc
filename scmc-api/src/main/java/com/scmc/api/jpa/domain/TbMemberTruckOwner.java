@@ -96,6 +96,10 @@ public class TbMemberTruckOwner {
 	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)
 	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();
 	
+	@JsonManagedReference
+	@OneToMany(mappedBy = "truckownerUid", fetch = FetchType.LAZY)
+	private List<TbTruckOwnerPayment> payment = new ArrayList<TbTruckOwnerPayment>();
+	
 	@Builder(builderMethodName = "insertBuilder")
 	public TbMemberTruckOwner(
 			String carNumber, String phoneNumber, String password, String truckownerName

@@ -20,6 +20,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbCargoImage;
+import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
@@ -92,7 +94,6 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 
 	@Override
 	public TbMemberTruckOwner getTruckOwner(long uid) {
-		
 		return tbMemberTruckOwnerRepository.findByTruckownerUid(uid);
 	}
 
