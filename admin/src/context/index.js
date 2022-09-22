@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 const MaterialUI = createContext();
 
 // Setting custom name for the context which is visible on react dev tools
-MaterialUI.displayName = "꿀차꿀짐어드민";
+MaterialUI.displayName = "꿀차꿀짐관리자";
 
 // Material Dashboard 2 React reducer
 function reducer(state, action) {

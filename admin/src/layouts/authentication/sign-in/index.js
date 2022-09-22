@@ -22,8 +22,8 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import {
   login
 } from "api/system/admin";
-import { useAppDispatch } from 'utils/store';
-import userSlice from "utils/store/slice/user";
+import { useAppDispatch } from 'store';
+import userSlice from "slice/user";
 
 const Basic = () => {
   const dispatch = useAppDispatch();
@@ -44,12 +44,15 @@ const Basic = () => {
 
     login(user)
     .then((res) => {
-      console.log(res.data)
-      dispatch(
-        userSlice.actions.SET_LOGIN({
-          email: res.data.data.email
-        })
-      )
+      const login = res.data
+
+      if (login.data !== null) {
+        dispatch(
+          userSlice.actions.SET_LOGIN({
+            email: res.data.data.email
+          })
+        )
+      }
 
       location.href = "/"
       alert(`${res.data.msg}`)
@@ -57,6 +60,10 @@ const Basic = () => {
     .catch(err => {
       console.log(err)
     })
+  }
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") handleLogin();
   }
 
   return (
@@ -80,10 +87,10 @@ const Basic = () => {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" value={user.email} fullWidth onChange={handleSearchChange("email")}/>
+              <MDInput type="email" label="Email" value={user.email} fullWidth onChange={handleSearchChange("email")} onKeyPress={handleKeyPress} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" value={user.password} fullWidth onChange={handleSearchChange("password")}/>
+              <MDInput type="password" label="Password" value={user.password} fullWidth onChange={handleSearchChange("password")} onKeyPress={handleKeyPress} />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -98,7 +105,7 @@ const Basic = () => {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick={handleLogin}>
+              <MDButton variant="gradient" color="info" fullWidth onClick={() => handleLogin}>
                 로그인
               </MDButton>
             </MDBox>

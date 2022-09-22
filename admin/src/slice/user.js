@@ -2,18 +2,18 @@ import { createSlice } from '@reduxjs/toolkit'
 import { PURGE } from "redux-persist"
 
 const initialState = {
-  email: '',
+  email: "",
 }
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     SET_LOGIN(state, action) {
-      state.email = action.payload.email;
+      state.email = action.payload.email
     },
     SET_LOGOUT(state) {
-      state.email = '';
+      state.email = ""
     }
   },
   extraReducers: (builder) => {

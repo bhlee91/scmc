@@ -28,8 +28,6 @@ import Matching from "layouts/matching";
 // import Notifications from "layouts/notifications";
 import System from "layouts/system";
 import Statistics from "layouts/statistics";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -37,7 +35,7 @@ import Icon from "@mui/material/Icon";
 const routes = [
   {
     type: "collapse",
-    name: "Dashboard",
+    name: "대시보드",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
@@ -46,7 +44,7 @@ const routes = [
   {
     type: "collapse",
     name: "차주관리",
-    key: "차주관리",
+    key: "Truckowner",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/Truckowner",
     component: <Truckowner />,
@@ -67,15 +65,6 @@ const routes = [
     route: "/Matching",
     component: <Matching />,
   },
-
-  // {
-  //   type: "collapse",
-  //   name: "Notifications",
-  //   key: "notifications",
-  //   icon: <Icon fontSize="small">notifications</Icon>,
-  //   route: "/notifications",
-  //   component: <Notifications />,
-  // },
   {
     type: "collapse",
     name: "시스템관리",
@@ -94,19 +83,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "로그인",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "회원가입",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
+    name: "관리자",
+    key: "admin-user",
+    icon: <Icon fontSize="small">apps</Icon>,
+    route: "/dashboard",
+    component: null,
   },
 ];
 

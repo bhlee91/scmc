@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import userSlice from "./slice/user";
+import userSlice from "slice/user";
 
 const rootReducer = combineReducers({
   user: userSlice.reducer

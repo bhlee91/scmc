@@ -117,7 +117,7 @@ function Configurator() {
         <MDBox>
           <MDTypography variant="h5">페이지 설정</MDTypography>
           <MDTypography variant="body2" color="text">
-            어드민 페이지 옵션
+            관리자 페이지 옵션
           </MDTypography>
         </MDBox>
 

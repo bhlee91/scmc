@@ -29,16 +29,21 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
-import routes from "routes";
+import nonLoginRoutes from "nonLoginRoutes";
+import loginRoutes from "loginRoutes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-
+import store from "store";
 // Images
 // import brandWhite from "assets/images/logo.PNG";
 // import brandDark from "assets/images/logo1.PNG";
 
 export default function App() {
+  const user = store.getState().user
+
+  const routes = user.email === "" ? nonLoginRoutes : loginRoutes
+  
   const [controller, dispatch] = useMaterialUIController();
   const {
     miniSidenav,
@@ -94,18 +99,23 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
+  const getRoutes = (param) => {
+    const sideMenu = []
+    
+    const menus = param === undefined ? routes : param
+
+    menus.map((menu) => {
+      if (menu.collapse) {
+        return getRoutes(menu.collapse);
       }
 
-      if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
+      if (menu.route) {
+        sideMenu.push(<Route exact path={menu.route} element={menu.component} key={menu.key} />)
       }
+    })
 
-      return null;
-    });
+    return sideMenu
+  }
 
   const configsButton = (
     <MDBox
@@ -140,7 +150,7 @@ export default function App() {
             <Sidenav
               color={sidenavColor}
               // brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="꿀차꿀짐 어드민"
+              brandName="꿀차꿀짐 관리자"
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -151,7 +161,7 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          {getRoutes(routes)}
+          {getRoutes()}
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </ThemeProvider>
@@ -164,7 +174,7 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             // brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="꿀차꿀짐 어드민"
+            brandName="꿀차꿀짐 관리자"
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
@@ -175,7 +185,7 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        {getRoutes(routes)}
+        {getRoutes()}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
