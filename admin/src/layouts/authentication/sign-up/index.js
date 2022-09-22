@@ -99,6 +99,18 @@ const Cover = () => {
                 </MDTypography>
               </MDTypography>
             </MDBox>
+            <MDBox mt={3} mb={1} textAlign="center">
+              <MDTypography
+                component={Link}
+                to="/dashboard"
+                variant="button"
+                color="info"
+                fontWeight="medium"
+                textGradient
+              >
+                홈으로
+              </MDTypography>
+            </MDBox>
           </MDBox>
         </MDBox>
       </Card>

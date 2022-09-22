@@ -46,7 +46,7 @@ const routes = [
   {
     type: "collapse",
     name: "차주관리",
-    key: "차주관리",
+    key: "Truckowner",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/Truckowner",
     component: <Truckowner />,
