@@ -21,7 +21,7 @@ import Button from "components/MDButton";
 import DownloadIcon from "@mui/icons-material/Download";
 import MDBox from "components/MDBox";
 
-// 파업용 시작
+// 팝업용 시작
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -37,143 +37,72 @@ import MenuItem from "@mui/material/MenuItem";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Tooltip from "@mui/material/Tooltip";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 130, headerClassName: "super-app-theme--header" },
-  {
-    field: "terms_type",
-    headerName: "약관 Type",
-    width: 200,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "versions",
-    headerName: "버전",
-    width: 150,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "contents",
-    headerName: "내용",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-    renderCell: (params) => (
-      <Tooltip title={params.row.contents}>
-        <span className="table-cell-trucate">{params.row.contents}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    field: "expdiv",
-    headerName: "노출채널",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "useyn",
-    headerName: "사용유무",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "reg_id",
-    headerName: "등록자",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "reg_dt",
-    headerName: "등록일",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "mod_id",
-    headerName: "수정자",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "mod_dt",
-    headerName: "수정일",
-    width: 150,
-    headerClassName: "super-app-theme--header",
-  },
-];
+import columns from "./json/termsColumns";
+import {
+  getTermsInfo
+} from "api/system/index";
+import { formatDate } from "utils/dateUtils";
 
-const rows = [
-  {
-    id: 1,
-    terms_type: "운송약관 ",
-    versions: "1.0",
-    contents:
-      "운송약관 내용 열라 많다....ㅎㅎㅎ ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎ",
-    expdiv: "ALLE",
-    useyn: "Y",
-    reg_id: "admin",
-    reg_dt: "2022-09-16",
-    mod_id: "-",
-    mod_dt: "-",
-  },
-  {
-    id: 2,
-    terms_type: "이용약관 ",
-    versions: "1.0",
-    contents: "이용약관",
-    expdiv: "ALLE",
-    useyn: "Y",
-    reg_id: "admin",
-    reg_dt: "2022-09-16",
-    mod_id: "-",
-    mod_dt: "-",
-  },
-  {
-    id: 3,
-    terms_type: "개읹정보보호방침 ",
-    versions: "1.0",
-    contents: "개읹정보보호방침",
-    expdiv: "ALLE",
-    useyn: "Y",
-    reg_id: "admin",
-    reg_dt: "2022-09-16",
-    mod_id: "-",
-    mod_dt: "-",
-  },
-];
+const Terms = () => {
+  const [controller] = useMaterialUIController()
+  const { darkMode } = controller
 
-function Terms() {
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+  const termsType = {
+    T01: "운송약관",
+    T02: "이용약관",
+    T03: "개인정보보호방침"
+  }
 
-  const [open, setOpen] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-  //  팝
-
+  const [open, setOpen] = React.useState(false)
+  const [rows, setRows] = React.useState([])
   const [values, setValues] = React.useState({
-    terms_type: "T01",
+    termsType: "",
     versions: "",
     contents: "",
-    expdiv: "",
-    useyn: "Y",
-  });
+    expDiv: "",
+    useYn: "Y",
+  })
+
+  React.useEffect(() => {
+    getTermsInfo()
+    .then(res => {
+      res.data.map(row => {
+        row.termsTypeName = termsType[row.termsType]
+        row.regDt = formatDate(row.regDt)
+      })
+
+      setRows(res.data)
+    })
+  }, [])
+
+  const handleClick = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    setValues({
+      termsType: "",
+      versions: "",
+      contents: "",
+      expDiv: "",
+      useYn: "Y",
+    })
+  }
+  //  팝
+
   const inputhandleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
+    setValues({ ...values, [prop]: event.target.value })
+  }
   // 상세정보 끝
 
-  const [message, setMessage] = React.useState("");
   const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
-    setOpen(true);
-  };
+    const selectValue = {}
+    Object.keys(values).forEach(key => selectValue[key] = params.row[key])
+
+    setValues({ ...selectValue })
+    setOpen(true)
+  }
 
   return (
     <MDBox>
@@ -194,6 +123,7 @@ function Terms() {
           }}
         >
           <DataGrid
+            getRowId={row => row.termsUid}
             autoHeight
             rows={rows}
             columns={columns}
@@ -261,15 +191,14 @@ function Terms() {
                                   <FormControl sx={{ m: 1, minWidth: 180 }}>
                                     <Select
                                       sx={{ height: 40, minWidth: 180 }}
-                                      id="terms_type"
-                                      value={values.terms_type}
-                                      onChange={inputhandleChange("terms_type")}
+                                      id="termsType"
+                                      value={values.termsType}
+                                      onChange={inputhandleChange("termsType")}
                                       size="small"
-                                      fullwidth
                                     >
-                                      <MenuItem value={"T01"}>운송약관</MenuItem>
-                                      <MenuItem value={"T02"}>이용약관</MenuItem>
-                                      <MenuItem value={"T03"}>개인정보보호방침</MenuItem>
+                                      <MenuItem value="T01">운송약관</MenuItem>
+                                      <MenuItem value="T02">이용약관</MenuItem>
+                                      <MenuItem value="T03">개인정보보호방침</MenuItem>
                                     </Select>
                                   </FormControl>
                                 </Grid>
@@ -284,11 +213,10 @@ function Terms() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="version"
-                                    value={values.version}
-                                    onChange={inputhandleChange("version")}
+                                    id="versions"
+                                    value={values.versions}
+                                    onChange={inputhandleChange("versions")}
                                     size="small"
-                                    fullWidth
                                   />
                                 </Grid>
 
@@ -307,16 +235,15 @@ function Terms() {
                                   <FormControl sx={{ m: 1, minWidth: 180 }}>
                                     <Select
                                       sx={{ height: 40, minWidth: 180 }}
-                                      id="expdiv"
-                                      value={values.terms_type}
-                                      onChange={inputhandleChange("expdiv")}
+                                      id="expDiv"
+                                      value={values.expDiv}
+                                      onChange={inputhandleChange("expDiv")}
                                       size="small"
-                                      fullwidth
                                     >
-                                      <MenuItem value={"MAPP"}>APP</MenuItem>
-                                      <MenuItem value={"MWEb"}>모바일웹</MenuItem>
-                                      <MenuItem value={"PWEB"}>PC WEB</MenuItem>
-                                      <MenuItem value={"ALLE"}>모든채널</MenuItem>
+                                      <MenuItem value="MAPP">APP</MenuItem>
+                                      <MenuItem value="MWEb">모바일웹</MenuItem>
+                                      <MenuItem value="PWEB">PC WEB</MenuItem>
+                                      <MenuItem value="ALLE">모든채널</MenuItem>
                                     </Select>
                                   </FormControl>
                                 </Grid>
@@ -333,9 +260,9 @@ function Terms() {
                                   <FormControl>
                                     <RadioGroup
                                       row
-                                      id="useyn"
-                                      value={values.LORYN}
-                                      onChange={inputhandleChange("useyn")}
+                                      id="useYn"
+                                      value={values.useYn}
+                                      onChange={inputhandleChange("useYn")}
                                     >
                                       <FormControlLabel
                                         value="Y"
@@ -363,8 +290,8 @@ function Terms() {
                                   <TextareaAutosize
                                     aria-label="minimum height"
                                     minRows={100}
-                                    placeholder=""
-                                    style={{ width: 600 }}
+                                    style={{ width: 600, height: 1200 }}
+                                    value={values.contents}
                                   />
                                 </Grid>
                               </Grid>

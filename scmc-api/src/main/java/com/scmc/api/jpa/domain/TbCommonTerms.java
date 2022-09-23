@@ -16,12 +16,14 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "tb_common_terms")
 @Getter
 @Setter
+@NoArgsConstructor
 public class TbCommonTerms {
 
 	@Id

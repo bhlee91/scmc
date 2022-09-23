@@ -15,3 +15,10 @@ export const getDashboardInfo = () => {
     method: "get",
   })
 }
+
+export const getTermsInfo = () => {
+  return request({
+    url: "/customer/terms/Y",
+    method: "get",
+  })
+}

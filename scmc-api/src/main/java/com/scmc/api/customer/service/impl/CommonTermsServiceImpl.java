@@ -20,9 +20,9 @@ public class CommonTermsServiceImpl implements CommonTermsService{
 	private final TbCommonTermsRepository tbCommonTermsRepository;
 	
 	@Override
-	public List<TbCommonTerms> selectTerms(String UseYn) {
+	public List<TbCommonTerms> selectTerms(String useYn) {
 		
-		List<TbCommonTerms> list = tbCommonTermsRepository.findByUseYnOrderByTermsTypeAsc(UseYn);
+		List<TbCommonTerms> list = tbCommonTermsRepository.findByUseYnOrderByTermsTypeAsc(useYn);
 		
 		return list;
 	}
