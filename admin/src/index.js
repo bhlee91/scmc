@@ -11,6 +11,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import store from 'store';
 
+import { SnackbarProvider } from "notistack";
+
 export const persistor = persistStore(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -19,7 +21,14 @@ root.render(
     <PersistGate persistor={persistor}>
       <BrowserRouter>
         <MaterialUIControllerProvider>
-          <App />
+          <SnackbarProvider 
+            maxSnack={1}
+            anchorOrigin={{ vertical: "top", horizontal: "center"}}
+            autoHideDuration={2000}
+            disableWindowBlurListener={true}
+          >
+            <App />
+          </SnackbarProvider>
         </MaterialUIControllerProvider>
       </BrowserRouter>
     </PersistGate>

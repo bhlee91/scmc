@@ -19,6 +19,8 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
+import { useSnackbar } from "notistack";
+
 import {
   login
 } from "api/system/admin";
@@ -26,7 +28,8 @@ import { useAppDispatch } from 'store';
 import userSlice from "slice/user";
 
 const Basic = () => {
-  const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch()
+  const { enqueueSnackbar } = useSnackbar()
 
   const [user, setUser] = useState({
     email: "",
@@ -41,6 +44,19 @@ const Basic = () => {
   }
 
   const handleLogin = () => {
+    if (user.email === "") {
+      enqueueSnackbar("이메일을 입력해주세요", {
+        variant: "info"
+      })
+      return
+    }
+
+    if (user.password === "") {
+      enqueueSnackbar("비밀번호를 입력해주세요", {
+        variant: "info"
+      })
+      return
+    }
 
     login(user)
     .then((res) => {
@@ -54,8 +70,11 @@ const Basic = () => {
         )
       }
 
-      location.href = "/"
-      alert(`${res.data.msg}`)
+      enqueueSnackbar(res.data.msg, {
+        variant: "success",
+
+      })
+      location.replace("/")
     })
     .catch(err => {
       console.log(err)
@@ -105,7 +124,7 @@ const Basic = () => {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth onClick={() => handleLogin}>
+              <MDButton variant="gradient" color="info" fullWidth onClick={handleLogin}>
                 로그인
               </MDButton>
             </MDBox>

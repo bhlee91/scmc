@@ -72,7 +72,7 @@ const Dashboard = () => {
                 count={dashboardInfo.tf_count}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
+                  amount: "+0%",
                   label: "than lask week",
                 }}
               />
@@ -86,7 +86,7 @@ const Dashboard = () => {
                 count={dashboardInfo.truckowner_count}
                 percentage={{
                   color: "success",
-                  amount: "+3%",
+                  amount: "+0%",
                   label: "than last month",
                 }}
               />
@@ -101,7 +101,7 @@ const Dashboard = () => {
                 count={dashboardInfo.request_count}
                 percentage={{
                   color: "success",
-                  amount: "+1%",
+                  amount: "+0%",
                   label: "than yesterday",
                 }}
               />
@@ -128,7 +128,7 @@ const Dashboard = () => {
                   title="화물 등록 수"
                   description={
                     <>
-                      (<strong>+15%</strong>) 오늘 화물 등록.
+                      (<strong>+15%</strong>) 오늘 화물 등록
                     </>
                   }
                   date="updated 4 min ago"

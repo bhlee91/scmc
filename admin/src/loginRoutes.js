@@ -89,6 +89,14 @@ const routes = [
     route: "/dashboard",
     component: null,
   },
+  {
+    type: "collapse",
+    name: "로그아웃",
+    key: "admin-logout",
+    icon: <Icon fontSize="small">logout</Icon>,
+    route: "/",
+    component: null,
+  },
 ];
 
 export default routes;
