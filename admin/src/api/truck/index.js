@@ -30,3 +30,22 @@ export const modTruckOwner = (obj, uid) => {
     data: obj
   })
 }
+
+export const uploadFile = (formData) => {
+  return request({
+    url: `/uploadFile`,
+    method: "post",
+    headers:{
+      'Content-Type': 'multipart/form-data'
+    },
+    data: formData
+  })
+}
+
+export const insertFile = () => {
+  return request({
+    url: `/saveFile`,
+    method: "post",
+  })
+}
+

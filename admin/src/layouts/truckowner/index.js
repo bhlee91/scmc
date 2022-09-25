@@ -45,10 +45,11 @@ import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
 import { 
-  getTruckOwnerList, getTruckOwner, modTruckOwner
+  getTruckOwnerList, getTruckOwner, modTruckOwner, uploadFile
 } from "api/truck";
 import { formatFare } from "utils/commonUtils";
 import { formatInKorea, getDateDiff } from "utils/dateUtils";
+import { bool } from "prop-types";
 
 const itemData = [
   {
@@ -61,10 +62,12 @@ const itemData = [
     img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
   },];
 
+
 function Truckowner() {
   const [rows, setRows] = React.useState([]);
   const [cargoLoadImages, setCargoLoadImages] = React.useState([]);
   const [cargoUnLoadImages, setCargoUnLoadImages] = React.useState([]);
+  const [bcopy, setBcopy] = React.useState([]);
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
   const [rowId, setRowId] = React.useState(0);
@@ -73,6 +76,8 @@ function Truckowner() {
   const [data, setData] = React.useState([]);
   const [cargoData, setCargoData] = React.useState([]);
   
+
+
   const handleRowClick = (params) => {
     setVisible(true);
     setRowId(params.row.truckownerUid)
@@ -150,7 +155,7 @@ function Truckowner() {
     unLoadImages.map((obj) => {
       obj.contents = Buffer.from(obj.imageContents, 'base64')
     })
-
+    console.log(values)
     setCargoLoadImages(loadImages)
     setCargoUnLoadImages(unLoadImages)
     setCargoData(cdata)
@@ -292,7 +297,11 @@ function Truckowner() {
   };
 
   const updateTruckOwner = () => {
-    if(rowId !== 0){
+    
+    if(rowId === 0){
+      alert('차주를 선택해주세요');
+
+    } else {
       modTruckOwner(values, rowId)
       .then(res => {
         //console.log(res)
@@ -303,13 +312,38 @@ function Truckowner() {
           </Alert>
         )
       })
+      .then(() =>{
+        if(bcopy.length !== 0){
+          onBcopyUpload()
+        }
+      })
     }
+  }
+
+  const fileInputRef = React.useRef(null);
+  const businessCopyHandleClick = (e) => {
+    if(values.length === 0) {
+      alert('차주를 선택해주세요');
+    } else {
+      fileInputRef.current.click();
+    }
+    
+  }
+  const businessCopyHandleChange = (e) =>{
+    setBcopy(e.target.files[0]);
+  }
+
+  const onBcopyUpload = () => {
+    const formData = new FormData();
+    if(bcopy !== null && values.length !== 0){
+      formData.append('multipartFile', bcopy);
+      formData.append('fName', values.truckownerUid)
+      uploadFile (formData) 
       
+    }
+    
   }
 
-  const businessCopyUpload = () => {
-
-  }
   
   React.useEffect(() => {
     getTruckOwnerList(
@@ -633,12 +667,20 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="business_copy"
-                            value={''}
+                            value={bcopy.name || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
-                            onClick = {businessCopyUpload}
+                            
+                          />
+                          <Button onClick={businessCopyHandleClick}>
+                            파일업로드
+                          </Button>
+                          <input
+                            onChange = {businessCopyHandleChange}
                             type="file"
-                            accept="image/jpg, image/jpeg, image/png"
+                            accept="image/*, application/pdf "
+                            ref={fileInputRef}
+                            style={{display: "none"}}
                           />
                         </Grid>
                         <Grid item xs={2}>
@@ -693,7 +735,7 @@ function Truckowner() {
                         </Grid>
                         <Grid item xs={4}>
                           <MDTypography gutterBottom variant="body2">
-                            3개월 상품
+                            {values.productName}
                           </MDTypography>
                         </Grid>
                         <Grid item xs={2}>
