@@ -33,52 +33,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 130, headerClassName: "super-app-theme--header" },
-  {
-    field: "product_name",
-    headerName: "상품명",
-    width: 400,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "price",
-    headerName: "가격",
-    width: 100,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "discount_rate",
-    headerName: "할인율",
-    width: 200,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "product_startdt",
-    headerName: "상품시작일",
-    width: 300,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "product_enddt",
-    headerName: "상품종료일",
-    width: 300,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "useyn",
-    headerName: "사용유무",
-    width: 100,
-    headerClassName: "super-app-theme--header",
-    renderCell: () => (
-      <Button variant="contained" color="success" size="small">
-        사용
-      </Button>
-    ),
-  },
-];
+import columns from "./json/paymgmtColumns";
 
 const rows = [
   {
@@ -110,7 +65,7 @@ const rows = [
   },
 ];
 
-function Paymgmt() {
+const Paymgmt = () => {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

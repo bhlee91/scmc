@@ -22,3 +22,10 @@ export const getTermsInfo = () => {
     method: "get",
   })
 }
+
+export const getProductsInfo = () => {
+  return request({
+    url: "/product",
+    method: "get",
+  })
+}

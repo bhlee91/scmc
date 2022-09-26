@@ -110,7 +110,7 @@ export default function App() {
       }
 
       if (menu.route) {
-        sideMenu.push(<Route exact path={menu.route} element={menu.component} key={menu.key} loader={menu.loader}/>)
+        sideMenu.push(<Route exact path={menu.route} element={menu.component} key={menu.key} />)
       }
     })
 
