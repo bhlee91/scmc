@@ -51,7 +51,6 @@ public class FileController {
 		
 			file.transferTo(fileSave);
 
-			map.put("attachId", null);
 			map.put("fileName", fName);
 			map.put("originFileName", originName);
 			map.put("filePath", UPLOAD_PATH);
@@ -60,7 +59,6 @@ public class FileController {
 			map.put("regDt", LocalDateTime.now().format(format) );
 			map.put("truckownerUid", Integer.parseInt(fName));
 			
-			System.out.println("con:" + map.toString());
 			
 			fileService.saveAttachFile(map);
 		} catch (Exception e) {

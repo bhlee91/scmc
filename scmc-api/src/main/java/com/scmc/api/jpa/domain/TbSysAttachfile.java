@@ -22,7 +22,7 @@ import lombok.Setter;
 public class TbSysAttachfile {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "attach_id")
 	private Long attachId;
 	
@@ -50,14 +50,15 @@ public class TbSysAttachfile {
 	public TbSysAttachfile(Map<String, Object> af) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		
-		
-		this.attachId = af.get("attachId") == null ? 1L : Long.parseLong(af.get("attachId").toString());
+		System.out.println("af:" + af.toString());
+		// this.attachId = af.get("attachId") == null ? 1L : Long.parseLong(af.get("attachId").toString());
 		this.fileName = af.get("fileName").toString();
 		this.originFileName = af.get("originFileName").toString();
 		this.filePath = af.get("filePath").toString();
 		this.fileSize = Integer.parseInt(af.get("fileSize").toString());
 		this.status = af.get("status").toString();
 		this.regDt = af.get("regDt").toString().equals("")? null : format.parse(af.get("regDt").toString());
-		this.truckownerUid = Integer.parseInt(af.get("turckownerUid").toString());
+		this.truckownerUid = Integer.parseInt(af.get("truckownerUid").toString());
+		
 	}
 }
