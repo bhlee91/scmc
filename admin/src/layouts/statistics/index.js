@@ -25,7 +25,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import Salesinfo from "./salesinfo";
 import Productsales from "./productsales";
 
-function Statistics() {
+const Statistics = () => {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 

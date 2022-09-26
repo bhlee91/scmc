@@ -14,6 +14,8 @@ Coded by www.creative-tim.com
 */
 import * as React from "react";
 
+import { useLocation } from "react-router-dom";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -30,19 +32,29 @@ import ComplexStatisticsCard from "pages/Cards/StatisticsCards/ComplexStatistics
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 
-import { Truckowner } from "layouts/truckowner";
+import { useSnackbar } from "notistack";
 
 import {
   getDashboardInfo
 } from "api/system/index";
+import { formatFare } from "utils/commonUtils";
 
 const Dashboard = () => {
-  const { sales, tasks } = reportsLineChartData;
+  const location = useLocation()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const [ salesData, setSalesData] = React.useState({
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: { label: "Mobile apps", data: [] },
+  })
+  const [ tasksData, setTasksData ] = React.useState({
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    datasets: { label: "Desktop apps", data: [] },
+  })
 
   const [ dashboardInfo, setDashboardInfo ] = React.useState({
     count_by_month: [],
@@ -52,10 +64,35 @@ const Dashboard = () => {
   })
 
   React.useEffect(() => {
+    if (location.state !== null && location.state !== undefined) {
+      enqueueSnackbar(location.state.msg, {
+        variant: location.state.variant
+      })
+    }
+
     getDashboardInfo()
     .then(res => {
+      const temp_request = res.data.temp_request
+      const temp_complete = res.data.temp_complete
+
+      setSalesData(prevState => ({
+        ...prevState,
+        datasets: {
+          data: temp_request
+        }
+      }))
+      setTasksData(prevState => ({
+        ...prevState,
+        datasets: {
+          data: temp_complete
+        }
+      }))
       setDashboardInfo({ ...res.data })
     })
+    .then(() => {
+      window.history.replaceState({}, null)
+    })
+
   }, [])
 
   return (
@@ -69,11 +106,11 @@ const Dashboard = () => {
                 color="dark"
                 icon="weekend"
                 title="화물운송완료"
-                count={dashboardInfo.tf_count}
+                count={formatFare(dashboardInfo.tf_count)}
                 percentage={{
                   color: "success",
-                  amount: "+0%",
-                  label: "than lask week",
+                  amount: "",
+                  label: "tb_fare_temp count",
                 }}
               />
             </MDBox>
@@ -98,11 +135,11 @@ const Dashboard = () => {
                 color="success"
                 icon="store"
                 title="화물등록수"
-                count={dashboardInfo.request_count}
+                count={formatFare(dashboardInfo.request_count)}
                 percentage={{
                   color: "success",
-                  amount: "+0%",
-                  label: "than yesterday",
+                  amount: "",
+                  label: "tb_fare_temp2 count",
                 }}
               />
             </MDBox>
@@ -132,7 +169,7 @@ const Dashboard = () => {
                     </>
                   }
                   date="updated 4 min ago"
-                  chart={sales}
+                  chart={salesData}
                 />
               </MDBox>
             </Grid>
@@ -141,9 +178,9 @@ const Dashboard = () => {
                 <ReportsLineChart
                   color="dark"
                   title="월별 배송건수"
-                  description="월별 화물 배송완료건수"
+                  description="월별 화물 배송완료건수(tb_fare_temp 테이블 사용)"
                   date="just updated"
-                  chart={tasks}
+                  chart={tasksData}
                 />
               </MDBox>
             </Grid>

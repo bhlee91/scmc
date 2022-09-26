@@ -45,7 +45,7 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function Productsales() {
+const Productsales = () => {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
 
@@ -86,10 +86,9 @@ function Productsales() {
                           <Grid item xs={2}>
                             <Stack component="form" noValidate spacing={1}>
                               <TextField
-                                id="date"
+                                id="startdate"
                                 type="date"
-                                label="검색시작일"
-                                defaultValue="2017-05-24"
+                                label="시작일"
                                 value={values.startdate}
                                 sx={{ m: 1, width: 200 }}
                                 onChange={handleChange("startdate")}
@@ -103,10 +102,9 @@ function Productsales() {
                           <Grid item xs={2}>
                             <Stack component="form" noValidate spacing={1}>
                               <TextField
-                                id="date"
+                                id="enddate"
                                 type="date"
-                                defaultValue="2017-05-24"
-                                label="검색종료일"
+                                label="종료일"
                                 value={values.enddate}
                                 sx={{ m: 1, width: 200 }}
                                 onChange={handleChange("enddate")}

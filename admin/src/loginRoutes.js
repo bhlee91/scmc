@@ -28,6 +28,7 @@ import Matching from "layouts/matching";
 // import Notifications from "layouts/notifications";
 import System from "layouts/system";
 import Statistics from "layouts/statistics";
+import Logout from "layouts/authentication/logout";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -94,8 +95,8 @@ const routes = [
     name: "로그아웃",
     key: "admin-logout",
     icon: <Icon fontSize="small">logout</Icon>,
-    route: "/",
-    component: null,
+    route: "/logout",
+    component: <Logout />,
   },
 ];
 

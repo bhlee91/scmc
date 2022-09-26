@@ -110,8 +110,7 @@ export default function App() {
       }
 
       if (menu.route) {
-        if (menu.key !== "admin-logout")
-          sideMenu.push(<Route exact path={menu.route} element={menu.component} key={menu.key} />)
+        sideMenu.push(<Route exact path={menu.route} element={menu.component} key={menu.key} loader={menu.loader}/>)
       }
     })
 

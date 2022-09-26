@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -28,6 +28,7 @@ import { useAppDispatch } from 'store';
 import userSlice from "slice/user";
 
 const Basic = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { enqueueSnackbar } = useSnackbar()
 
@@ -70,11 +71,7 @@ const Basic = () => {
         )
       }
 
-      enqueueSnackbar(res.data.msg, {
-        variant: "success",
-
-      })
-      location.replace("/")
+      navigate("/dashboard", { replace: true, state: { msg: res.data.msg, variant: "success" } })
     })
     .catch(err => {
       console.log(err)
