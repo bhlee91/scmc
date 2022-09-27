@@ -13,5 +13,6 @@ public interface TbSysAttachfileRepository extends JpaRepository<TbSysAttachfile
 
 	TbSysAttachfile findByAttachId(Long attachId);
 	int save(Map<String, Object> params);
+	TbSysAttachfile findByTruckownerUid(int truckownerUid);
 
 }

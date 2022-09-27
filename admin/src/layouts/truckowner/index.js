@@ -45,22 +45,11 @@ import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
 import { 
-  getTruckOwnerList, getTruckOwner, modTruckOwner, uploadFile
+  getTruckOwnerList, getTruckOwner, modTruckOwner, uploadFile,downloadFile
 } from "api/truck";
 import { formatFare } from "utils/commonUtils";
 import { formatInKorea, getDateDiff } from "utils/dateUtils";
 import { bool } from "prop-types";
-
-const itemData = [
-  {
-    img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-  },
-  {
-    img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-  },];
 
 
 function Truckowner() {
@@ -75,6 +64,7 @@ function Truckowner() {
   const [visible, setVisible] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [cargoData, setCargoData] = React.useState([]);
+  const [isExist, setIsExist] = React.useState(false);
   
 
 
@@ -93,6 +83,14 @@ function Truckowner() {
             res.data.productName = key.product.productName
           }
         })
+        const attachFile = res.data.attachFile
+        if(attachFile !== null) {
+          setIsExist(true);
+          res.data.filename = attachFile.fileName + '.' + attachFile.fileExt
+        } else {
+          setIsExist(false);
+        }
+
         setValues(res.data)
         const hist = res.data.hist
         setData([])
@@ -105,8 +103,9 @@ function Truckowner() {
             }
           }
         )
+        console.log(res.data)
+
       })
-    
   };
   const handleCargoRowClick = (params) => {
     const cdata = params.row;
@@ -331,6 +330,7 @@ function Truckowner() {
   }
   const businessCopyHandleChange = (e) =>{
     setBcopy(e.target.files[0]);
+    values.filename = e.target.files[0].name
   }
 
   const onBcopyUpload = () => {
@@ -341,6 +341,35 @@ function Truckowner() {
       uploadFile (formData) 
       
     }
+    
+  }
+
+  const businessCopyDownload = () => {    
+    downloadFile(Number(values.truckownerUid))
+    .then((res) => {
+      const blob = new Blob([res.data])
+      const fileUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = fileUrl
+      link.style.display = "none"
+      console.log(res)
+      const injectFilename = (res) => { 
+        const disposition = res.headers['content-disposition'];
+        
+        console.log(disposition)
+        const fname = decodeURI(
+        disposition)
+          // .match(/fileName[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1]
+          // .replace(/['"]/g, ''))
+        return fname;
+      }
+      link.download = injectFilename(res)
+      document.body.appendChild(link)
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(fileUrl)
+    })
     
   }
 
@@ -667,7 +696,7 @@ function Truckowner() {
                         <Grid item xs={4}>
                           <TextField
                             id="business_copy"
-                            value={bcopy.name || ''}
+                            value={values.filename || ''}
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             
@@ -682,6 +711,11 @@ function Truckowner() {
                             ref={fileInputRef}
                             style={{display: "none"}}
                           />
+                          <Button 
+                            onClick = {businessCopyDownload}
+                            style={isExist ? { display : ""} : {display : "none"}}>
+                            파일다운로드
+                          </Button>
                         </Grid>
                         <Grid item xs={2}>
                           <MDTypography gutterBottom variant="body2" style={{ fontWeight: 600 }}>

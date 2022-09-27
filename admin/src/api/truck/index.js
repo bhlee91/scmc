@@ -42,10 +42,16 @@ export const uploadFile = (formData) => {
   })
 }
 
-export const insertFile = () => {
+export const downloadFile = (truckownerUid) => {
   return request({
-    url: `/saveFile`,
-    method: "post",
+    url: `/downloadFile`,
+    method: "get",
+    headers:{
+      'Content-Type': 'application/json',
+    },
+    responseType : 'blob',
+    params: {
+      truckownerUid
+    }
   })
 }
-

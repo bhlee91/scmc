@@ -10,7 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -91,6 +93,10 @@ public class TbMemberTruckOwner {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+	
+	@OneToOne
+	@JoinColumn(name = "truckowner_uid")
+	private TbSysAttachfile attachFile;
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)

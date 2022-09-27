@@ -13,12 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "tb_sys_attachfile")
 @Getter
 @Setter
+@NoArgsConstructor
 public class TbSysAttachfile {
 
 	@Id
@@ -47,6 +49,9 @@ public class TbSysAttachfile {
 	@Column(name="truckowner_uid")
 	private int truckownerUid; 
 	
+	@Column(name="file_ext")
+	private String fileExt;
+	
 	public TbSysAttachfile(Map<String, Object> af) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		
@@ -59,6 +64,7 @@ public class TbSysAttachfile {
 		this.status = af.get("status").toString();
 		this.regDt = af.get("regDt").toString().equals("")? null : format.parse(af.get("regDt").toString());
 		this.truckownerUid = Integer.parseInt(af.get("truckownerUid").toString());
+		this.fileExt = af.get("fileExt").toString();
 		
 	}
 }
