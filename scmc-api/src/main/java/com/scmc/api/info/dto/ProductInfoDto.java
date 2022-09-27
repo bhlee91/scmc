@@ -14,4 +14,5 @@ public class ProductInfoDto {
 	private String productStartdt;
 	private String productEnddt;
 	private String useyn;
+	private String regId;
 }

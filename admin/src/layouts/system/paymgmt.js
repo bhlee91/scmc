@@ -41,6 +41,7 @@ import {
   setProductInfo
 } from "api/system/index";
 import { formatDate } from "utils/dateUtils";
+import store from "store";
 
 const Paymgmt = () => {
   const [controller] = useMaterialUIController()
@@ -63,7 +64,14 @@ const Paymgmt = () => {
   }
 
   const handleSave = () => {
-    setProductInfo(values)
+    const regId = store.getState().user.email === "" ? "ADMIN" : store.getState().user.email
+
+    const obj = {
+      ...values,
+      regId: regId
+    }
+
+    setProductInfo(obj)
     .then(() => {
       setOpen(false)
       setValues({
@@ -77,6 +85,7 @@ const Paymgmt = () => {
       })
       selectRow()
     })
+
   }
 
   const handleClose = () => {

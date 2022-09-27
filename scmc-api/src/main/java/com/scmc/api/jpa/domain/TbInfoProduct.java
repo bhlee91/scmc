@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -58,8 +59,26 @@ public class TbInfoProduct {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
-	public void saveProductInfo(String productName, int price, int discountRate, 
-			String productStartdt, String productEnddt, String useyn) throws ParseException {
+	@Builder(builderMethodName = "insertProductInfo")
+	public TbInfoProduct(String productName, int price, int discountRate, 
+			String productStartdt, String productEnddt, String useyn, String regId
+		) throws ParseException {
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		
+		this.productName = productName;
+		this.price = price;
+		this.discountRate = discountRate;
+		this.productStartdt = format.parse(productStartdt);
+		this.productEnddt = format.parse(productEnddt);
+		this.useyn = useyn;
+		this.regId = regId;
+		this.regDt = new Date();
+	}
+	
+	public void updateProductInfo(String productName, int price, int discountRate, 
+			String productStartdt, String productEnddt, String useyn
+		) throws ParseException {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		

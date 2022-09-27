@@ -41,28 +41,32 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 	@Override
 	public TbInfoProduct saveProductInfo(ProductInfoDto dto) {
 		try {
-			TbInfoProduct tip = tbInfoProductRepository.findByProductUid(dto.getProductUid());
-			tip.saveProductInfo(
-				dto.getProductName(), 
-				dto.getPrice(), 
-				dto.getDiscountRate(), 
-				dto.getProductStartdt(), 
-				dto.getProductEnddt(), 
-				dto.getUseyn()
-			);
-			
-			return tip;
-//			TbInfoProduct tip = TbInfoProduct.saveProductInfo()
-//										.productUid(dto.getProductUid())
-//										.productName(dto.getProductName())
-//										.price(dto.getPrice())
-//										.discountRate(dto.getDiscountRate())
-//										.productStartdt(dto.getProductStartdt())
-//										.productEnddt(dto.getProductEnddt())
-//										.useyn(dto.getUseyn())
-//										.build();
-			
-//			return tbInfoProductRepository.save(tip);
+			if (dto.getProductUid() == 0) {
+				TbInfoProduct tip = TbInfoProduct.insertProductInfo()
+						.productName(dto.getProductName())
+						.price(dto.getPrice())
+						.discountRate(dto.getDiscountRate())
+						.productStartdt(dto.getProductStartdt())
+						.productEnddt(dto.getProductEnddt())
+						.useyn(dto.getUseyn())
+						.regId(dto.getRegId())
+						.build();
+
+				return tbInfoProductRepository.save(tip);
+			} else {
+				TbInfoProduct tip = tbInfoProductRepository.findByProductUid(dto.getProductUid());
+				
+				tip.updateProductInfo(
+					dto.getProductName(), 
+					dto.getPrice(), 
+					dto.getDiscountRate(), 
+					dto.getProductStartdt(), 
+					dto.getProductEnddt(), 
+					dto.getUseyn()
+				);
+				
+				return tip;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
