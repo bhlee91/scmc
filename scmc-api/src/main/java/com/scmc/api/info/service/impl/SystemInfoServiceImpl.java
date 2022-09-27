@@ -13,10 +13,12 @@ import com.scmc.api.info.service.SystemInfoService;
 import com.scmc.api.jpa.domain.TbCommonTerms;
 import com.scmc.api.jpa.domain.TbInfoProduct;
 import com.scmc.api.jpa.domain.TbInfoTruckSpec;
+import com.scmc.api.jpa.domain.TbSysAppversion;
 import com.scmc.api.jpa.repository.DashBoardRepositoryCustomImpl;
 import com.scmc.api.jpa.repository.TbCommonTermsRepository;
 import com.scmc.api.jpa.repository.TbInfoProductRepository;
 import com.scmc.api.jpa.repository.TbInfoTruckSpecRepository;
+import com.scmc.api.jpa.repository.TbSysAppversionRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,10 +26,17 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SystemInfoServiceImpl implements SystemInfoService {
 
+	private final TbSysAppversionRepository tbAppversionRepository;
 	private final TbInfoTruckSpecRepository tbInfoTruckSpecRepository;
 	private final TbInfoProductRepository tbInfoProductRepository;
 	private final TbCommonTermsRepository tbCommonTermsRepository;
 	private final DashBoardRepositoryCustomImpl dashBoardRepositoryImpl;
+	
+	@Override
+	public List<TbSysAppversion> searchVersionList() {
+
+		return tbAppversionRepository.findAllByOrderByVerUidASC();
+	}
 	
 	@Override
 	public List<TbInfoTruckSpec> searchTruckSpec() {
@@ -110,4 +119,6 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 			return tct;
 		}
 	}
+
+
 }

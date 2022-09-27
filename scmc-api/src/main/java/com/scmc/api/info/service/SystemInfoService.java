@@ -8,9 +8,11 @@ import com.scmc.api.info.dto.ProductInfoDto;
 import com.scmc.api.jpa.domain.TbCommonTerms;
 import com.scmc.api.jpa.domain.TbInfoProduct;
 import com.scmc.api.jpa.domain.TbInfoTruckSpec;
+import com.scmc.api.jpa.domain.TbSysAppversion;
 
 public interface SystemInfoService {
 
+	List<TbSysAppversion> searchVersionList();
 	List<TbInfoTruckSpec> searchTruckSpec();
 	List<TbInfoProduct> searchProductInfo();
 	TbInfoProduct saveProductInfo(ProductInfoDto dto);
