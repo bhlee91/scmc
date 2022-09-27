@@ -90,7 +90,6 @@ function Truckowner() {
         } else {
           setIsExist(false);
         }
-
         setValues(res.data)
         const hist = res.data.hist
         setData([])

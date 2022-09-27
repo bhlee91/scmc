@@ -13,4 +13,6 @@ public interface TbMemberTruckOwnerRepository extends JpaRepository<TbMemberTruc
 	List<TbMemberTruckOwner> findWithTbCargoHistUsingFetchJoinByTruckownerUid(Long truckownerUid);
 
 	TbMemberTruckOwner findByTruckownerUid(Long truckownerUid);
+	
+	TbMemberTruckOwner findByTruckownerUid(int truckownerUid);
 }

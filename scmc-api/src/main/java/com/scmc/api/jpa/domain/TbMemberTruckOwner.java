@@ -95,7 +95,7 @@ public class TbMemberTruckOwner {
 	private Date modDt;
 	
 	@OneToOne
-	@JoinColumn(name = "truckowner_uid")
+	@JoinColumn(name = "attachId")
 	private TbSysAttachfile attachFile;
 	
 	@JsonManagedReference

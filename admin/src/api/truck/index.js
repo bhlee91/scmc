@@ -48,6 +48,7 @@ export const downloadFile = (truckownerUid) => {
     method: "get",
     headers:{
       'Content-Type': 'application/json',
+      'Content-Disposition':''
     },
     responseType : 'blob',
     params: {

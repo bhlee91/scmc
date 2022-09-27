@@ -55,18 +55,15 @@ public class FileController {
 
 			MultipartFile file = multipartFile;
 			
-			
 			String fileName = String.valueOf(fName);
 			String originName = file.getOriginalFilename();
 			String fileExt = originName.substring(originName.lastIndexOf(".")+1);
 			originName = originName.substring(0, originName.lastIndexOf("."));
 			long fileSize = file.getSize();
-			
 			File fileSave = new File(UPLOAD_PATH, fileName + "." + fileExt);
 			if(!fileSave.exists()) {
 				fileSave.mkdirs();
 			}
-		
 			file.transferTo(fileSave);
 
 			map.put("fileName", fName);
@@ -77,7 +74,6 @@ public class FileController {
 			map.put("regDt", LocalDateTime.now().format(format) );
 			map.put("truckownerUid", Integer.parseInt(fName));
 			map.put("fileExt", fileExt);
-			
 			
 			fileService.saveAttachFile(map);
 		} catch (Exception e) {

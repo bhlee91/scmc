@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -55,8 +56,6 @@ public class TbSysAttachfile {
 	public TbSysAttachfile(Map<String, Object> af) throws ParseException{
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		
-		System.out.println("af:" + af.toString());
-		// this.attachId = af.get("attachId") == null ? 1L : Long.parseLong(af.get("attachId").toString());
 		this.fileName = af.get("fileName").toString();
 		this.originFileName = af.get("originFileName").toString();
 		this.filePath = af.get("filePath").toString();
