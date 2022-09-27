@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.customer.dto.TermsDto;
 import com.scmc.api.info.dto.ProductInfoDto;
 import com.scmc.api.info.service.SystemInfoService;
 
@@ -55,6 +56,7 @@ public class SystemInfoController {
 		return new ResponseEntity<>(systemInfoService.saveProductInfo(dto), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "대시보드 정보 조회", notes = "대시보드 정보를 조회한다.")
 	@GetMapping("/dashboard")
 	public ResponseEntity<?> getDashboardInfo() {
 		log.info("========================");
@@ -62,5 +64,25 @@ public class SystemInfoController {
 		log.info("========================");
 		
 		return new ResponseEntity<>(systemInfoService.getDashboardInfo(), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "대시보드 정보 조회", notes = "대시보드 정보를 조회한다.")
+	@GetMapping("/terms")
+	public ResponseEntity<?> getTermsInfo() {
+		log.info("========================");
+		log.info("관리자 페이지 약관관리 정보 조회");
+		log.info("========================");
+		
+		return new ResponseEntity<>(systemInfoService.searchTermsInfo(), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "대시보드 정보 등록/수정", notes = "대시보드 정보를 등록/수정한다.")
+	@PostMapping("/terms")
+	public ResponseEntity<?> setTermsInfo(@RequestBody TermsDto dto) {
+		log.info("========================");
+		log.info("관리자 페이지 약관관리 정보 등록/수정");
+		log.info("========================");
+		
+		return new ResponseEntity<>(systemInfoService.saveTermsInfo(dto), HttpStatus.OK);
 	}
 }

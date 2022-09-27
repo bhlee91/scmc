@@ -18,8 +18,16 @@ export const getDashboardInfo = () => {
 
 export const getTermsInfo = () => {
   return request({
-    url: "/customer/terms/Y",
+    url: `${BASE_URL}/terms`,
     method: "get",
+  })
+}
+
+export const setTermsInfo = (obj) => {
+  return request({
+    url: `${BASE_URL}/terms`,
+    method: "post",
+    data: obj,
   })
 }
 
@@ -34,6 +42,6 @@ export const setProductInfo = (obj) => {
   return request({
     url: `${BASE_URL}/product`,
     method: "post",
-    data: obj
+    data: obj,
   })
 }

@@ -39,23 +39,21 @@ import Tooltip from "@mui/material/Tooltip";
 
 import columns from "./json/termsColumns";
 import {
-  getTermsInfo
+  getTermsInfo,
+  setTermsInfo
 } from "api/system/index";
-import { formatDate } from "utils/dateUtils";
+import store from "store";
 
 const Terms = () => {
   const [controller] = useMaterialUIController()
   const { darkMode } = controller
 
-  const termsType = {
-    T01: "운송약관",
-    T02: "이용약관",
-    T03: "개인정보보호방침"
-  }
+
 
   const [open, setOpen] = React.useState(false)
   const [rows, setRows] = React.useState([])
   const [values, setValues] = React.useState({
+    termsUid: 0,
     termsType: "",
     versions: "",
     contents: "",
@@ -63,20 +61,45 @@ const Terms = () => {
     useYn: "Y",
   })
 
-  React.useEffect(() => {
+  const searchTerms = () => {
     getTermsInfo()
     .then(res => {
-      res.data.map(row => {
-        row.termsTypeName = termsType[row.termsType]
-        row.regDt = formatDate(row.regDt)
-      })
-
       setRows(res.data)
     })
+  }
+
+  React.useEffect(() => {
+    searchTerms()
   }, [])
 
   const handleClick = () => {
     setOpen(true)
+  }
+
+  const handleSave = () => {
+    const regId = store.getState().user.email === "" ? "ADMIN" : store.getState().user.email
+
+    const obj = {
+      ...values,
+      regId: regId
+    }
+
+    console.log(obj)
+
+    setTermsInfo(obj)
+    .then(() => {
+      setOpen(false)
+      setValues({
+        termsUid: 0,
+        termsType: "",
+        versions: "",
+        contents: "",
+        expDiv: "",
+        useYn: "Y",
+      })
+      searchTerms()
+    })
+
   }
 
   const handleClose = () => {
@@ -91,7 +114,7 @@ const Terms = () => {
   }
   //  팝
 
-  const inputhandleChange = (prop) => (event) => {
+  const handleInputChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value })
   }
   // 상세정보 끝
@@ -193,7 +216,7 @@ const Terms = () => {
                                       sx={{ height: 40, minWidth: 180 }}
                                       id="termsType"
                                       value={values.termsType}
-                                      onChange={inputhandleChange("termsType")}
+                                      onChange={handleInputChange("termsType")}
                                       size="small"
                                     >
                                       <MenuItem value="T01">운송약관</MenuItem>
@@ -215,7 +238,7 @@ const Terms = () => {
                                   <TextField
                                     id="versions"
                                     value={values.versions}
-                                    onChange={inputhandleChange("versions")}
+                                    onChange={handleInputChange("versions")}
                                     size="small"
                                   />
                                 </Grid>
@@ -237,7 +260,7 @@ const Terms = () => {
                                       sx={{ height: 40, minWidth: 180 }}
                                       id="expDiv"
                                       value={values.expDiv}
-                                      onChange={inputhandleChange("expDiv")}
+                                      onChange={handleInputChange("expDiv")}
                                       size="small"
                                     >
                                       <MenuItem value="MAPP">APP</MenuItem>
@@ -262,7 +285,7 @@ const Terms = () => {
                                       row
                                       id="useYn"
                                       value={values.useYn}
-                                      onChange={inputhandleChange("useYn")}
+                                      onChange={handleInputChange("useYn")}
                                     >
                                       <FormControlLabel
                                         value="Y"
@@ -287,12 +310,15 @@ const Terms = () => {
                                   </MDTypography>
                                 </Grid>
                                 <Grid item xs={8}>
-                                  <TextareaAutosize
-                                    aria-label="minimum height"
-                                    minRows={100}
-                                    style={{ width: 600, height: 1200 }}
-                                    value={values.contents}
-                                  />
+                                  <FormControl>
+                                    <TextareaAutosize
+                                      aria-label="minimum height"
+                                      minRows={100}
+                                      style={{ width: 600, height: 1200 }}
+                                      value={values.contents}
+                                      onChange={handleInputChange("contents")}
+                                    />
+                                  </FormControl>
                                 </Grid>
                               </Grid>
                             </Box>
@@ -311,7 +337,7 @@ const Terms = () => {
               variant="contained"
               color="info"
               component="label"
-              onClick={handleClose}
+              onClick={handleSave}
             >
               저장
             </Button>

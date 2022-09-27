@@ -1,4 +1,11 @@
 import Tooltip from "@mui/material/Tooltip";
+import { formatDate } from "utils/dateUtils";
+
+const termsType = {
+  T01: "운송약관",
+  T02: "이용약관",
+  T03: "개인정보보호방침"
+}
 
 const columns = [
   { field: "termsUid", headerName: "ID", width: 100, headerClassName: "super-app-theme--header" },
@@ -15,7 +22,8 @@ const columns = [
     headerName: "약관 Type",
     width: 200,
     editable: true,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
+    valueGetter: (params) => termsType[params.row.termsType]
   },
   {
     field: "versions",
@@ -57,7 +65,8 @@ const columns = [
     field: "regDt",
     headerName: "등록일",
     width: 150,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
+    valueGetter: (params) => formatDate(params.value),
   },
   {
     field: "modId",

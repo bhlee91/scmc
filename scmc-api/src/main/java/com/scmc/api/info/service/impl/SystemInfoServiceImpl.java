@@ -7,11 +7,14 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.scmc.api.customer.dto.TermsDto;
 import com.scmc.api.info.dto.ProductInfoDto;
 import com.scmc.api.info.service.SystemInfoService;
+import com.scmc.api.jpa.domain.TbCommonTerms;
 import com.scmc.api.jpa.domain.TbInfoProduct;
 import com.scmc.api.jpa.domain.TbInfoTruckSpec;
 import com.scmc.api.jpa.repository.DashBoardRepositoryCustomImpl;
+import com.scmc.api.jpa.repository.TbCommonTermsRepository;
 import com.scmc.api.jpa.repository.TbInfoProductRepository;
 import com.scmc.api.jpa.repository.TbInfoTruckSpecRepository;
 
@@ -23,6 +26,7 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 
 	private final TbInfoTruckSpecRepository tbInfoTruckSpecRepository;
 	private final TbInfoProductRepository tbInfoProductRepository;
+	private final TbCommonTermsRepository tbCommonTermsRepository;
 	private final DashBoardRepositoryCustomImpl dashBoardRepositoryImpl;
 	
 	@Override
@@ -78,5 +82,32 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 	public HashMap<String, Object> getDashboardInfo() {
 		
 		return dashBoardRepositoryImpl.getDashboardInfo();
+	}
+
+	@Override
+	public List<TbCommonTerms> searchTermsInfo() {
+		
+		return tbCommonTermsRepository.findAll();
+	}
+
+	@Override
+	public TbCommonTerms saveTermsInfo(TermsDto dto) {
+		if (dto.getTermsUid() == 0) {
+			TbCommonTerms tct = TbCommonTerms.insertTerms()
+					.termsType(dto.getTermsType())
+					.versions(dto.getVersions())
+					.contents(dto.getContents())
+					.expDiv(dto.getExpDiv())
+					.useYn(dto.getUseYn())
+					.regId(dto.getRegId())
+					.build();
+
+			return tbCommonTermsRepository.save(tct);
+		} else {
+			TbCommonTerms tct = tbCommonTermsRepository.findByTermsUid(dto.getTermsUid());
+			tct.updateTerms(dto.getTermsType(), dto.getVersions(), dto.getContents(), dto.getExpDiv(), dto.getUseYn(), dto.getRegId());
+			
+			return tct;
+		}
 	}
 }

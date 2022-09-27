@@ -13,13 +13,17 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@DynamicInsert @DynamicUpdate
 @Table(name = "tb_common_terms")
 @Getter
 @Setter
@@ -51,7 +55,7 @@ public class TbCommonTerms {
 	@Column(name = "reg_id")
 	private String regId;
 	
-	@Column(name = "reg_dt", nullable = false)
+	@Column(name = "reg_dt")
 	private Date regDt;
 	
 	@Column(name = "mod_id")
@@ -74,5 +78,29 @@ public class TbCommonTerms {
 		this.modId = terms.get("modId").toString();
 		this.modDt = terms.get("modDt").equals("") ? null : format.parse(terms.get("modDt").toString());		
 		
+	}
+	
+	@Builder(builderMethodName = "insertTerms")
+	public TbCommonTerms(String termsType, String versions, 
+			String contents, String expDiv, String useYn, String regId) {
+		
+		this.termsType = termsType;
+		this.versions = versions;
+		this.contents = contents;
+		this.expDiv = expDiv; 
+		this.useYn = useYn;
+		this.regId = regId;
+	}
+	
+	public void updateTerms(String termsType, String versions, 
+			String contents, String expDiv, String useYn, String regId) {
+		
+		this.termsType = termsType;
+		this.versions = versions;
+		this.contents = contents;
+		this.expDiv = expDiv; 
+		this.useYn = useYn;
+		this.modId = regId;
+		this.modDt = new Date();
 	}
 }

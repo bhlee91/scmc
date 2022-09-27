@@ -83,7 +83,7 @@ const Paymgmt = () => {
         productEnddt: "",
         useyn: "Y",
       })
-      selectRow()
+      searchProductInfo()
     })
 
   }
@@ -129,7 +129,7 @@ const Paymgmt = () => {
     setValues({ ...nextValue })
   }
 
-  const selectRow = () => {
+  const searchProductInfo = () => {
     getProductsInfo()
     .then(res => {
       res.data.map((obj, index) => {
@@ -140,7 +140,7 @@ const Paymgmt = () => {
   }
 
   React.useEffect(() => {
-    selectRow()
+    searchProductInfo()
   }, [])
 
   return (
