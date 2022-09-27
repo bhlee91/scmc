@@ -149,7 +149,7 @@ const Dashboard = () => {
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsBarChart
+                <ReportsLineChart
                   color="info"
                   title="차주 가입건수"
                   description="차주가입 수"

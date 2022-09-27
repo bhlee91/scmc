@@ -10,5 +10,7 @@ import com.scmc.api.jpa.domain.TbInfoProduct;
 @Repository
 public interface TbInfoProductRepository extends JpaRepository<TbInfoProduct, Long>{
 
-	List<TbInfoProduct> findByUseynOrderByPriceDesc(String useyn);
+	TbInfoProduct findByProductUid(Long productUid);
+	List<TbInfoProduct> findAllByOrderByUseynDescProductUidAsc();
+	List<TbInfoProduct> findByUseynOrderByPriceAsc(String useyn);
 }

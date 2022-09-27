@@ -3,9 +3,12 @@ package com.scmc.api.info.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.info.dto.ProductInfoDto;
 import com.scmc.api.info.service.SystemInfoService;
 
 import io.swagger.annotations.Api;
@@ -32,7 +35,7 @@ public class SystemInfoController {
 		return new ResponseEntity<>(systemInfoService.searchTruckSpec(), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "적재함 정보 조회", notes = "적재함 정보 조회한다.")
+	@ApiOperation(value = "이용료 조회", notes = "이용료의 정보가 조회한다.")
 	@GetMapping("/product")
 	public ResponseEntity<?> searchProductsInfo() throws Exception {
 		log.info("========================");
@@ -40,6 +43,16 @@ public class SystemInfoController {
 		log.info("========================");
 		
 		return new ResponseEntity<>(systemInfoService.searchProductInfo(), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "이용료 정보 저장", notes = "이용료의 정보를 저장한다.")
+	@PostMapping("/product")
+	public ResponseEntity<?> saveProductInfo(@RequestBody ProductInfoDto dto) throws Exception {
+		log.info("========================");
+		log.info("이용료 저장 => " + dto.toString());
+		log.info("========================");
+		
+		return new ResponseEntity<>(systemInfoService.saveProductInfo(dto), HttpStatus.OK);
 	}
 	
 	@GetMapping("/dashboard")

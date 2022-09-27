@@ -25,7 +25,15 @@ export const getTermsInfo = () => {
 
 export const getProductsInfo = () => {
   return request({
-    url: "/product",
+    url: `${BASE_URL}/product`,
     method: "get",
+  })
+}
+
+export const setProductInfo = (obj) => {
+  return request({
+    url: `${BASE_URL}/product`,
+    method: "post",
+    data: obj
   })
 }

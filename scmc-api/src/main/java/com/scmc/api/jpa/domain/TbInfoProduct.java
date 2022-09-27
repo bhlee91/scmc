@@ -1,5 +1,7 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -9,11 +11,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@DynamicInsert @DynamicUpdate
 @Table(name = "tb_info_product")
 @Getter
 @Setter
@@ -47,9 +53,22 @@ public class TbInfoProduct {
 	private String regId;
 	
 	@Column(name = "reg_dt")
-	private Date RegDt;
+	private Date regDt;
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
-
+	
+	public void saveProductInfo(String productName, int price, int discountRate, 
+			String productStartdt, String productEnddt, String useyn) throws ParseException {
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		
+		this.productName = productName;
+		this.price = price;
+		this.discountRate = discountRate;
+		this.productStartdt = format.parse(productStartdt);
+		this.productEnddt = format.parse(productEnddt);
+		this.useyn = useyn;
+		this.modDt = new Date();
+	}
 }

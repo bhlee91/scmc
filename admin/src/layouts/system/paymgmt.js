@@ -21,7 +21,7 @@ import Button from "components/MDButton";
 import DownloadIcon from "@mui/icons-material/Download";
 import MDBox from "components/MDBox";
 
-// 파업용 시작
+// 팝업용
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -32,72 +32,107 @@ import FormControl from "@mui/material/FormControl";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import InputAdornment from "@mui/material/InputAdornment";
 
 import columns from "./json/paymgmtColumns";
 
-const rows = [
-  {
-    id: 1,
-    product_name: "테스트 상품 ",
-    price: "10,000원",
-    discount_rate: "",
-    product_startdt: "2022-09-10 00:00:00",
-    product_enddt: "2023-09-10 00:00:00",
-    useyn: "Y",
-  },
-  {
-    id: 2,
-    product_name: "3개월 할인 상품",
-    price: "27,000원",
-    discount_rate: "10%",
-    product_startdt: "2022-09-10 00:00:00",
-    product_enddt: "2023-09-10 00:00:00",
-    useyn: "Y",
-  },
-  {
-    id: 3,
-    product_name: "6개월 할인 상품",
-    price: "48,000원",
-    discount_rate: "20%",
-    product_startdt: "2022-09-10 00:00:00",
-    product_enddt: "2023-09-10 00:00:00",
-    useyn: "N",
-  },
-];
+import {
+  getProductsInfo,
+  setProductInfo
+} from "api/system/index";
+import { formatDate } from "utils/dateUtils";
 
 const Paymgmt = () => {
-  const [controller] = useMaterialUIController();
-  const { darkMode } = controller;
+  const [controller] = useMaterialUIController()
+  const { darkMode } = controller
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
+  const [rows, setRows] = React.useState([])
+  const [values, setValues] = React.useState({
+    productUid: 0,
+    productName: "",
+    price: 0,
+    discountRate: 0,
+    productStartdt: "",
+    productEnddt: "",
+    useyn: "Y",
+  })
 
   const handleClick = () => {
-    setOpen(true);
-  };
+    setOpen(true)
+  }
+
+  const handleSave = () => {
+    setProductInfo(values)
+    .then(() => {
+      setOpen(false)
+      setValues({
+        productUid: 0,
+        productName: "",
+        price: 0,
+        discountRate: 0,
+        productStartdt: "",
+        productEnddt: "",
+        useyn: "Y",
+      })
+      selectRow()
+    })
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
-  //  팝
+    setOpen(false)
+    setValues({
+      productUid: 0,
+      productName: "",
+      price: 0,
+      discountRate: 0,
+      productStartdt: "",
+      productEnddt: "",
+      useyn: "Y",
+    })
+  }
 
-  const [values, setValues] = React.useState({
-    product_name: "",
-    price: "",
-    discount_rate: "",
-    product_startdt: "",
-    product_enddt: "",
-    useyn: "Y",
-  });
-  const inputhandleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-  // 상세정보 끝
+  const handleInputChange = (prop) => (event) => {
+    let val = event.target.value
 
-  const [message, setMessage] = React.useState("");
+    if (prop === "price") {
+      val = val.replace(/[^0-9]/g, "")
+    }
+
+    if (prop === "productStartdt" || prop === "productEnddt") {
+      val = formatDate(val)
+    }
+
+    setValues({ ...values, [prop]: val })
+  }
+
   const handleRowClick = (params) => {
-    setMessage(`Row ID "${params.row.id}" clicked`);
-    setOpen(true);
-  };
+    const nextValue = {}
+    Object.keys(values).forEach(key => {
+      if (key === "productStartdt" || key === "productEnddt") {
+        nextValue[key] = formatDate(params.row[key])
+      } else {
+        nextValue[key] = params.row[key]
+      }
+    })
+
+    setOpen(true)
+    setValues({ ...nextValue })
+  }
+
+  const selectRow = () => {
+    getProductsInfo()
+    .then(res => {
+      res.data.map((obj, index) => {
+        obj.id = index + 1
+      })
+      setRows(res.data)
+    })
+  }
+
+  React.useEffect(() => {
+    selectRow()
+  }, [])
 
   return (
     <MDBox>
@@ -118,6 +153,7 @@ const Paymgmt = () => {
           }}
         >
           <DataGrid
+            getRowId={obj => obj.productUid}
             autoHeight
             rows={rows}
             columns={columns}
@@ -183,9 +219,9 @@ const Paymgmt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="product_name"
-                                    value={values.product_name}
-                                    onChange={inputhandleChange("product_name")}
+                                    id="productName"
+                                    value={values.productName}
+                                    onChange={handleInputChange("productName")}
                                     fullWidth
                                     size="small"
                                   />
@@ -203,9 +239,12 @@ const Paymgmt = () => {
                                   <TextField
                                     id="price"
                                     value={values.price}
-                                    onChange={inputhandleChange("price")}
+                                    onChange={handleInputChange("price")}
                                     size="small"
                                     fullWidth
+                                    InputProps={{
+                                      endAdornment: <InputAdornment position="end">원</InputAdornment>,
+                                    }}
                                   />
                                 </Grid>
 
@@ -222,11 +261,14 @@ const Paymgmt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="discount_rate"
-                                    value={values.desc}
-                                    onChange={inputhandleChange("discount_rate")}
+                                    id="discountRate"
+                                    value={values.discountRate}
+                                    onChange={handleInputChange("discountRate")}
                                     fullWidth
                                     size="small"
+                                    InputProps={{
+                                      endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    }}
                                   />
                                 </Grid>
                                 <Grid item xs={2}>
@@ -240,11 +282,10 @@ const Paymgmt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="datetime-local"
-                                    type="datetime-local"
-                                    defaultValue="2017-05-24T10:30"
-                                    value={values.cdate}
-                                    onChange={inputhandleChange("product_startdt")}
+                                    id="productStartdt"
+                                    type="date"
+                                    value={formatDate(values.productStartdt)}
+                                    onChange={handleInputChange("productStartdt")}
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -263,12 +304,11 @@ const Paymgmt = () => {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="datetime-local"
-                                    type="datetime-local"
-                                    defaultValue="2017-05-24T10:30"
-                                    value={values.cdate}
+                                    id="productEnddt"
+                                    type="date"
+                                    value={formatDate(values.productEnddt)}
                                     size="small"
-                                    onChange={inputhandleChange("product_enddt")}
+                                    onChange={handleInputChange("productEnddt")}
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -289,8 +329,8 @@ const Paymgmt = () => {
                                     <RadioGroup
                                       row
                                       id="useyn"
-                                      value={values.LORYN}
-                                      onChange={inputhandleChange("useyn")}
+                                      value={values.useyn}
+                                      onChange={handleInputChange("useyn")}
                                     >
                                       <FormControlLabel
                                         value="Y"
@@ -322,7 +362,7 @@ const Paymgmt = () => {
               variant="contained"
               color="info"
               component="label"
-              onClick={handleClose}
+              onClick={handleSave}
             >
               저장
             </Button>

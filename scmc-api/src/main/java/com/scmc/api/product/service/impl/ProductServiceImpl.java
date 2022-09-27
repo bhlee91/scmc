@@ -18,7 +18,7 @@ public class ProductServiceImpl implements ProductService{
 	
 	@Override
 	public List<TbInfoProduct> selectProduct(String useyn){
-		List<TbInfoProduct> list = tbInfoProductRepository.findByUseynOrderByPriceDesc(useyn);
+		List<TbInfoProduct> list = tbInfoProductRepository.findByUseynOrderByPriceAsc(useyn);
 		
 		return list;
 	}
