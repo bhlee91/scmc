@@ -10,6 +10,7 @@ import com.scmc.api.jpa.domain.TbCommonTerms;
 @Repository
 public interface TbCommonTermsRepository extends JpaRepository<TbCommonTerms, Long> {
 
+	List<TbCommonTerms> findAllByOrderByUseYnDescTermsType();
 	TbCommonTerms findByTermsUid(long termsUid);
 	List<TbCommonTerms> findByUseYnOrderByTermsTypeAsc(String useYn);
 	List<TbCommonTerms> findByTermsTypeAndExpDivAndUseYnOrderByVersionsDesc(String termsType, String expDiv, String useYn);

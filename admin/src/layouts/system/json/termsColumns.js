@@ -15,7 +15,7 @@ const columns = [
     width: 200,
     editable: false,
     hide: true,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "termsTypeName",
@@ -30,7 +30,7 @@ const columns = [
     headerName: "버전",
     width: 150,
     editable: true,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "contents",
@@ -47,19 +47,19 @@ const columns = [
     field: "expDiv",
     headerName: "노출채널",
     width: 150,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "useYn",
     headerName: "사용유무",
     width: 100,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "regId",
     headerName: "등록자",
     width: 150,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "regDt",
@@ -72,13 +72,14 @@ const columns = [
     field: "modId",
     headerName: "수정자",
     width: 150,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
   },
   {
     field: "modDt",
     headerName: "수정일",
     width: 150,
-    headerClassName: "super-app-theme--header"
+    headerClassName: "super-app-theme--header",
+    valueGetter: (params) => formatDate(params.value),
   }
 ]
 

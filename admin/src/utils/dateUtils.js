@@ -32,6 +32,8 @@ export const formatStringToDateTime = (dateString) => {
 
 // return yyyy-mm-dd hh:mi24
 export const formatDateTime = (dateTimeString) => {
+  if (dateTimeString === null) return ""
+  
   dateTimeString = moment(dateTimeString)
 
   return dateTimeString.format("YYYY-MM-DD HH:mm")
@@ -39,6 +41,8 @@ export const formatDateTime = (dateTimeString) => {
 
 // return yyyy-mm-dd
 export const formatDate = (dateTimeString) => {
+  if (dateTimeString === null) return ""
+
   dateTimeString = moment(dateTimeString)
 
   return dateTimeString.format("YYYY-MM-DD")

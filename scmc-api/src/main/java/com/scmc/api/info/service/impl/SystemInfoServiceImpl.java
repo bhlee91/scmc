@@ -96,9 +96,10 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 	@Override
 	public List<TbCommonTerms> searchTermsInfo() {
 		
-		return tbCommonTermsRepository.findAll();
+		return tbCommonTermsRepository.findAllByOrderByUseYnDescTermsType();
 	}
 
+    @Transactional
 	@Override
 	public TbCommonTerms saveTermsInfo(TermsDto dto) {
 		if (dto.getTermsUid() == 0) {
