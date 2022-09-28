@@ -35,7 +35,7 @@ public class SystemInfoServiceImpl implements SystemInfoService {
 	@Override
 	public List<TbSysAppversion> searchVersionList() {
 
-		return tbAppversionRepository.findAllByOrderByVerUidASC();
+		return tbAppversionRepository.findAllByOrderByVerUidAsc();
 	}
 	
 	@Override

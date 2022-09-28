@@ -84,8 +84,6 @@ const Terms = () => {
       regId: regId
     }
 
-    console.log(obj)
-
     setTermsInfo(obj)
     .then(() => {
       setOpen(false)
