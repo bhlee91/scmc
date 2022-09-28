@@ -11,4 +11,6 @@ import com.scmc.api.jpa.domain.TbSysAppversion;
 public interface TbSysAppversionRepository extends JpaRepository<TbSysAppversion, Long>{
 
 	List<TbSysAppversion> findAllByOrderByVerUidAsc();
+	
+	TbSysAppversion findByVerUid(Long verUid);
 }

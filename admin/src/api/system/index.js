@@ -45,3 +45,36 @@ export const setProductInfo = (obj) => {
     data: obj,
   })
 }
+
+export const getVersionInfo = () => {
+  return request({
+    url: `${BASE_URL}/version`,
+    method: "get",
+  })
+}
+
+export const uploadVersion = (formData) => {
+  return request({
+    url: `${BASE_URL}/uploadVersion`,
+    method: "post",
+    headers:{
+      'Content-Type': 'multipart/form-data'
+    },
+    data: formData
+  })
+}
+
+export const downloadVersion = (verUid) => {
+  return request({
+    url: `${BASE_URL}/downloadVersion`,
+    method: "get",
+    headers:{
+      'Content-Type': 'application/json',
+      'Content-Disposition':''
+    },
+    responseType : 'blob',
+    params: {
+      verUid
+    }
+  })
+}

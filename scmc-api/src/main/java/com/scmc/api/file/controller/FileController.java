@@ -86,7 +86,6 @@ public class FileController {
 	@GetMapping("/downloadFile")
 	@CrossOrigin(value= {"*"}, exposedHeaders = {"Content-Disposition"})
 	public ResponseEntity<Resource> downloadFile(@RequestParam("truckownerUid") int truckownerUid) throws Exception {
-		System.out.println("1");
 		TbSysAttachfile file =  fileService.getFile(truckownerUid);
 		String fileExt = file.getFileExt();
 		String originFileName = file.getOriginFileName();

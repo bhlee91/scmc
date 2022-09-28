@@ -28,64 +28,173 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
 import TextField from "@mui/material/TextField";
+import { useSnackbar } from "notistack";
 
-const columns = [
-  { field: "id", headerName: "ID", width: 150, headerClassName: "super-app-theme--header" },
-  {
-    field: "app_version",
-    headerName: "앱 버전",
-    width: 200,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "desc",
-    headerName: "설명",
-    width: 890,
-    editable: true,
-    headerClassName: "super-app-theme--header",
-  },
-  {
-    field: "download",
-    headerName: "다운로드",
-    width: 300,
-    headerClassName: "super-app-theme--header",
-    renderCell: () => (
-      <Button variant="contained" color="info" size="small">
-        다운로드
-      </Button>
-    ),
-  },
-];
+import { 
+  getVersionInfo, uploadVersion, downloadVersion
+} from "api/system/index";
 
-const rows = [
-  { id: 1, app_version: "1.0", desc: "최초버전", download: "./download/scmcapp.apk" },
-  { id: 2, app_version: "1.1", desc: "버그 수정", download: "./download/scmcapp.apk" },
-  { id: 3, app_version: "1.2", desc: "버그 수정 2", download: "./download/scmcapp.apk" },
-];
+
+
+
 
 function Vermgmt() {
+  const { enqueueSnackbar } = useSnackbar()
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
-
+  const [rowId, setRowId] = React.useState(0);
+  const [verFile, setVerFile] = React.useState([]);
+  const [values, setValues] = React.useState([]);
+  const [fileName, setFileName] = React.useState('');
+  const [rows, setRows] = React.useState([]);
   const [open, setOpen] = React.useState(false);
 
-  const handleClick = () => {
+  const columns = [
+    { field: "verUid", 
+      headerName: "ID", 
+      width: 150, 
+      headerClassName: "super-app-theme--header" },
+    {
+      field: "appVersion",
+      headerName: "앱 버전",
+      width: 200,
+      editable: true,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "appDesc",
+      headerName: "설명",
+      width: 890,
+      editable: true,
+      headerClassName: "super-app-theme--header",
+    },
+    {
+      field: "download",
+      headerName: "다운로드",
+      width: 300,
+      headerClassName: "super-app-theme--header",
+      renderCell: () => (
+        <Button variant="contained" color="info" size="small" onClick ={versionDownload}>
+          다운로드
+        </Button>
+      ),
+    },
+  ];
+
+  const regButtonClick = () => {
     setOpen(true);
-  };
+  }
 
-  const handleClose = () => {
+  const closeButtonClick = () => {
+    setFileName('');
+    setVerFile([]);
+    setValues([]);
     setOpen(false);
-  };
-  //  팝
+    callVersionList();
+  }
 
-  const [values, setValues] = React.useState({
-    appver: "",
-    desc: "",
-  });
+  const handleClick = (params) => {
+    setRowId(params.row.verUid)
+  };
+
+
+  //  팝
   const inputhandleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
+
+  const callVersionList = () => {
+    getVersionInfo()
+    .then((res) => {
+      setRows(res.data)
+    })
+  }
+
+  const fileInputRef = React.useRef(null);
+  const verFileHandleClick = (e) => {
+    fileInputRef.current.click();
+  }
+  const verFileHandleChange = (e) =>{
+    setVerFile(e.target.files[0]);
+    setFileName(e.target.files[0].name)
+  }
+
+  const onVerFileUpload = () => {
+    const formData = new FormData();
+    if(verFile !== null){
+      formData.append('multipartFile', verFile);
+      formData.append('appVersion', values.appVersion)
+      formData.append('appDesc', values.appDesc)
+      uploadVersion(formData)  
+    }
+  }
+
+  const validationRegist = () =>{
+
+    if(values.appVersion === '' || values.appVersion === null || values.appVersion === undefined){
+      enqueueSnackbar("앱버전을 입력하세요.", {
+        variant: "warning"
+      })
+      return false;
+    } else if(verFile.length === 0){
+      enqueueSnackbar("파일을 등록해주세요.", {
+        variant: "warning"
+      })
+      return false;
+    } else if(values.appDesc === ''|| values.appDesc === null || values.appDesc === undefined){
+      enqueueSnackbar("설명을 입력하세요.", {
+        variant: "warning"
+      })
+      return false;
+    } else {
+      return true
+    }
+
+  }
+
+  const registerVersion = () => {
+    if(validationRegist()){
+      onVerFileUpload()
+      enqueueSnackbar("등록완료.", {
+        variant: "success"
+      })
+      closeButtonClick();
+    }
+  }
+
+  const versionDownload = () => {    
+    if(rowId !== 0){
+      downloadVersion(rowId)
+      .then((res) => {
+        const blob = new Blob([res.data])
+        const fileUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = fileUrl
+        link.style.display = "none"
+        console.log(res)
+        const injectFilename = (res) => { 
+          const disposition = res.headers['content-disposition'];
+          
+          console.log(disposition)
+          const fname = decodeURI(
+          disposition)
+            // .match(/fileName[^;=\n]*=((['"]).*?\2|[^;\n]*)/)[1]
+            // .replace(/['"]/g, ''))
+          return fname;
+        }
+        link.download = injectFilename(res)
+        document.body.appendChild(link)
+        link.click();
+        link.remove();
+  
+        window.URL.revokeObjectURL(fileUrl)
+      })
+    }
+  }
+  
+  React.useEffect(() => {
+    callVersionList()
+  },[])
   // 상세정보 끝
 
   return (
@@ -108,12 +217,14 @@ function Vermgmt() {
         >
           <DataGrid
             autoHeight
+            getRowId={(obj) => obj.verUid}
             rows={rows}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
             rowSpacingType="border"
             density="compact"
+            onRowClick={handleClick}
             sx={{ fontSize: 14, fontFamily: "-apple-system", fontWeight: 400 }}
           />
         </MDBox>
@@ -123,7 +234,7 @@ function Vermgmt() {
       <Grid container>
         <Grid item xs={12}>
           <Box display="flex" justifyContent="flex-end">
-            <Button color="info" onClick={handleClick}>
+            <Button color="info" onClick={regButtonClick}>
               등록
             </Button>
           </Box>
@@ -134,7 +245,7 @@ function Vermgmt() {
           // fullScreen={fullScreen}
           fullWidth
           open={open}
-          onClose={handleClose}
+          onClose={closeButtonClick}
           sx={{
             "& .MuiDialog-container": {
               "& .MuiPaper-root": {
@@ -160,6 +271,8 @@ function Vermgmt() {
                                 rowSpacing={1}
                                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                               >
+
+
                                 <Grid item xs={2}>
                                   <MDTypography
                                     gutterBottom
@@ -171,13 +284,14 @@ function Vermgmt() {
                                 </Grid>
                                 <Grid item xs={4}>
                                   <TextField
-                                    id="appver"
-                                    value={values.appver}
-                                    onChange={inputhandleChange("appver")}
+                                    id="appVersion"
+                                    value={values.appVersion}
+                                    onChange={inputhandleChange("appVersion")}
                                     fullWidth
                                     size="small"
                                   />
                                 </Grid>
+                                <Grid item xs={6}/>
                                 <Grid item xs={2}>
                                   <MDTypography
                                     gutterBottom
@@ -187,11 +301,27 @@ function Vermgmt() {
                                     파일업로드
                                   </MDTypography>
                                 </Grid>
+                                <Grid item xs={6}>
+                                  <TextField
+                                    id="fileName"
+                                    value={fileName}
+                                    onChange={inputhandleChange("fileName")}
+                                    fullWidth
+                                    size="small"
+                                  />
+                                </Grid>
                                 <Grid item xs={4}>
-                                  <Button variant="contained" color="secondary" component="label">
+                                  <Button variant="contained" color="secondary" component="label" onClick={verFileHandleClick}>
                                     Upload
-                                    <input hidden accept="image/*" multiple type="file" />
                                   </Button>
+                                  <input 
+                                    accept="*" 
+                                    multiple 
+                                    type="file" 
+                                    onChange={verFileHandleChange} 
+                                    ref={fileInputRef}
+                                    style={{display: "none"}}
+                                    />
                                 </Grid>
 
                                 <Divider />
@@ -208,9 +338,9 @@ function Vermgmt() {
                                 <Grid item xs={6}>
                                   <MDTypography gutterBottom>
                                     <TextField
-                                      id="desc"
-                                      value={values.desc}
-                                      onChange={inputhandleChange("desc")}
+                                      id="appDesc"
+                                      value={values.appDesc}
+                                      onChange={inputhandleChange("appDesc")}
                                       fullWidth
                                       size="small"
                                     />
@@ -233,7 +363,16 @@ function Vermgmt() {
               variant="contained"
               color="info"
               component="label"
-              onClick={handleClose}
+              onClick={registerVersion}
+            >
+              등록
+            </Button>
+            <Button
+              autoFocus
+              variant="contained"
+              color="info"
+              component="label"
+              onClick={closeButtonClick}
             >
               닫기
             </Button>

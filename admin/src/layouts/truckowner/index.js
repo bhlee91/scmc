@@ -45,14 +45,15 @@ import cargocolumns from "./cargocolumns.json";
 import columns from "./columns.json";
 
 import { 
-  getTruckOwnerList, getTruckOwner, modTruckOwner, uploadFile,downloadFile
+  getTruckOwnerList, getTruckOwner, modTruckOwner, uploadFile, downloadFile
 } from "api/truck";
 import { formatFare } from "utils/commonUtils";
 import { formatInKorea, getDateDiff } from "utils/dateUtils";
 import { bool } from "prop-types";
-
+import { useSnackbar } from "notistack";
 
 function Truckowner() {
+  const { enqueueSnackbar } = useSnackbar()
   const [rows, setRows] = React.useState([]);
   const [cargoLoadImages, setCargoLoadImages] = React.useState([]);
   const [cargoUnLoadImages, setCargoUnLoadImages] = React.useState([]);
@@ -276,6 +277,24 @@ function Truckowner() {
     setOpen(false);
   };
   
+  const callTruckOwnerList = () => {
+    getTruckOwnerList(
+      0,
+      10,
+      svalues.carNumber == "" ? null : svalues.carNumber,
+      svalues.businessNo == "" ? null : svalues.businessNo,
+      svalues.truckownerName == "" ? null : svalues.truckownerName,
+      )
+    .then(res => {
+      getColumnValue(res.data.content)
+      const result = res.data.content
+      return result
+    })
+    .then(result => {
+      setRows(result)
+    })
+  }
+
   const searchTruckOwner = () => {
     getTruckOwnerList(
       0,
@@ -302,18 +321,15 @@ function Truckowner() {
     } else {
       modTruckOwner(values, rowId)
       .then(res => {
-        //console.log(res)
-        return(
-          <Alert serverity="success">
-            <AlertTitle>Success</AlertTitle>
-            {res.data}
-          </Alert>
-        )
-      })
-      .then(() =>{
         if(bcopy.length !== 0){
           onBcopyUpload()
         }
+      })
+      .then(() =>{
+        enqueueSnackbar("수정 완료", {
+          variant: "success"
+        })
+        callTruckOwnerList()
       })
     }
   }
@@ -337,10 +353,8 @@ function Truckowner() {
     if(bcopy !== null && values.length !== 0){
       formData.append('multipartFile', bcopy);
       formData.append('fName', values.truckownerUid)
-      uploadFile (formData) 
-      
+      uploadFile (formData)  
     }
-    
   }
 
   const businessCopyDownload = () => {    
@@ -371,24 +385,9 @@ function Truckowner() {
     })
     
   }
-
   
   React.useEffect(() => {
-    getTruckOwnerList(
-      0,
-      10,
-      svalues.carNumber == "" ? null : svalues.carNumber,
-      svalues.businessNo == "" ? null : svalues.businessNo,
-      svalues.truckownerName == "" ? null : svalues.truckownerName,
-      )
-    .then(res => {
-      getColumnValue(res.data.content)
-      const result = res.data.content
-      return result
-    })
-    .then(result => {
-      setRows(result)
-    })
+    callTruckOwnerList()
   }, [])
 
   //  팝업용 끝

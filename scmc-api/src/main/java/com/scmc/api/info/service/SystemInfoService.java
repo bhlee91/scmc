@@ -19,4 +19,7 @@ public interface SystemInfoService {
 	HashMap<String, Object> getDashboardInfo();
 	List<TbCommonTerms> searchTermsInfo();
 	TbCommonTerms saveTermsInfo(TermsDto dto);
+	int saveVersion(HashMap<String, Object> params);
+	TbSysAppversion getFile(Long verUid);
 }
+ 

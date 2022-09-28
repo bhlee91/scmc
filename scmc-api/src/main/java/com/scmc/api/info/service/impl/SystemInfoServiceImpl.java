@@ -26,16 +26,35 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class SystemInfoServiceImpl implements SystemInfoService {
 
-	private final TbSysAppversionRepository tbAppversionRepository;
+	private final TbSysAppversionRepository tbSysAppversionRepository;
 	private final TbInfoTruckSpecRepository tbInfoTruckSpecRepository;
 	private final TbInfoProductRepository tbInfoProductRepository;
 	private final TbCommonTermsRepository tbCommonTermsRepository;
 	private final DashBoardRepositoryCustomImpl dashBoardRepositoryImpl;
 	
 	@Override
+	public TbSysAppversion getFile(Long verUid) {
+		return tbSysAppversionRepository.findByVerUid(verUid);
+	}
+	
+	@Override
 	public List<TbSysAppversion> searchVersionList() {
 
-		return tbAppversionRepository.findAllByOrderByVerUidAsc();
+		return tbSysAppversionRepository.findAllByOrderByVerUidAsc();
+	}
+	
+	@Override
+	public int saveVersion(HashMap<String, Object> params) {
+		TbSysAppversion tbav = null;
+		try {
+			tbav = new TbSysAppversion(params);
+			tbSysAppversionRepository.save(tbav);
+			
+			return 1;
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			return 0;
+		}
 	}
 	
 	@Override

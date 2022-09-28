@@ -31,7 +31,6 @@ public class FileServiceImpl implements FileService{
 	@Transactional
 	public int saveAttachFile(Map<String, Object> params) throws Exception{
 		TbSysAttachfile tbsa = tbSysAttachfileRepository.findByTruckownerUid(Integer.parseInt(params.get("truckownerUid").toString()));
-		System.out.println("------------------------------------11111111");
 		TbMemberTruckOwner tmto = tbMemberTruckOwnerRepository.findByTruckownerUid(Long.parseLong(params.get("truckownerUid").toString()));
 		System.out.println(tmto.toString());
 		try {
