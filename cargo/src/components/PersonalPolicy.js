@@ -4,31 +4,28 @@ import Appbar from "../common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardMedia,
   Container,
   createTheme,
-  Divider,
-  Grid,
   Paper,
   Stack,
   styled,
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
+
+import {
+  searchTerms
+} from "src/api/terms/index";
 
 const theme = createTheme();
 
-function PersonalPolicy() {
+const PersonalPolicy = () => {
+  const [ personPolicy, setPersonPolicy ] = React.useState("")
+
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#ECEFF1",
     ...theme.typography.body2,
@@ -36,6 +33,18 @@ function PersonalPolicy() {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
+  React.useEffect(() => {
+    const param = {
+      termsType: "T03",
+      expDiv: "ALLE"
+    }
+
+    searchTerms(param)
+    .then(res => {
+      setPersonPolicy(res.data[0].contents)
+    })
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -58,7 +67,7 @@ function PersonalPolicy() {
               variant="subtitle2"
               component="div"
             >
-              개인정보보호방침
+              <div style={{ whiteSpace: "pre-wrap" }}>{personPolicy}</div>
             </Typography>
           </CardContent>
         </Card>

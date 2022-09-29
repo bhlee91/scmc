@@ -4,31 +4,28 @@ import Appbar from "../common/Appbar";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import StepContent from "@mui/material/StepContent";
 import Button from "@mui/material/Button";
-import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
-  CardMedia,
   Container,
   createTheme,
-  Divider,
-  Grid,
   Paper,
   Stack,
   styled,
   ThemeProvider,
   Typography,
 } from "@mui/material";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
+
+import {
+  searchTerms
+} from "src/api/terms/index";
 
 const theme = createTheme();
 
-function UseTerms() {
+const UseTerms = () => {
+  const [ useTerms, setUseTerms ] = React.useState("")
+  
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#ECEFF1",
     ...theme.typography.body2,
@@ -36,6 +33,18 @@ function UseTerms() {
     textAlign: "center",
     color: theme.palette.text.secondary,
   }));
+
+  React.useEffect(() => {
+    const param = {
+      termsType: "T02",
+      expDiv: "ALLE"
+    }
+
+    searchTerms(param)
+    .then(res => {
+      setUseTerms(res.data[0].contents)
+    })
+  }, [])
 
   return (
     <ThemeProvider theme={theme}>
@@ -58,7 +67,7 @@ function UseTerms() {
               variant="subtitle2"
               component="div"
             >
-              이용약관
+              <div style={{ whiteSpace: "pre-wrap" }}>{useTerms}</div>
             </Typography>
           </CardContent>
         </Card>
