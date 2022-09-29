@@ -1,6 +1,7 @@
 package com.scmc.api.member.user.service.impl;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -63,8 +64,11 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public boolean adminLogin(HashMap<String, Object> obj) {
+	public Map<String, Object> adminLogin(HashMap<String, Object> obj) {
 		
-		return tbMemberCargoOwnerRepository.existsByUserIdAndPhoneNumber(obj.get("id").toString(), obj.get("password").toString());
+		boolean flag = tbMemberCargoOwnerRepository.existsByUserIdAndPhoneNumber(obj.get("id").toString(), obj.get("password").toString());
+		
+		if (flag) return obj;
+		else return null;
 	}
 }

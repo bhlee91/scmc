@@ -35,22 +35,23 @@ public class AuthController {
 
 	@ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 통해 사용자 정보 저장 후 토큰 생성")
 	@PostMapping("/kakao")
-	public ResponseEntity<?> kakaoAuthRequest() throws Exception {
+	public ResponseEntity<?> kakaoAuthRequest(HttpServletRequest request) throws Exception {
 		log.info("==================");
 		log.info("카카오 로그인");
 		log.info("==================");
 		
-		return new ResponseEntity<>(kakaoLoginUtil.authConnect(), HttpStatus.OK);
+		return new ResponseEntity<>(kakaoLoginUtil.authConnect(request), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "카카오 Callback URL", notes = "인증 요청의 CallbackURL")
 	@GetMapping("/kakao/callback")
-	public ResponseEntity<?> kakaoAuthRequest(@RequestParam(value = "code") String code) throws Exception {
+	public ResponseEntity<?> kakaoCallback(HttpServletRequest request,
+			@RequestParam(value = "code") String code) throws Exception {
 		log.info("==================");
 		log.info("카카오 callback url");
 		log.info("==================");
 		
-		return new ResponseEntity<>(kakaoLoginUtil.getKaKaoToken(code), HttpStatus.OK);
+		return new ResponseEntity<>(kakaoLoginUtil.getKaKaoToken(request, code), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "네이버 로그인", notes = "네이버 로그인을 통해 사용자 정보 저장 후 토큰 생성")
@@ -82,7 +83,7 @@ public class AuthController {
 	
 	@ApiOperation(value = "토큰 갱신", notes = "발급받은 토큰을 갱신한다.")
 	@PostMapping("/refresh")
-	public ResponseEntity<?> tokenRefresh(@RequestBody HashMap<String, Object> param) {
+	public ResponseEntity<?> tokenRefresh(HttpServletRequest request, @RequestBody HashMap<String, Object> param) {
 		log.info("==================");
 		log.info("토큰 갱신");
 		log.info("==================");
@@ -91,7 +92,7 @@ public class AuthController {
 		
 		String flag = param.get("social").toString();
 		
-		if (flag.equals("NAVER")) obj = naverLoginUtil.refreshToken(param);
+		if (flag.equals("NAVER")) obj = naverLoginUtil.refreshToken(request, param);
 		else obj = null;
 		
 		return new ResponseEntity<>(obj, HttpStatus.OK);

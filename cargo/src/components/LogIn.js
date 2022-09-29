@@ -42,7 +42,7 @@ const LogIn = () => {
 
     adminLogin(data.get("email"), data.get("password"))
     .then((res) => {
-      if (res.data) {
+      if (res.data !== null) {
         window.location.href = "/"
       } else {
         alert("이메일 또는 패스워드를 확인해주세요.")

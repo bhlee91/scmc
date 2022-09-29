@@ -5,6 +5,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,24 +35,30 @@ public class KaKaoLoginUtil {
 	@Value("${social.kakao.api.profile}")
 	private String PROFILE_API;
 	
-	private String REDIRECT_URI = "http://localhost:3000/LogIn/kid";
+	@Value("${spring.host.url-local}")
+	private String LOCAL_URL;
 	
-	public String authConnect() throws UnsupportedEncodingException {
+	@Value("${spring.host.url-dev}")
+	private String DEV_URL;
+	
+	private String URI = "/LogIn/kid";
+	
+	public String authConnect(HttpServletRequest request) throws UnsupportedEncodingException {
 		
 		String auth_url = AUTH_API + String.format("?client_id=%s"
 				+ "&redirect_uri=%s"
 				+ "&response_type=code"
-				, REST_API_KEY, REDIRECT_URI);
+				, REST_API_KEY, getRedirectURI(request));
 		
 		return auth_url;
 	}
 	
-	public HashMap<String, Object> getKaKaoToken(String code) {
+	public HashMap<String, Object> getKaKaoToken(HttpServletRequest request, String code) {
 		String token_url = TOKEN_API + String.format("?grant_type=authorization_code"
 				+ "&client_id=%s"
 				+ "&redirect_uri=%s"
 				+ "&code=%s"
-				, REST_API_KEY, REDIRECT_URI, code);
+				, REST_API_KEY, getRedirectURI(request));
 		
 		HttpURLConnection con = apiUtil.connect(token_url);
 
@@ -81,7 +89,7 @@ public class KaKaoLoginUtil {
 		}
 	}
 	
-	public HashMap<String, Object> refreshToken(HashMap<String, Object> obj) {
+	public HashMap<String, Object> refreshToken(HttpServletRequest request, HashMap<String, Object> obj) {
 		String token_url = TOKEN_API + String.format("?grant_type=refresh_token"
 				+ "&client_id=%s"
 				+ "&refresh_token=%s"
@@ -115,6 +123,21 @@ public class KaKaoLoginUtil {
 		} finally {
 			con.disconnect();
 		}
+	}
+	
+	private String getRedirectURI(HttpServletRequest request) {
+		String redirectUri = "";
+		String requestURL = request.getRequestURL().toString();
+		
+		if (requestURL.contains(DEV_URL)) {
+			redirectUri = DEV_URL + ":3006";
+		} else if (requestURL.contains(LOCAL_URL)) {
+			redirectUri = LOCAL_URL + ":3000";
+		}
+		
+		redirectUri = "http://" + redirectUri + URI;
+		
+		return redirectUri; 
 	}
 	
 	private TbMemberCargoOwner getProfile(String socialToken) {

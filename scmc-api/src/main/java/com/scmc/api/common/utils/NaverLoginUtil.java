@@ -43,7 +43,13 @@ public class NaverLoginUtil {
 	@Value("${social.naver.api.profile}")
 	private String PROFILE_API;
 	
-	private final String REDIRECT_URL = "http://localhost:3000/LogIn/nid";
+	@Value("${spring.host.url-local}")
+	private String LOCAL_URL;
+	
+	@Value("${spring.host.url-dev}")
+	private String DEV_URL;
+	
+	private String URI = "/LogIn/nid";
 	
 	private String generateState(HttpServletRequest request) {
 		SecureRandom random = new SecureRandom();
@@ -61,7 +67,7 @@ public class NaverLoginUtil {
 				+ "&client_id=%s"
 				+ "&redirect_uri=%s"
 				+ "&state=%s"
-				, CLIENT_ID, URLEncoder.encode(REDIRECT_URL, "UTF-8"), generateState(request));
+				, CLIENT_ID, URLEncoder.encode(getRedirectURI(request), "UTF-8"), generateState(request));
 		
 		return auth_url;
 	}
@@ -106,7 +112,7 @@ public class NaverLoginUtil {
 		}
 	}
 	
-	public HashMap<String, Object> refreshToken(HashMap<String, Object> obj) {
+	public HashMap<String, Object> refreshToken(HttpServletRequest request, HashMap<String, Object> obj) {
 		String token_url = TOKEN_API + String.format("?grant_type=refresh_token"
 				+ "&client_id=%s"
 				+ "&client_secret=%s"
@@ -141,6 +147,21 @@ public class NaverLoginUtil {
 		} finally {
 			con.disconnect();
 		}
+	}
+	
+	private String getRedirectURI(HttpServletRequest request) {
+		String redirectUri = "";
+		String requestURL = request.getRequestURL().toString();
+		
+		if (requestURL.contains(DEV_URL)) {
+			redirectUri = DEV_URL + ":3006";
+		} else if (requestURL.contains(LOCAL_URL)) {
+			redirectUri = LOCAL_URL + ":3000";
+		}
+		
+		redirectUri = "http://" + redirectUri + URI;
+		
+		return redirectUri; 
 	}
 	
 	private TbMemberCargoOwner getProfile(String socialToken) {

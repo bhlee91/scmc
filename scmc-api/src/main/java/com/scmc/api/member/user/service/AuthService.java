@@ -1,6 +1,7 @@
 package com.scmc.api.member.user.service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -10,5 +11,5 @@ public interface AuthService {
 
 	String generateToken(String userId);
 	TbMemberCargoOwner insertAndGetUser(JSONObject user);
-	boolean adminLogin(HashMap<String, Object> obj);
+	Map<String, Object> adminLogin(HashMap<String, Object> obj);
 }
