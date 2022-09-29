@@ -125,7 +125,13 @@ function Vermgmt() {
       formData.append('multipartFile', verFile);
       formData.append('appVersion', values.appVersion)
       formData.append('appDesc', values.appDesc)
-      uploadVersion(formData)  
+      uploadVersion(formData)
+      .then(() => {
+        enqueueSnackbar("등록완료.", {
+          variant: "success"
+        })
+        closeButtonClick();
+      })  
     }
   }
 
@@ -155,10 +161,6 @@ function Vermgmt() {
   const registerVersion = () => {
     if(validationRegist()){
       onVerFileUpload()
-      enqueueSnackbar("등록완료.", {
-        variant: "success"
-      })
-      closeButtonClick();
     }
   }
 
