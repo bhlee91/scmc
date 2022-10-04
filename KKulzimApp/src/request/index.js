@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const HOST_NAME = window.location.hostname
+// const HOST_NAME = window.location.hostname
 
 let API_BASE_URL = "http://localhost:8080"
 
