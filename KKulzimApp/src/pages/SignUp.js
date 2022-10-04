@@ -41,10 +41,10 @@ import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import DismissKeyboardView from '../components/DismissKeyboardView';
+import DismissKeyboardView from 'components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
-import Mtimer from '../common/Mtimer';
+import Mtimer from 'common/Mtimer';
 
 function SignUp({navigation}) {
   const [name, setName] = useState('');
