@@ -277,24 +277,6 @@ function Truckowner() {
     setOpen(false);
   };
   
-  const callTruckOwnerList = () => {
-    getTruckOwnerList(
-      0,
-      10,
-      svalues.carNumber == "" ? null : svalues.carNumber,
-      svalues.businessNo == "" ? null : svalues.businessNo,
-      svalues.truckownerName == "" ? null : svalues.truckownerName,
-      )
-    .then(res => {
-      getColumnValue(res.data.content)
-      const result = res.data.content
-      return result
-    })
-    .then(result => {
-      setRows(result)
-    })
-  }
-
   const searchTruckOwner = () => {
     getTruckOwnerList(
       0,
@@ -329,7 +311,7 @@ function Truckowner() {
         enqueueSnackbar("수정 완료", {
           variant: "success"
         })
-        callTruckOwnerList()
+        searchTruckOwner()
       })
     }
   }
@@ -385,9 +367,17 @@ function Truckowner() {
     })
     
   }
-  
+  const enterKey = (e) =>{
+    if(e.key == 'Enter') {
+      
+      searchTruckOwner()
+    }
+    
+  }
+
+
   React.useEffect(() => {
-    callTruckOwnerList()
+    searchTruckOwner()
   }, [])
 
   //  팝업용 끝
@@ -418,6 +408,7 @@ function Truckowner() {
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={handleChange("truckownerName")}
+                            onKeyPress = {() => enterKey}
                           />
                         </Stack>
                       </Grid>
@@ -431,6 +422,7 @@ function Truckowner() {
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={handleChange("carNumber")}
+                            onKeyPress = {enterKey}
                           />
                         </Stack>
                       </Grid>
@@ -444,6 +436,7 @@ function Truckowner() {
                             size="small"
                             sx={{ m: 1, width: "25ch" }}
                             onChange={handleChange("businessNo")}
+                            onKeyPress = {enterKey}
                           />
                         </Stack>
                       </Grid>
