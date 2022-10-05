@@ -54,7 +54,7 @@ public class TbTruckOwnerCargoInfo {
 	@Column(name = "depart_addr_st2")
 	private String departAddrSt2;
 	
-	@Column(name = "depart_loatitude")
+	@Column(name = "depart_latitude")
 	private String departLatitude;
 	
 	@Column(name = "depart_longitude")
@@ -80,6 +80,8 @@ public class TbTruckOwnerCargoInfo {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+	
+	public TbTruckOwnerCargoInfo() {}
 
 	@Builder(builderMethodName = "insertCargoInfo")
 	public TbTruckOwnerCargoInfo(long truckownerUid, String loadDt, String unloadDt, int spaceRate,

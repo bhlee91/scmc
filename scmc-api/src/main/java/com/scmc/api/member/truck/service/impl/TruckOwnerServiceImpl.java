@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -24,6 +25,7 @@ import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
+import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepositoryCustom;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
@@ -36,6 +38,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private final HiWorksUtil hiWorksUtil;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 	private final TbTruckOwnerCargoInfoRepository tbTruckOwnerCargoInfoRepository;
+	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
 	private JPAQueryFactory query;
 	
 	@Autowired
@@ -181,5 +184,11 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public Map<String, Object> getTruckOwnerMainInfo(long truckownerUid) {
+		
+		return tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(truckownerUid);
 	}
 }

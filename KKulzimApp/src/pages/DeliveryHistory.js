@@ -30,6 +30,9 @@ import {Card, Title, Divider, Paragraph, Badge} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 function DeliveryHistoy({navigation}) {
+  const toGoDetail = useCallback(() => {
+    navigation.navigate('CargoDetail');
+  }, [navigation]);
   return (
     <ScrollView style={styles.mainView}>
       {/* 추천 화물정보 랭킹 탑 2 까지 보여지기 */}
@@ -38,10 +41,12 @@ function DeliveryHistoy({navigation}) {
           <Card style={styles.recommendcard}>
             <Card.Content>
               {/* 히스토리 Looping */}
-              <Card
-                style={styles.recommendcardcontents}
-                onPress={() => Alert.alert('상세정보로 이동')}>
+
+              <Card style={styles.recommendcardcontents} onPress={toGoDetail}>
                 <Card.Content>
+                  <Paragraph style={styles.recommendtext}>
+                    2022년 10월 01일 00시 00분
+                  </Paragraph>
                   <View style={styles.recommendView}>
                     <View style={{flex: 1, width: '45%'}}>
                       <Card>
@@ -106,6 +111,9 @@ function DeliveryHistoy({navigation}) {
                 style={styles.recommendcardcontents}
                 onPress={() => Alert.alert('상세정보로 이동')}>
                 <Card.Content>
+                  <Paragraph style={styles.recommendtext}>
+                    2022년 10월 01일 00시 00분
+                  </Paragraph>
                   <View style={styles.recommendView}>
                     <View style={{flex: 1, width: '45%'}}>
                       <Card>

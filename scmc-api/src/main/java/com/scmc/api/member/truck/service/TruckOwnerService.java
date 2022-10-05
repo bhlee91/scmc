@@ -2,6 +2,7 @@ package com.scmc.api.member.truck.service;
 
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface TruckOwnerService {
 	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto obj) throws ParseException;
 	String removeTruckOwnerCargoInfo(long uid);
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
+	
+	Map<String, Object> getTruckOwnerMainInfo(long truckownerUid);
 }

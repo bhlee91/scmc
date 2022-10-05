@@ -123,13 +123,11 @@ function CargoReg({ navigation, route }) {
   const [isUnloadDatePickerVisible, setUnloadDatePickerVisible] = useState(false)
 
   const handleLoadConfirm = date => {
-    console.log('dateFormat: ', date)
     setLoadDatePickerVisible(false)
     setLoadDateTime(date.format('yyyy년MM월dd일 HH시mm분'))
   }
 
   const handleUnloadConfirm = date => {
-    console.log('dateFormat: ', date)
     setUnloadDatePickerVisible(false)
     setUnloadDateTime(date.format('yyyy년MM월dd일 HH시mm분'))
   }
@@ -143,7 +141,6 @@ function CargoReg({ navigation, route }) {
 
   useEffect(() => {
     if (route.params?.addr) {
-      console.log(route.params)
       if (route.params.d === "load")
         setLoadAddr({ ...route.params.addr })
       if (route.params.d === "unload")
@@ -178,6 +175,24 @@ function CargoReg({ navigation, route }) {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  const handleCancelClick = () => {
+    setLoadDateTime("")
+    setUnloadDateTime("")
+    setLoadAddr({
+      road: "",
+      jibun: "",
+    })
+    setUnloadAddr({
+      road: "",
+      jibun: "",
+    })
+    setRate(0)
+    setWeight("0")
+    setWeightDiv("")
+
+    navigation.navigate('Home')
   }
   
   return (
@@ -441,6 +456,7 @@ function CargoReg({ navigation, route }) {
                     value={weightDiv}
                     onValueChange={(value) => setWeightDiv(value)}
                     items={[
+                      { label: "단위", value: "" },
                       { label: "kg", value: "kg" },
                       { label: "톤", value: "t" },
                     ]}
@@ -459,14 +475,20 @@ function CargoReg({ navigation, route }) {
           <View style={{flex: 1}}>
             <Pressable
               style={styles.buttonZone}
-              onPress={handleCargoSave}>
+              onPress={() =>
+                Alert.alert('꿀짐', '입력한 정보로 화물을 등록합니다', [
+                  { text: '등록', onPress: () => handleCargoSave() },
+                  { text: '취소', onPress: () => { return }, },
+                ])
+              }
+            >
               <Text style={styles.ButtonText}>등록</Text>
             </Pressable>
           </View>
           <View style={{flex: 1}}>
             <Pressable
               style={styles.buttonZone}
-              onPress={() => navigation.navigate('Home')}>
+              onPress={handleCancelClick}>
               <Text style={styles.ButtonText}>취소</Text>
             </Pressable>
           </View>

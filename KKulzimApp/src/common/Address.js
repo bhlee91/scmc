@@ -1,13 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, BackHandler } from "react-native";
 import DaumPostcode from "react-native-daum-postcode";
 
 function Address({ navigation, route }) {
 
-  const onSelected = (data) => {
-    console.log(data.roadAddress)
-    console.log(data.jibunAddress)
+  useEffect(() => {
+    const handleBackPress = () => {
+      navigation.navigate({
+        name: "CargoReg",
+        merge: true
+      })
+  
+      return true
+    }
 
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackPress)
+
+    return () => backHandler.remove();
+  }, []);
+
+  const onSelected = (data) => {
     navigation.navigate({
       name: "CargoReg", 
       params: { 
@@ -20,17 +32,6 @@ function Address({ navigation, route }) {
       merge: true
     })
   }
-
-  const handleBackPress = () => {
-    navigation.navigate({
-      name: "CargoReg",
-      merge: true
-    })
-
-    return true
-  }
-
-  this.BackHandler = BackHandler.addEventListener("hardwareBackPress", handleBackPress)
 
   return (
     <View style={styles.mainView}>

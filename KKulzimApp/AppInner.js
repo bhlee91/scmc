@@ -40,6 +40,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Certification from './src/pages/Certification';
 import CustomCenter from './src/pages/CustomCenter';
 import CargoReg from './src/pages/CargoReg';
+import CargoDetail from './src/pages/CargoDetail';
+import RecomDetail from './src/pages/RecomDetail';
+import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -397,6 +400,17 @@ function AppInner({navigation}) {
           name="UsTerms"
           component={UsTerms}
           options={{title: '이용약관'}}
+        />
+
+        <Stack.Screen
+          name="CargoDetail"
+          component={CargoDetail}
+          options={{title: '운송상세정보'}}
+        />
+        <Stack.Screen
+          name="RecomDetail"
+          component={RecomDetail}
+          options={{title: '추천상세정보'}}
         />
       </Stack.Group>
     </Stack.Navigator>

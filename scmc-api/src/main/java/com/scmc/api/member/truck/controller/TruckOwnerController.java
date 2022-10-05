@@ -119,4 +119,16 @@ public class TruckOwnerController {
 		
 		return new ResponseEntity<>(truckOwnerService.selectTruckOwner(carNumber,truckownerName,businessNo, page), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "모바일 차주 메인", notes = "모바일 차주 메인 관련 정보를 조회한다.")
+	@GetMapping("/truck/main/{truckownerUid}")
+	public ResponseEntity<?> getTruckOwnerMainInfo(
+			@ApiParam(value = "차주 uid", example = "1") @PathVariable(value = "truckownerUid") long truckownerUid
+			) throws Exception {
+		log.info("==================");
+		log.info("모바일 차주 메인 조회)");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(truckownerUid), HttpStatus.OK);
+	}
 }
