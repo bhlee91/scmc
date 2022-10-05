@@ -45,18 +45,23 @@ import DismissKeyboardView from 'components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
 import Mtimer from 'common/Mtimer';
+import { registTruckOwner } from '../api/truckowner';
 
 function SignUp({navigation}) {
-  const [name, setName] = useState('');
-  const [hpnumber, setHpnumber] = useState('');
-  const [businessno, setBusinessno] = useState('');
-  const [tons, setTons] = useState('');
+  const [truckownerName, setTruckownerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [businessNo, setBusinessNo] = useState('');
+  const [truckTons, setTruckTons] = useState('');
   const [cardiv, setDiv] = useState('');
-  const [carno, setCarno] = useState('');
+  const [carNumber, setCarNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmpassword] = useState('');
   const [authno, setAuthno] = useState('');
-  const [longyn, setLongyn] = useState('');
+  //const [longyn, setLongyn] = useState('');
+  const [loArr, setLoArr] = useState([]);
+  const [lfArr, setLfArr] = useState([]);
+  const [rfArr, setRfArr] = useState([]);
+  const [stArr, setStArr] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const [modalvisible, setModalVisible] = React.useState(false);
@@ -72,15 +77,15 @@ function SignUp({navigation}) {
 
   const allState = () => {
     if (allCheck === false) {
-      setAllCheck(true);
-      setTrCheck(true);
-      setUsCheck(true);
-      setPrCheck(true);
-    } else {
       setAllCheck(false);
       setTrCheck(false);
       setUsCheck(false);
       setPrCheck(false);
+    } else {
+      setAllCheck(true);
+      setTrCheck(true);
+      setUsCheck(true);
+      setPrCheck(true);
     }
   };
 
@@ -133,7 +138,7 @@ function SignUp({navigation}) {
   }, [navigation]);
 
   const onChangeCarno = useCallback(text => {
-    setCarno(text.trim());
+    setCarNumber(text.trim());
   }, []);
   const onChangePassword = useCallback(text => {
     setPassword(text.trim());
@@ -144,10 +149,11 @@ function SignUp({navigation}) {
   }, []);
 
   const onChangeName = useCallback(text => {
-    setName(text.trim());
+    setTruckownerName(text.trim());
   }, []);
   const onChangeHpnumber = useCallback(text => {
-    setHpnumber(text.trim());
+    setPhoneNumber(text.trim());
+    
   }, []);
 
   const onChangeAuthNo = useCallback(text => {
@@ -155,22 +161,23 @@ function SignUp({navigation}) {
   }, []);
 
   const onChangeBusinessno = useCallback(text => {
-    setBusinessno(text.trim());
+    setBusinessNo(text.trim());
+    
   }, []);
 
   const hasNameErrors = () => {
-    return !name || !name.trim() ? true : false;
+    return !truckownerName || !truckownerName.trim() ? true : false;
   };
 
   const hasHpnumberErrors = () => {
-    return !hpnumber || !hpnumber.trim() ? true : false;
+    return !phoneNumber || !phoneNumber.trim() ? true : false;
   };
 
   const hasAuthErrors = () => {
     return !authno || !authno.trim() ? true : false;
   };
   const hasBusinessNoErrors = () => {
-    return !businessno || !businessno.trim() ? true : false;
+    return !businessNo || !businessNo.trim() ? true : false;
   };
 
   const hasPasswordErrors = () => {
@@ -182,7 +189,7 @@ function SignUp({navigation}) {
   };
 
   const hasCasrNoErrors = () => {
-    return !carno || !carno.trim() ? true : false;
+    return !carNumber || !carNumber.trim() ? true : false;
   };
 
   const authSms = () => {
@@ -198,6 +205,7 @@ function SignUp({navigation}) {
 
   const onChangeTons = useCallback(text => {
     console.log(text);
+    setTruckTons(text)
   }, []);
 
   const toCardiv = useCallback(() => {
@@ -205,14 +213,15 @@ function SignUp({navigation}) {
   }, [navigation]);
 
   // 차량정보 초장축여부 데이타
-  const radioButtonsData = [
+  const radioButtonsLOData = [
     {
       id: '1', // acts as primary key, should be unique and non-empty string
       label: '초장축',
       value: 'LOY',
       labelStyle: {
         fontSize: 13,
-      },
+      }, 
+
       size: 16,
     },
     {
@@ -226,12 +235,15 @@ function SignUp({navigation}) {
     },
   ];
 
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const [radioButtonsLO, setRadioButtonsLO] = useState(radioButtonsLOData);
 
-  function onPressRadioButton(radioButtonsArray) {
-    setRadioButtons(radioButtonsArray);
+  function onPressRadioButtonLO(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setLoArr(radioButtonsArray.filter(key => key.selected === true))
+    })
+    setRadioButtonsLO(radioButtonsArray);
   }
-
+ 
   // 차량정보 데이타 끝
   // 차량정보 냉장냉동여부 데이타
   const radioButtonsRFData = [
@@ -264,9 +276,12 @@ function SignUp({navigation}) {
     },
   ];
 
-  const [RadioButtonsrf, setRadioButtonsRF] = useState(radioButtonsRFData);
+  const [radioButtonsRF, setRadioButtonsRF] = useState(radioButtonsRFData);
 
   function onPressRadioButtonRF(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setRfArr(radioButtonsArray.filter(key => key.selected === true))
+    })
     setRadioButtonsRF(radioButtonsArray);
   }
 
@@ -315,16 +330,19 @@ function SignUp({navigation}) {
     },
   ];
 
-  const [RadioButtonsst, setRadioButtonsST] = useState(radioButtonsSTData);
+  const [radioButtonsST, setRadioButtonsST] = useState(radioButtonsSTData);
 
   function onPressRadioButtonST(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setStArr(radioButtonsArray.filter(key => key.selected === true))
+    })
     setRadioButtonsST(radioButtonsArray);
   }
 
   // 차량정보 적재함형태 데이타 끝
 
   // 차량정보 리프트여부 데이타
-  const radioButtonsDataLF = [
+  const radioButtonsLFData = [
     {
       id: '1', // acts as primary key, should be unique and non-empty string
       label: '리프트',
@@ -345,10 +363,13 @@ function SignUp({navigation}) {
     },
   ];
 
-  const [radioButtonslf, setRadioButtonsLF] = useState(radioButtonsDataLF);
+  const [radioButtonsLF, setRadioButtonsLF] = useState(radioButtonsLFData);
 
   function onPressRadioButtonLF(radioButtonsArray) {
-    setRadioButtonsLF(radioButtonsArray);
+    radioButtonsArray.map((key) => {
+      setLfArr(radioButtonsArray.filter(key => key.selected === true))
+    })
+    setRadioButtonsLF(radioButtonsArray)
   }
 
   // 차량정보 리프트여부 데이타 끝
@@ -417,8 +438,32 @@ function SignUp({navigation}) {
     // } finally {
     //   setLoading(false);
     // }
-  }, [loading, carno, password]);
+  }, []);
+// 빈 배열 안에 들어갈 값 loading, carno, password
 
+  const handleSignUp = () => {
+    const user = {
+      truckownerName: truckownerName,
+      phoneNumber: phoneNumber,
+      businessNo: businessNo,
+      password: password,
+      truckTons: truckTons,
+      longyn: loArr[0]?.value,
+      refrigeratedFrozen: rfArr[0]?.value,
+      stowageType: stArr[0]?.value,
+      liftType: lfArr[0]?.value,
+      carNumber: carNumber,
+    }
+    console.log(user)
+    registTruckOwner(user)
+    .then(res => {
+      console.log(res)
+      alert(`${res.data.msg}`)
+    })
+    .catch(err => {
+      console.log(err)
+    }) 
+  }
   return (
     <View style={styles.mainView}>
       <DismissKeyboardView behavior>
@@ -434,7 +479,7 @@ function SignUp({navigation}) {
                   placeholder="성명"
                   // label="성명"
                   placeholderTextColor="#666"
-                  value={name}
+                  value={truckownerName}
                   returnKeyType="next"
                   // ref={carnoRef}
                   // onSubmitEditing={() => passwordRef.current?.focus()}
@@ -453,7 +498,7 @@ function SignUp({navigation}) {
                     // label="휴대폰번호"
                     placeholder="휴대폰번호"
                     placeholderTextColor="#666"
-                    value={hpnumber}
+                    value={phoneNumber}
                     keyboardType="numeric"
                     returnKeyType="next"
                     // ref={carnoRef}
@@ -503,7 +548,7 @@ function SignUp({navigation}) {
                   onChangeText={onChangeBusinessno}
                   // label="사업자등록번호"
                   placeholder="사업자등록번호"
-                  value={businessno}
+                  value={businessNo}
                   returnKeyType="next"
                   clearButtonMode="while-editing"
                   // ref={carnoRef}
@@ -576,7 +621,7 @@ function SignUp({navigation}) {
                   label: '차량톤수',
                 }}
                 // fixAndroidTouchableBug={true}
-                value={tons}
+                value={truckTons}
                 onValueChange={value => onChangeTons(value)}
                 items={[
                   {label: '1톤', value: '1000T', key: '1'},
@@ -606,8 +651,8 @@ function SignUp({navigation}) {
                       <Title style={styles.radiocardtext2}>초장축여부</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={radioButtons}
-                          onPress={onPressRadioButton}
+                          radioButtons={radioButtonsLO}
+                          onPress={onPressRadioButtonLO}
                           layout="row"
                         />
                       </Card.Content>
@@ -617,7 +662,7 @@ function SignUp({navigation}) {
                       <Title style={styles.radiocardtext2}>냉장냉동여부</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={RadioButtonsrf}
+                          radioButtons={radioButtonsRF}
                           onPress={onPressRadioButtonRF}
                           layout="row"
                         />
@@ -627,7 +672,7 @@ function SignUp({navigation}) {
                       <Title style={styles.radiocardtext2}>적재함형태</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={RadioButtonsst}
+                          radioButtons={radioButtonsST}
                           onPress={onPressRadioButtonST}
                           layout="row"
                         />
@@ -638,7 +683,7 @@ function SignUp({navigation}) {
                       <Title style={styles.radiocardtext2}>리프트여부</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={radioButtonslf}
+                          radioButtons={radioButtonsLF}
                           onPress={onPressRadioButtonLF}
                           layout="row"
                         />
@@ -654,7 +699,7 @@ function SignUp({navigation}) {
                 style={styles.textInput}
                 onChangeText={onChangeCarno}
                 placeholder="차량번호"
-                value={carno}
+                value={carNumber}
                 returnKeyType="next"
                 clearButtonMode="while-editing"
                 // ref={carnoRef}
@@ -759,7 +804,7 @@ function SignUp({navigation}) {
         <View style={styles.buttonZone}>
           <Pressable
             style={styles.Button}
-            onPress={() => Alert.alert('회원가입이 완료되었습니다.')}>
+            onPress={handleSignUp}>
             <Text style={styles.ButtonText}>가입하기</Text>
           </Pressable>
         </View>
