@@ -1,5 +1,7 @@
 package com.scmc.api.jpa.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -44,7 +46,7 @@ public class TbTruckOwnerCargoInfo {
 	private int spaceRate;
 	
 	@Column(name = "cargo_weight")
-	private int cargoWeight;
+	private String cargoWeight;
 	
 	@Column(name = "depart_addr_st")
 	private String departAddrSt;
@@ -78,4 +80,21 @@ public class TbTruckOwnerCargoInfo {
 	
 	@Column(name = "mod_dt")
 	private Date modDt;
+
+	@Builder(builderMethodName = "insertCargoInfo")
+	public TbTruckOwnerCargoInfo(long truckownerUid, String loadDt, String unloadDt, int spaceRate,
+			String cargoWeight, String departAddrSt, String departLatitude, String departLongitude,
+			String arrivalAddrSt, String arrivalLatitude, String arrivalLongitude) throws ParseException {
+		super();
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		this.truckownerUid = truckownerUid;
+		this.loadDt = format.parse(loadDt);
+		this.unloadDt = format.parse(unloadDt);
+		this.spaceRate = spaceRate;
+		this.cargoWeight = cargoWeight;
+		this.departAddrSt = departAddrSt;
+		this.arrivalAddrSt = arrivalAddrSt;
+	}
 }

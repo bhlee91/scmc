@@ -40,6 +40,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Certification from './src/pages/Certification';
 import CustomCenter from './src/pages/CustomCenter';
 import CargoReg from './src/pages/CargoReg';
+import Address from "./src/common/Address";
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -105,14 +106,14 @@ function Main() {
         }}
       />
       <Tab.Screen
-        name="화물등록"
+        name="CargoReg"
         component={CargoReg}
         options={{
           tabBarLabel: '화물등록',
         }}
       />
       <Tab.Screen
-        name="추천화물"
+        name="RecomShipInfo"
         component={RecomShipInfo}
         options={{
           tabBarLabel: '추천화물',
@@ -120,7 +121,7 @@ function Main() {
       />
 
       <Tab.Screen
-        name="마이페이지"
+        name="MyInfo"
         component={MyInfo}
         options={{
           tabBarLabel: '마이페이지',
@@ -133,7 +134,7 @@ function Main() {
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   //   const isLoggedIn = useSelector(state => !!state.user.email);
-  const [isLoggedIn, SetIsLoggedIn] = useState(false);
+  const [isLoggedIn, SetIsLoggedIn] = useState(true);
   console.log('isLoggedIn', isLoggedIn);
 
   //   const [socket, disconnect] = useSocket();
@@ -318,6 +319,11 @@ function AppInner({navigation}) {
             name="Main"
             component={Main}
             // options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Address"
+            component={Address}
+            options={{title: '주소찾기'}}
           />
         </Stack.Group>
       ) : (

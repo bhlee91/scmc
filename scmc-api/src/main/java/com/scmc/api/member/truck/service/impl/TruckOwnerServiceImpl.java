@@ -1,7 +1,7 @@
 package com.scmc.api.member.truck.service.impl;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,12 +20,11 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
-import com.scmc.api.jpa.domain.TbCargoImage;
-import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
+import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
 import lombok.RequiredArgsConstructor;
@@ -115,27 +114,18 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	}
 
 	@Override
-	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(HashMap<String, Object> obj) {
-		if (obj.get("truckownerUid").equals(0) || obj.get("truckownerUid").equals(null)) {
-			return null;
-		}
-		long truckownerUid = Long.parseLong(obj.get("truckownerUid").toString());
+	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto dto) throws ParseException {
+		if (dto.getTruckownerUid() == 0) return null;
 		
-		TbTruckOwnerCargoInfo toci = TbTruckOwnerCargoInfo.builder() 
-										.truckownerUid(truckownerUid)
-										.loadDt(Timestamp.valueOf(obj.get("loadDt").toString()))
-										.unloadDt(Timestamp.valueOf(obj.get("unloadDt").toString()))
-										.spaceRate(Integer.parseInt(obj.get("spaceRate").toString()))
-										.cargoWeight(Integer.parseInt(obj.get("cargoWeight").toString()))
-										.departAddrSt(obj.get("departAddrSt").toString())
-										.departAddrSt2(obj.get("departAddrSt2").toString())
-										.departLatitude(obj.get("departLatitude").toString())
-										.departLongitude(obj.get("departLongitude").toString())
-										.arrivalAddrSt(obj.get("arrivalAddrSt").toString())
-										.arrivalAddrSt2(obj.get("arrivalAddrSt2").toString())
-										.arrivalLatitude(obj.get("arrivalLatitude").toString())
-										.arrivalLongitude(obj.get("arrivalLongitude").toString())
-										.build();
+		TbTruckOwnerCargoInfo toci = TbTruckOwnerCargoInfo.insertCargoInfo()
+														.truckownerUid(dto.getTruckownerUid())
+														.loadDt(dto.getLoadDt())
+														.unloadDt(dto.getUnloadDt())
+														.departAddrSt(dto.getDepartAddrSt())
+														.arrivalAddrSt(dto.getArrivalAddrSt())
+														.spaceRate(dto.getSpaceRate())
+														.cargoWeight(dto.getCargoWeight())
+														.build();
 		
 		return tbTruckOwnerCargoInfoRepository.save(toci);
 	}

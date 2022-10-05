@@ -119,7 +119,7 @@ function Home({navigation, props}) {
                     style={styles.buttonZone}
                     // onPress={() => Alert.alert('마이페이지로 이동합니다.')}>
                     onPress={() => {
-                      navigation.navigate('마이페이지');
+                      navigation.navigate('MyInfo');
                     }}>
                     <Text style={styles.ButtonText}>마이페이지</Text>
                   </Pressable>
@@ -157,7 +157,7 @@ function Home({navigation, props}) {
                   <Pressable
                     style={styles.buttonZone}
                     onPress={() => {
-                      navigation.navigate('화물등록');
+                      navigation.navigate('CargoReg');
                     }}>
                     <Text style={styles.ButtonText}>화물등록</Text>
                   </Pressable>

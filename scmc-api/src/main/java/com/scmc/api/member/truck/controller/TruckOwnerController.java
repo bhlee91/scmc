@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
 import io.swagger.annotations.Api;
@@ -82,13 +83,13 @@ public class TruckOwnerController {
 	}
 	
 	@ApiOperation(value = "차주 화물정보 입력", notes = "차주의 화물정보를 입력한다.")
-	@GetMapping("/cargo")
-	public ResponseEntity<?> setCargoInfo(@RequestBody HashMap<String, Object> obj) throws Exception {
+	@PostMapping("/cargo")
+	public ResponseEntity<?> setCargoInfo(@RequestBody CargoInfoDto dto) throws Exception {
 		log.info("==================");
-		log.info("차주 화물정보 입력");
+		log.info("차주 화물정보 입력 => " + dto.toString());
 		log.info("==================");
 		
-		return new ResponseEntity<>(truckOwnerService.setTruckOwnerCargoInfo(obj), HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.setTruckOwnerCargoInfo(dto), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "차주 화물정보 삭제", notes = "차주의 화물정보를 삭제한다.")

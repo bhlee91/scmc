@@ -1,8 +1,6 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 
@@ -41,6 +39,13 @@ import {ko} from 'date-fns/esm/locale';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 // import ProgressBar from './../common/ProgressBar';
 import * as Progress from 'react-native-progress';
+import Slider from '@react-native-community/slider';
+import RNPickerSelect from "react-native-picker-select";
+
+import { formatStringToDateTime } from "utils/DateUtil";
+import {
+  setCargoInfo
+} from "api/truck/index";
 
 Date.prototype.format = function (f) {
   if (!this.valueOf()) return ' ';
@@ -99,91 +104,82 @@ Number.prototype.zf = function (len) {
   return this.toString().zf(len);
 };
 
-function CargoReg({navigation}) {
-  //   Date Picker 영역
+function CargoReg({ navigation, route }) {
+  const [loadDateTime, setLoadDateTime] = useState("")
+  const [unloadDateTime, setUnloadDateTime] = useState("")
+  const [loadAddr, setLoadAddr] = useState({
+    road: "",
+    jibun: "",
+  })
+  const [unloadAddr, setUnloadAddr] = useState({
+    road: "",
+    jibun: "",
+  })
+  const [rate, setRate] = useState(0)
+  const [weight, setWeight] = useState("0")
+  const [weightDiv, setWeightDiv] = useState("")
 
-  //상차일시 //
-  const placeholder = '상차일시';
-  const [text, onChangeText] = useState('');
+  const [isLoadDatePickerVisible, setLoadDatePickerVisible] = useState(false)
+  const [isUnloadDatePickerVisible, setUnloadDatePickerVisible] = useState(false)
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const handleLoadConfirm = date => {
+    console.log('dateFormat: ', date)
+    setLoadDatePickerVisible(false)
+    setLoadDateTime(date.format('yyyy년MM월dd일 HH시mm분'))
+  }
 
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
+  const handleUnloadConfirm = date => {
+    console.log('dateFormat: ', date)
+    setUnloadDatePickerVisible(false)
+    setUnloadDateTime(date.format('yyyy년MM월dd일 HH시mm분'))
+  }
 
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = date => {
-    console.log('dateFormat: ', date.format('yyyy/MM/dd'));
-    hideDatePicker();
-    onChangeText(date.format('yyyy-MM-dd hh시mm분'));
-  };
-  //상차일시 끝 //
-
-  //하차칠시 관련 //
-  const placeholder1 = '하차일시';
-  const [untext, onChangeUnText] = useState('');
-
-  const [isUnDatePickerVisible, setUnDatePickerVisibility] = useState(false);
-
-  const showUnDatePicker = () => {
-    setUnDatePickerVisibility(true);
-  };
-
-  const hideUnDatePicker = () => {
-    setUnDatePickerVisibility(false);
-  };
-
-  const handleUnConfirm = date => {
-    console.log('dateFormat: ', date.format('yyyy/MM/dd'));
-    hideDatePicker();
-    onChangeUnText(date.format('yyyy-MM-dd hh시mm분'));
-  };
-  //하차칠시 관련 끝//
-  //   Date Picker 영역
-
-  // 상하차지 관련
-  const [searchLoad, setSearchLoad] = React.useState('');
-
-  const onChangeLoadSearch = searchLoad => setSearchLoadQuery(searchLoad);
-
-  const [searchUnload, setSearchUbload] = React.useState('');
-
-  const onChangeUnloadSearch = searchUnload =>
-    setSearchUnloadQuery(searchUnload);
-
-  const showAddress = () => {};
-
-  const clearCount = () => {
-    setCount(0);
-    console.log(count);
-  };
-
-  // 상하차지 끝
-
-  //   적재함 시작
-
-  const completed = 100;
-  const [count, setCount] = useState(0);
+  const onChangeLoadSearch = searchLoad => setLoadAddr(searchLoad)
+  const onChangeUnloadSearch = searchUnload => setUnloadAddr(searchUnload)
 
   useEffect(() => {
-    setCount(count);
-  }, [count]);
+    setRate(rate)
+  }, [rate])
+
+  useEffect(() => {
+    if (route.params?.addr) {
+      console.log(route.params)
+      if (route.params.d === "load")
+        setLoadAddr({ ...route.params.addr })
+      if (route.params.d === "unload")
+        setUnloadAddr({ ...route.params.addr })
+    }
+  }, [route.params?.addr])
 
   const onChangeTons = useCallback(text => {
-    setTons(text);
-    console.log(text);
-  }, []);
+    setWeight(text)
+  }, [])
 
-  const [tons, setTons] = useState('');
+  const handleCargoSave = async () => {
 
-  // https://codesandbox.io/s/quirky-hopper-jfcx9?file=/src/App.js 참고
-  // https://openbase.com/js/react-native-progress-bar-animated/documentation
-  //   적자햄 끝
-
+    const obj = {
+      truckownerUid: 3,
+      loadDt: formatStringToDateTime(loadDateTime),
+      unloadDt: formatStringToDateTime(unloadDateTime),
+      departAddrSt: loadAddr.jibun, 
+      arrivalAddrSt: unloadAddr.jibun,
+      spaceRate: rate,
+      cargoWeight: `${weight}${weightDiv}`
+    }
+    
+    try {
+      await setCargoInfo(obj)
+      .then(() => {
+        navigation.navigate("Home")
+      })
+      .catch(error => {
+        console.log("error => " + error)
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  
   return (
     <ScrollView style={styles.mainView}>
       {/* 상하차 시간 */}
@@ -208,23 +204,23 @@ function CargoReg({navigation}) {
                   alignSelf: 'center',
                   padding: 5,
                 }}
-                onPress={showDatePicker}>
+                onPress={() => setLoadDatePickerVisible(true)}>
                 <TextInput
                   pointerEvents="none"
                   style={styles.textInput}
-                  placeholder={placeholder}
+                  placeholder="상차일시"
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   editable={false}
-                  value={text}
+                  value={loadDateTime}
                 />
                 <DateTimePickerModal
-                  headerTextIOS={placeholder}
-                  isVisible={isDatePickerVisible}
+                  headerTextIOS="상차일시"
+                  isVisible={isLoadDatePickerVisible}
                   mode="datetime"
                   locale="ko"
-                  onConfirm={handleConfirm}
-                  onCancel={hideDatePicker}
+                  onConfirm={handleLoadConfirm}
+                  onCancel={() => setLoadDatePickerVisible(false)}
                 />
               </TouchableOpacity>
 
@@ -234,23 +230,23 @@ function CargoReg({navigation}) {
                   alignSelf: 'center',
                   padding: 5,
                 }}
-                onPress={showUnDatePicker}>
+                onPress={() => setUnloadDatePickerVisible(true)}>
                 <TextInput
                   pointerEvents="none"
                   style={styles.textInput}
-                  placeholder={placeholder1}
+                  placeholder="하차일시"
                   placeholderTextColor="#000000"
                   underlineColorAndroid="transparent"
                   editable={false}
-                  value={untext}
+                  value={unloadDateTime}
                 />
                 <DateTimePickerModal
-                  headerTextIOS={placeholder1}
-                  isVisible={isUnDatePickerVisible}
+                  headerTextIOS="하차일시"
+                  isVisible={isUnloadDatePickerVisible}
                   mode="datetime"
                   locale="ko"
-                  onConfirm={handleUnConfirm}
-                  onCancel={hideUnDatePicker}
+                  onConfirm={handleUnloadConfirm}
+                  onCancel={() => setUnloadDatePickerVisible(false)}
                 />
               </TouchableOpacity>
             </Card.Content>
@@ -281,12 +277,13 @@ function CargoReg({navigation}) {
                   alignSelf: 'center',
                   padding: 5,
                 }}
-                onPress={showAddress}>
+                onPress={() => navigation.navigate('Address', { d: "load" })}>
                 <Searchbar
                   style={styles.textInput}
                   placeholder="상차지"
                   onChangeText={onChangeLoadSearch}
-                  value={searchLoad}
+                  onFocus={() => navigation.navigate('Address', { d: "load" })}
+                  value={loadAddr.jibun}
                 />
               </TouchableOpacity>
               <TouchableOpacity
@@ -295,12 +292,13 @@ function CargoReg({navigation}) {
                   alignSelf: 'center',
                   padding: 5,
                 }}
-                onPress={showAddress}>
+                onPress={() => navigation.navigate('Address', { d: "unload" })}>
                 <Searchbar
                   style={styles.textInput}
                   placeholder="하차지"
                   onChangeText={onChangeUnloadSearch}
-                  value={searchUnload}
+                  onFocus={() => navigation.navigate('Address', { d: "unload" })}
+                  value={unloadAddr.jibun}
                 />
               </TouchableOpacity>
             </Card.Content>
@@ -345,22 +343,14 @@ function CargoReg({navigation}) {
                     justifyContent: 'center',
                     alignSelf: 'center',
                   }}>
-                  {count < 100 ? (
-                    <TouchableOpacity
-                      onPress={() => setCount(count => count + 5)}>
-                      <Progress.Bar
-                        progress={count / completed}
-                        width={null}
-                        height={20}
-                        color={'rgba(51, 65, 159, 0.8)'}
-                      />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() =>
-                        Alert.alert('적재함 용량이 100%를 초과 했습니다.')
-                      }></TouchableOpacity>
-                  )}
+                  <Slider
+                    style={{ height: 20, color: 'rgba(51, 65, 159, 0.8)' }}
+                    maximumValue={100}
+                    minimumValue={0}
+                    value={rate}
+                    onSlidingComplete={(value) => setRate(value)}
+                    step={1}
+                  />
                 </View>
                 <View
                   style={{
@@ -368,7 +358,7 @@ function CargoReg({navigation}) {
                     justifyContent: 'center',
                     alignItems: 'flex-end',
                   }}>
-                  <Text>{count}%</Text>
+                  <Text>{rate}%</Text>
                 </View>
                 <View
                   style={{
@@ -383,7 +373,7 @@ function CargoReg({navigation}) {
                       justifyContent: 'center',
                       backgroundColor: '#4527A0',
                     }}
-                    onPress={clearCount}>
+                    onPress={() => setRate(0)}>
                     <Text
                       style={{
                         color: '#FFFFFF',
@@ -416,7 +406,7 @@ function CargoReg({navigation}) {
 
                 <View
                   style={{
-                    width: '60%',
+                    width: '50%',
                     justifyContent: 'center',
                     alignSelf: 'center',
                   }}>
@@ -432,7 +422,7 @@ function CargoReg({navigation}) {
                     }}
                     onChangeText={onChangeTons}
                     placeholder="중량"
-                    value={tons}
+                    value={weight}
                     returnKeyType="send"
                     clearButtonMode="while-editing"
                     // ref={carnoRef}
@@ -442,11 +432,19 @@ function CargoReg({navigation}) {
                 </View>
                 <View
                   style={{
-                    width: '20%',
+                    width: '40%',
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                   }}>
-                  <Text>톤</Text>
+                  <RNPickerSelect
+                    style={{ width: 70 }}
+                    value={weightDiv}
+                    onValueChange={(value) => setWeightDiv(value)}
+                    items={[
+                      { label: "kg", value: "kg" },
+                      { label: "톤", value: "t" },
+                    ]}
+                  />
                 </View>
               </View>
             </Card.Content>
@@ -461,7 +459,7 @@ function CargoReg({navigation}) {
           <View style={{flex: 1}}>
             <Pressable
               style={styles.buttonZone}
-              onPress={() => Alert.alert('등록.')}>
+              onPress={handleCargoSave}>
               <Text style={styles.ButtonText}>등록</Text>
             </Pressable>
           </View>

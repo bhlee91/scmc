@@ -2,7 +2,7 @@ import axios from "axios";
 
 // const HOST_NAME = window.location.hostname
 
-let API_BASE_URL = "http://localhost:8080"
+let API_BASE_URL = "http://10.0.2.2:8080"
 
 // if (HOST_NAME === "localhost" || HOST_NAME === "127.0.0.1") {
 //   API_BASE_URL = process.env.REACT_APP_BASE_URL_LOCAL
