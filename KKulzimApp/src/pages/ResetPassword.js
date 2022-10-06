@@ -8,20 +8,13 @@ import React, {
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
-  TextInput,
-  Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
   TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
-import {Button, Card, Title, Paragraph} from 'react-native-paper';
+
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -31,21 +24,26 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function ResetPassword({navigation}) {
   const [password, setPassword] = useState('');
-  const [confirmpassword, setconfirmpassword] = useState('');
+  const [confirmpassword1, setconfirmpassword1] = useState('');
+  const [confirmpassword2, setconfirmpassword2] = useState('');
   const [loading, setLoading] = useState(false);
 
   const onChangePassword = useCallback(text => {
     setPassword(text.trim());
   }, []);
 
-  const onChangeConrirmPassword = useCallback(text => {
-    setconfirmpassword(text.trim());
+  const onChangeConrirmPassword1 = useCallback(text => {
+    setconfirmpassword1(text.trim());
+  }, []);
+  const onChangeConrirmPassword2 = useCallback(text => {
+    setconfirmpassword2(text.trim());
   }, []);
 
-  const canGoNext = confirmpassword && password;
+  // const canGoNext = confirmpassword1 && password;
 
   const toLogin = useCallback(() => {
     navigation.navigate('Login');
@@ -53,10 +51,14 @@ function ResetPassword({navigation}) {
 
   const onSubmit = useCallback(async () => {
     if (!password || !password.trim()) {
-      return Alert.alert('알림', '새비밀번호를 입력해주세요.');
+      return Alert.alert('알림', '현재비밀번호를 입력해주세요.');
     }
 
-    if (!confirmpassword || !confirmpassword.trim()) {
+    if (!confirmpassword1 || !confirmpassword1.trim()) {
+      return Alert.alert('알림', '새비밀번호 확인을 입력해주세요.');
+    }
+
+    if (!confirmpassword2 || !confirmpassword2.trim()) {
       return Alert.alert('알림', '새비밀번호 확인을 입력해주세요.');
     }
     // try {
@@ -87,174 +89,182 @@ function ResetPassword({navigation}) {
     // } finally {
     //   setLoading(false);
     // }
-  }, [loading, confirmpassword, password]);
+  }, [loading, confirmpassword1, confirmpassword2, password]);
 
   return (
-    <View style={styles.mainView}>
-      <View style={styles.confirmTextContainer}>
-        <Text style={styles.confirmText}>비벌번호 재설정</Text>
-        {/* <Text style={styles.confirmTextS}>
-          문자 인증을 통한 본인 인증 과정입니다.
-        </Text>
-        <Text style={styles.confirmTextS}>
-          문자로 전달 받은 인증번호를 입력하여 주세요
-        </Text> */}
-      </View>
-      <DismissKeyboardView behavior>
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.box2}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="현재 비밀번호"
-                placeholderTextColor="#666"
-                importantForAutofill="yes"
-                onChangeText={onChangePassword}
-                value={password}
-                autoComplete="password"
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="send"
-                clearButtonMode="while-editing"
-                // ref={passwordRef}
-                onSubmitEditing={onSubmit}
-              />
-            </View>
-            <View style={styles.box2}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="새 비밀번호 (영문,숫자,특수문자)"
-                placeholderTextColor="#666"
-                importantForAutofill="yes"
-                onChangeText={onChangePassword}
-                value={password}
-                autoComplete="password"
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="send"
-                clearButtonMode="while-editing"
-                // ref={passwordRef}
-                onSubmitEditing={onSubmit}
-              />
-            </View>
-            <View style={styles.box2}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="새 비밀번호 확인(영문,숫자,특수문자)"
-                placeholderTextColor="#666"
-                importantForAutofill="yes"
-                onChangeText={onChangeConrirmPassword}
-                value={confirmpassword}
-                autoComplete="password"
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="send"
-                clearButtonMode="while-editing"
-                // ref={passwordRef}
-                onSubmitEditing={onSubmit}
-              />
-            </View>
+    <DismissKeyboardView style={styles.maincontainer}>
+      <View style={styles.container}>
+        <View style={styles.resetinfoTextContainer}>
+          <Text style={styles.resetinfoTextS}>
+            영문,숫자,특수문자를 포함한 8자리 이상을 입력해 주세요
+          </Text>
+        </View>
 
-            <View style={styles.buttonZone}>
-              <Pressable style={styles.ButtonActive} onPress={onSubmit}>
-                <Text style={styles.ButtonText}>확인</Text>
-              </Pressable>
-            </View>
-          </Card.Content>
-        </Card>
-      </DismissKeyboardView>
-    </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="현재 비밀번호"
+            placeholderTextColor="#666"
+            importantForAutofill="yes"
+            onChangeText={onChangePassword}
+            value={password}
+            autoComplete="password"
+            textContentType="password"
+            secureTextEntry
+            returnKeyType="send"
+            clearButtonMode="while-editing"
+            // ref={passwordRef}
+            onSubmitEditing={onSubmit}
+            underlineColorAndroid="transparent"
+          />
+          <Icon
+            style={[styles.icon, styles.inputIcon]}
+            name="eye"
+            color="black"
+            size={20}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="새 비밀번호"
+            placeholderTextColor="#666"
+            importantForAutofill="yes"
+            onChangeText={onChangeConrirmPassword1}
+            value={confirmpassword1}
+            // autoComplete="password"
+            textContentType="password"
+            secureTextEntry
+            returnKeyType="send"
+            clearButtonMode="while-editing"
+            underlineColorAndroid="transparent"
+            // ref={passwordRef}
+            onSubmitEditing={onSubmit}
+          />
+          <Icon
+            style={[styles.icon, styles.inputIcon]}
+            name="eye"
+            color="black"
+            size={20}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={styles.inputs}
+            placeholder="새 비밀번호 확인"
+            placeholderTextColor="#666"
+            importantForAutofill="yes"
+            onChangeText={onChangeConrirmPassword2}
+            value={confirmpassword2}
+            // autoComplete="password"
+            textContentType="password"
+            secureTextEntry
+            returnKeyType="send"
+            clearButtonMode="while-editing"
+            // ref={passwordRef}
+            onSubmitEditing={onSubmit}
+          />
+          <Icon
+            style={[styles.icon, styles.inputIcon]}
+            name="eye"
+            color="black"
+            size={20}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.confirmButton]}
+          onPress={onSubmit}>
+          <Text style={styles.confirmText}>확인</Text>
+        </TouchableOpacity>
+      </View>
+    </DismissKeyboardView>
   );
 }
 export default ResetPassword;
 
+//
 const styles = StyleSheet.create({
+  maincontainer: {
+    flex: 1,
+    backgroundColor: '#FFD740',
+
+    // marginTop: StatusBar.currentHeight,
+  },
   container: {
     flex: 1,
-  },
-  mainView: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFD740',
 
-  text: {
-    color: '#545454',
-    fontWeight: '700',
-    fontSize: 15,
+    // marginTop: StatusBar.currentHeight,
   },
-  card: {
+  subcontainer: {
+    // flexDirection: 'row',
+    marginTop: 60,
+  },
+  inputContainer: {
+    borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
-    flex: 1,
-    borderTopLeftRadius: 10, // to provide rounded corners
-    borderTopRightRadius: 10, // to provide rounded corners
-    marginLeft: 10,
-    marginRight: 10,
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 250,
+    height: 45,
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  confirmTextContainer: {
-    marginTop: '10%',
+  inputs: {
+    height: 45,
+    borderBottomColor: '#FFFFFF',
+    fontSize: 12,
+    flex: 1,
+    marginLeft: 10,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  inputIcon: {
+    marginRight: 10,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    height: 45,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
+    width: 250,
+    borderRadius: 30,
   },
+  confirmButton: {
+    backgroundColor: '#000000',
+  },
+
   confirmText: {
-    fontSize: 25,
-    fontWeight: '600',
-    color: '#000000',
-    lineHeight: 29.3,
-    marginBottom: 16,
-  },
-
-  textInput: {
-    backgroundColor: '#FFFFFF',
-    height: 45,
-    width: '85%',
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    marginTop: 8,
-    marginLeft: 5,
-    fontSize: 11,
-  },
-
-  Button: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#455A64',
-  },
-
-  box2: {
-    marginTop: 5,
-    marginLeft: 30,
-    marginRight: 30,
-    borderWidth: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  buttonZone: {
-    height: 45,
-    marginTop: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  ButtonText: {
     color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '300',
   },
 
-  ButtonActive: {
-    height: 40,
+  resetinfoTextContainer: {
+    marginTop: '20%',
+    color: '#FFFFFF',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#4527A0',
-    width: '40%',
-    borderRadius: 5,
+  },
+  resetinfoText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    lineHeight: 29.3,
+  },
+  resetinfoTextS: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 5,
+    marginBottom: 30,
   },
 });
