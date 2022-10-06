@@ -184,10 +184,8 @@ function SignUp({navigation}) {
       Alert.alert('입력하신 휴대폰 번호를 확인해 주세요.')  
     } else {
       setVisible(true);
-      //getAuthNumber(phoneNumber)
+      getAuthNumber(phoneNumber)
     }
-    
-
   };
   const confirmAuthSms = () => {
     setVisible(false);
@@ -356,41 +354,6 @@ function SignUp({navigation}) {
     })
     setRadioButtonsLF(radioButtonsArray)
   }
-  // 차량정보 리프트여부 데이타 끝
-
-  // 약관정보 데이타
-  // const chkdata = [
-  //   {id: 0, title: '운송약관'},
-  //   {id: 1, title: '이용약관'},
-  //   {id: 2, title: '개인정보보호방침'},
-  // ];
-  // const [checkItems, setCheckItems] = useState([]);
-
-  // // 체크박스 단일 선택
-  // const handleSingleCheck = (isChecked, id) => {
-  //   if (isChecked) {
-  //     // 단일 선택 시 체크된 아이템을 배열에 추가
-  //     setCheckItems(prev => [...prev, id]);
-  //   } else {
-  //     // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
-  //     setCheckItems(checkItems.filter(el => el !== id));
-  //   }
-  // };
-
-  // // 체크박스 전체 선택
-  // const handleAllCheck = isChecked => {
-  //   if (isChecked) {
-  //     // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
-  //     const idArray = [];
-  //     chkdata.forEach(el => idArray.push(el.id));
-  //     setCheckItems(idArray);
-  //   } else {
-  //     // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
-  //     setCheckItems([]);
-  //   }
-  // };
-
-  // /약관정보 데이타 끝
 
   let remainTime = Mtimer(); // 타이머
   const onSubmit = useCallback(async () => {
@@ -691,6 +654,7 @@ function SignUp({navigation}) {
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
                   onPress={allState}
+                  disableBuiltInState
                 />
                 <Text style={styles.chkboxlabel}>약관전체동의</Text>
               </View>
@@ -707,6 +671,7 @@ function SignUp({navigation}) {
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
                   onPress={trState}
+                  disableBuiltInState
                 />
                 <Text style={styles.chkboxlabel}>운송약관</Text>
                 <Pressable style={styles.tremButton} onPress={toTrTerms}>
@@ -726,6 +691,7 @@ function SignUp({navigation}) {
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
                   onPress={usState}
+                  disableBuiltInState
                 />
                 <Text style={styles.chkboxlabel}>이용약관</Text>
                 <Pressable style={styles.tremButton} onPress={toUsTerms}>
@@ -745,6 +711,7 @@ function SignUp({navigation}) {
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
                   onPress={prState}
+                  disableBuiltInState
                 />
                 <Text style={styles.chkboxlabel}>개인정보보호방침</Text>
                 <Pressable style={styles.tremButton} onPress={toPrTerms}>

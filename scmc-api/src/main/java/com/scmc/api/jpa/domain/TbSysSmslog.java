@@ -68,10 +68,14 @@ public class TbSysSmslog {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date regDt;
 	
+	@Column(name = "auth_number")
+	private String authNumber;
+	
 	@Builder
 	public TbSysSmslog(
 			long smsId, String smsType, String senderNumber, String receiverNumber,
-			String msg, String msgType, String title, int successCount, Date regDt
+			String msg, String msgType, String title, int successCount, Date regDt,
+			String authNumber
 		) {
 		this.smsId = smsId;
 		this.smsType = smsType;
@@ -85,5 +89,6 @@ public class TbSysSmslog {
 		this.msgId = 1;
 		this.successCount = 1;
 		this.regDt = regDt;
+		this.authNumber = authNumber;
 	}
 }

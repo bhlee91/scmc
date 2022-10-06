@@ -54,6 +54,7 @@ public class HiWorksUtil {
 			
 			sms.put("subject", "문자 발송 테스트");
 			sms.put("message", String.format("[%s] 꿀차 인증번호입니다.\n해당 입력 칸에 정확하게 입력해주세요.", authNumber));
+			sms.put("authNumber", authNumber);
 			sms.put("send_date", sendDate);
 			sms.put("file", "");
 			
@@ -124,6 +125,7 @@ public class HiWorksUtil {
 							.msgType("01")
 							.successCount(1)
 							.regDt(Timestamp.valueOf(sms.get("send_date")))
+							.authNumber(authNumber)
 							.build();
 		
 		tbSysSmslogRepository.save(tssl);

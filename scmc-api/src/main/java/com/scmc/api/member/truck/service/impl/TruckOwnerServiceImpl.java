@@ -53,7 +53,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		TbMemberTruckOwner tmto = TbMemberTruckOwner.insertBuilder()
 				.carNumber(obj.get("carNumber").toString())
 				.phoneNumber(obj.get("phoneNumber").toString())
-				.password(obj.get("passworkd").toString())
+				.password(obj.get("password").toString())
 				.truckownerName(obj.get("truckownerName").toString())
 				.businessNo(obj.get("businessNo").toString())
 				.truckTons(obj.get("truckTons").toString())
