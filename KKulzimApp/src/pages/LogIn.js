@@ -30,6 +30,7 @@ import Config from 'react-native-config';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function LogIn({navigation}) {
   const [carno, setCarno] = useState('');
@@ -93,77 +94,82 @@ function LogIn({navigation}) {
   }, [loading, carno, password]);
 
   return (
-    <View style={styles.mainView}>
+    <View style={styles.container}>
       <View style={styles.signInTextContainer}>
         <Text style={styles.signInText}>안녕하세요? 꿀짐 입니다.</Text>
+
         <Text style={styles.signInTextS}>
           서비스 이용을 위해 로그인 해주세요.
         </Text>
       </View>
       <DismissKeyboardView behavior>
-        <Card style={styles.card}>
-          <Card.Content>
-            <View>
-              <TextInput
-                style={styles.textInput}
-                onChangeText={onChangeCarno}
-                placeholder="차량번호"
-                placeholderTextColor="#666"
-                importantForAutofill="yes"
-                // autoComplete="carno"
-                value={carno}
-                returnKeyType="next"
-                clearButtonMode="while-editing"
-                ref={carnoRef}
-                onSubmitEditing={() => passwordRef.current?.focus()}
-                blurOnSubmit={false}
-              />
-            </View>
-            <Divider />
-            <View>
-              <TextInput
-                style={styles.textInput}
-                placeholder="비밀번호를 입력해주세요(영문,숫자,특수문자)"
-                placeholderTextColor="#666"
-                importantForAutofill="yes"
-                onChangeText={onChangePassword}
-                value={password}
-                autoComplete="password"
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="send"
-                clearButtonMode="while-editing"
-                ref={passwordRef}
-                onSubmitEditing={onSubmit}
-              />
-            </View>
-            <View style={styles.buttonZone}>
-              <Pressable
-                style={
-                  canGoNext
-                    ? StyleSheet.compose(
-                        styles.loginButton,
-                        styles.loginButtonActive,
-                      )
-                    : styles.loginButton
-                }
-                disabled={!canGoNext}
-                onPress={onSubmit}>
-                <Text style={styles.text}>로그인</Text>
-              </Pressable>
-            </View>
+        <View style={styles.inputContainer}>
+          <Icon
+            style={[styles.icon, styles.inputIcon]}
+            name="truck"
+            color="black"
+            size={20}
+          />
 
-            <View style={styles.otherButtonContainer}>
-              <Pressable onPress={toForgotPassword}>
-                <Text style={styles.otherButtonText}>비밀번호 재설정 </Text>
-              </Pressable>
-              <Text style={styles.otherButtonText}>|</Text>
-              <Pressable onPress={toSignUp}>
-                <Text style={styles.otherButtonText}> 회원가입하기</Text>
-              </Pressable>
-            </View>
-          </Card.Content>
-        </Card>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={onChangeCarno}
+            placeholder="차량번호"
+            placeholderTextColor="#666"
+            importantForAutofill="yes"
+            // autoComplete="carno"
+            value={carno}
+            returnKeyType="next"
+            nderlineColorAndroid="transparent"
+            clearButtonMode="while-editing"
+            ref={carnoRef}
+            onSubmitEditing={() => passwordRef.current?.focus()}
+            blurOnSubmit={false}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Icon
+            style={[styles.icon, styles.inputIcon]}
+            name="form-textbox-password"
+            color="black"
+            size={20}
+          />
+
+          <TextInput
+            style={styles.inputs}
+            placeholder="비밀번호"
+            placeholderTextColor="#666"
+            importantForAutofill="yes"
+            onChangeText={onChangePassword}
+            value={password}
+            autoComplete="password"
+            textContentType="password"
+            secureTextEntry={true}
+            returnKeyType="send"
+            clearButtonMode="while-editing"
+            underlineColorAndroid="transparent"
+            ref={passwordRef}
+            onSubmitEditing={onSubmit}
+          />
+        </View>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.loginButton]}
+          onPress={onSubmit}>
+          <Text style={styles.loginText}>로그인</Text>
+        </TouchableOpacity>
+
+        <View style={styles.otherButtonContainer}>
+          <Pressable onPress={toForgotPassword}>
+            <Text style={styles.otherButtonText}>비밀번호 재설정 </Text>
+          </Pressable>
+          <Text style={styles.otherButtonText}>|</Text>
+
+          <Pressable onPress={toSignUp}>
+            <Text style={styles.otherButtonText}> 회원가입하기</Text>
+          </Pressable>
+        </View>
       </DismissKeyboardView>
     </View>
   );
@@ -171,19 +177,57 @@ function LogIn({navigation}) {
 export default LogIn;
 
 const styles = StyleSheet.create({
-  mainView: {
+  container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    //marginTop: StatusBar.currentHeight,
+    // flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFD740',
+    // marginTop: StatusBar.currentHeight,
   },
-  card: {
+  inputContainer: {
+    borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
+    width: 250,
+    height: 45,
+    marginBottom: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputs: {
+    height: 45,
+    // marginLeft: 16,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  inputIcon: {
+    marginLeft: 15,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: 250,
+    borderRadius: 30,
+  },
+  loginButton: {
+    backgroundColor: '#000000',
+  },
 
-    borderTopLeftRadius: 10, // to provide rounded corners
-    borderTopRightRadius: 10, // to provide rounded corners
-    marginLeft: 10,
-    marginRight: 10,
+  loginText: {
+    color: 'white',
+    fontWeight: '300',
   },
+
   otherButtonContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -193,64 +237,25 @@ const styles = StyleSheet.create({
   otherButtonText: {
     fontWeight: '600',
     fontSize: 12,
-    color: '#2962FF',
-  },
-  text: {
     color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 12,
   },
+
   signInTextContainer: {
-    marginTop: '10%',
-    marginLeft: '9%',
-    color: '#000000',
+    marginTop: '30%',
+    color: '#FFFFFF',
+    alignItems: 'center',
   },
   signInText: {
     fontSize: 25,
     fontWeight: '500',
-    color: '#000000',
+    color: '#FFFFFF',
     lineHeight: 29.3,
   },
   signInTextS: {
     fontSize: 12,
     fontWeight: '300',
-    color: '#000000',
+    color: '#FFFFFF',
     marginTop: 5,
     marginBottom: 50,
-  },
-  textInput: {
-    backgroundColor: '#FFFFFF',
-    width: '80%',
-    height: 40,
-    paddingLeft: 15,
-    borderRadius: 5,
-    marginBottom: 5,
-    marginTop: 10,
-    borderWidth: 1,
-    alignSelf: 'center',
-    fontSize: 11,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-
-  buttonZone: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-
-  loginButton: {
-    backgroundColor: '4527A0',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-
-  loginButtonActive: {
-    backgroundColor: '#0091EA',
-  },
-
-  loginButtonText: {
-    color: 'white',
-    fontSize: 13,
   },
 });

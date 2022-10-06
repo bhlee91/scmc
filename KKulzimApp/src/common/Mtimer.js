@@ -19,7 +19,7 @@ import {
 let timer = () => {};
 
 export default function Mtimer() {
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(50);
 
   const startTimer = () => {
     timer = setTimeout(() => {

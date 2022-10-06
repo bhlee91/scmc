@@ -61,7 +61,7 @@ function Main() {
         cardStyle: {backgroundColor: '#ffffff'},
         headerStyle: {
           height: 60,
-          backgroundColor: '#4527A0',
+          backgroundColor: '#FFD740',
           borderBottomWidth: 1,
           borderBottomColor: '#99154E',
         },
@@ -70,9 +70,9 @@ function Main() {
         headerBackTitle: 'Prev',
         headerTitleStyle: {fontsize: 24},
         headerTintColor: '#ffffff',
-        headerLeft: () => (
-          <Icon name="angle-left" size={30} style={{marginLeft: 15}} />
-        ),
+        // headerLeft: () => (
+        //   <Icon name="angle-left" size={30} style={{marginLeft: 15}} />
+        // ),
 
         // headerShown: false,
 
@@ -80,12 +80,12 @@ function Main() {
           let iconName;
           if (route.name === 'Home') {
             iconName = focused
-              ? require('./src/assets/images/home.png')
-              : require('./src/assets/images/outline_home.png');
+              ? require('/assets/images/home.png')
+              : require('/assets/images/outline_home.png');
           } else if (route.name === '화물등록') {
             iconName = focused
-              ? require('./src/assets/images/register.png')
-              : require('./src/assets/images/outline_register.png');
+              ? require('/assets/images/register.png')
+              : require('/assets/images/outline_register.png');
           } else if (route.name === '추천화물') {
             iconName = focused
               ? require('./src/assets/images/recommend.png')
@@ -137,7 +137,7 @@ function Main() {
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   //   const isLoggedIn = useSelector(state => !!state.user.email);
-  const [isLoggedIn, SetIsLoggedIn] = useState(true);
+  const [isLoggedIn, SetIsLoggedIn] = useState(false);
   console.log('isLoggedIn', isLoggedIn);
 
   //   const [socket, disconnect] = useSocket();

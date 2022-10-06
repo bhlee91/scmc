@@ -45,7 +45,7 @@ import DismissKeyboardView from 'components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
 import Mtimer from 'common/Mtimer';
-import { registTruckOwner } from '../api/truckowner';
+import { getAuthNumber, registTruckOwner } from '../api/truckowner';
 
 function SignUp({navigation}) {
   const [truckownerName, setTruckownerName] = useState('');
@@ -76,44 +76,30 @@ function SignUp({navigation}) {
   const [prCheck, setPrCheck] = useState(false);
 
   const allState = () => {
-    if (allCheck === false) {
-      setAllCheck(false);
-      setTrCheck(false);
-      setUsCheck(false);
-      setPrCheck(false);
-    } else {
+    if(allCheck === false)  {
       setAllCheck(true);
       setTrCheck(true);
       setUsCheck(true);
       setPrCheck(true);
+    } else {
+      setAllCheck(false);
+      setTrCheck(false);
+      setUsCheck(false);
+      setPrCheck(false);
     }
+    
   };
 
   const trState = () => {
-    if (trCheck === false) {
-      setTrCheck(true);
-    } else {
-      setTrCheck(false);
-      console.log(trCheck);
-    }
+    setTrCheck(!trCheck)
   };
 
   const usState = () => {
-    if (usCheck === false) {
-      setUsCheck(true);
-    } else {
-      setUsCheck(false);
-    }
-    console.log(usCheck);
+    setUsCheck(!usCheck);
   };
 
   const prState = () => {
-    if (prCheck === false) {
-      setPrCheck(true);
-    } else {
-      setPrCheck(false);
-    }
-    console.log(prCheck);
+    setPrCheck(!prCheck);
   };
 
   useEffect(() => {
@@ -122,8 +108,7 @@ function SignUp({navigation}) {
     } else {
       setAllCheck(false);
     }
-    console.log(trCheck + 'aaa' + usCheck + 'bb' + prCheck);
-  }, [trCheck, usCheck, prCheck]);
+  },[allCheck, trCheck, usCheck, prCheck]);
 
   const toTrTerms = useCallback(() => {
     navigation.navigate('TrTerms');
@@ -193,24 +178,25 @@ function SignUp({navigation}) {
   };
 
   const authSms = () => {
-    setVisible(true);
+    if(phoneNumber === '' || phoneNumber === undefined || phoneNumber === null){
+      Alert.alert('휴대폰 번호를 입력해 주세요.')
+    } else if(phoneNumber.length !== 11 ) {
+      Alert.alert('입력하신 휴대폰 번호를 확인해 주세요.')  
+    } else {
+      setVisible(true);
+      //getAuthNumber(phoneNumber)
+    }
+    
+
   };
   const confirmAuthSms = () => {
     setVisible(false);
-  };
-
-  const saveCardiv = () => {
-    setModalVisible(false);
   };
 
   const onChangeTons = useCallback(text => {
     console.log(text);
     setTruckTons(text)
   }, []);
-
-  const toCardiv = useCallback(() => {
-    navigation.navigate('Cardiv');
-  }, [navigation]);
 
   // 차량정보 초장축여부 데이타
   const radioButtonsLOData = [
@@ -284,8 +270,8 @@ function SignUp({navigation}) {
     })
     setRadioButtonsRF(radioButtonsArray);
   }
-
   // 차량정보 냉장냉동여부 데이타 끝
+ 
   // 차량정보 적재함형태 데이타
   const radioButtonsSTData = [
     {
@@ -338,7 +324,6 @@ function SignUp({navigation}) {
     })
     setRadioButtonsST(radioButtonsArray);
   }
-
   // 차량정보 적재함형태 데이타 끝
 
   // 차량정보 리프트여부 데이타
@@ -371,7 +356,6 @@ function SignUp({navigation}) {
     })
     setRadioButtonsLF(radioButtonsArray)
   }
-
   // 차량정보 리프트여부 데이타 끝
 
   // 약관정보 데이타
@@ -408,7 +392,7 @@ function SignUp({navigation}) {
 
   // /약관정보 데이타 끝
 
-  let reaminTime = Mtimer(); // 타이머
+  let remainTime = Mtimer(); // 타이머
   const onSubmit = useCallback(async () => {
     // try {
     //   setLoading(true);
@@ -454,15 +438,16 @@ function SignUp({navigation}) {
       liftType: lfArr[0]?.value,
       carNumber: carNumber,
     }
-    console.log(user)
-    registTruckOwner(user)
-    .then(res => {
-      console.log(res)
-      alert(`${res.data.msg}`)
-    })
-    .catch(err => {
-      console.log(err)
-    }) 
+    // registTruckOwner(user)
+    // .then(res => {
+    //   console.log(res)
+    //   navigation.navigate('LogIn')
+    //   alert(`${res.data}`)
+    // })
+    
+    // .catch(err => {
+    //   console.log(err)
+    // }) 
   }
   return (
     <View style={styles.mainView}>
@@ -481,8 +466,6 @@ function SignUp({navigation}) {
                   placeholderTextColor="#666"
                   value={truckownerName}
                   returnKeyType="next"
-                  // ref={carnoRef}
-                  // onSubmitEditing={() => passwordRef.current?.focus()}
                 />
                 <HelperText type="error" visible={hasNameErrors()}>
                   성명을 입력하여 주세요.
@@ -495,14 +478,11 @@ function SignUp({navigation}) {
                     style={styles.hptextInput}
                     onChangeText={onChangeHpnumber}
                     Outlined
-                    // label="휴대폰번호"
                     placeholder="휴대폰번호"
                     placeholderTextColor="#666"
                     value={phoneNumber}
                     keyboardType="numeric"
                     returnKeyType="next"
-                    // ref={carnoRef}
-                    // onSubmitEditing={() => passwordRef.current?.focus()}
                   />
                   <Pressable style={styles.hpButton} onPress={authSms}>
                     <Text style={styles.ButtonText}>인증하기</Text>
@@ -515,19 +495,16 @@ function SignUp({navigation}) {
                 </View>
               </View>
               <Divider />
-              {visible ? (
+              {visible && remainTime ? (
                 <View>
                   <View style={styles.box2}>
                     <TextInput
                       style={styles.hptextInput}
                       onChangeText={onChangeAuthNo}
                       Outlined
-                      // label="인증번호"
                       placeholder="인증번호 "
                       value={authno}
                       keyboardType="numeric"
-                      // ref={carnoRef}
-                      // onSubmitEditing={() => passwordRef.current?.focus()}
                     />
                     <Pressable style={styles.hpButton} onPress={confirmAuthSms}>
                       <Text style={styles.ButtonText}>확인</Text>
@@ -535,7 +512,7 @@ function SignUp({navigation}) {
                   </View>
                   <View>
                     <HelperText type="error" visible={hasAuthErrors()}>
-                      인증번호를 입력하여 주세요. {reaminTime}
+                      인증번호를 입력하여 주세요. {remainTime}
                     </HelperText>
                   </View>
                 </View>
@@ -551,8 +528,6 @@ function SignUp({navigation}) {
                   value={businessNo}
                   returnKeyType="next"
                   clearButtonMode="while-editing"
-                  // ref={carnoRef}
-                  // onSubmitEditing={() => passwordRef.current?.focus()}
                   blurOnSubmit={false}
                 />
                 <HelperText type="error" visible={hasBusinessNoErrors()}>
@@ -564,7 +539,6 @@ function SignUp({navigation}) {
             <View>
               <TextInput
                 style={styles.textInput}
-                // label="비밀번호"
                 placeholder="비밀번호"
                 onChangeText={onChangePassword}
                 value={password}
@@ -575,7 +549,6 @@ function SignUp({navigation}) {
                 secureTextEntry
                 returnKeyType="send"
                 clearButtonMode="while-editing"
-                // ref={passwordRef}
                 onSubmitEditing={onSubmit}
                 right={<TextInput.Icon icon="eye" />}
               />
@@ -587,7 +560,6 @@ function SignUp({navigation}) {
             <View>
               <TextInput
                 style={styles.textInput}
-                // label="비밀번호확인"
                 placeholder="비밀번호확인"
                 onChangeText={onChangeConfirmpassword}
                 value={confirmpassword}
@@ -598,7 +570,6 @@ function SignUp({navigation}) {
                   Platform.OS === 'android' ? 'default' : 'ascii-capable'
                 }
                 clearButtonMode="while-editing"
-                // ref={passwordRef}
                 onSubmitEditing={onSubmit}
               />
               <HelperText type="error" visible={hasPasswordConfimErrors()}>
@@ -614,13 +585,10 @@ function SignUp({navigation}) {
           <Card.Content>
             <View style={styles.box}>
               <RNPickerSelect
-                // textInputProps={{underlineColorAndroid: 'transparent'}}
-                // useNativeAndroidPickerStyle={false}
                 style={styles.inputAndroid}
                 placeholder={{
                   label: '차량톤수',
                 }}
-                // fixAndroidTouchableBug={true}
                 value={truckTons}
                 onValueChange={value => onChangeTons(value)}
                 items={[
@@ -639,11 +607,6 @@ function SignUp({navigation}) {
             <Divider />
             <View>
               <View>
-                {/* <Pressable
-                  style={styles.Button}
-                  onPress={() => Alert.alert('회원가입이 완료되었습니다.')}>
-                  <Text style={styles.ButtonText}>차량구분선택</Text>
-                </Pressable> */}
                 <Card style={styles.radiocardivbox}>
                   <Title style={styles.radiocardtext}>차량종류</Title>
                   <Card.Content>
@@ -702,8 +665,6 @@ function SignUp({navigation}) {
                 value={carNumber}
                 returnKeyType="next"
                 clearButtonMode="while-editing"
-                // ref={carnoRef}
-                // onSubmitEditing={() => passwordRef.current?.focus()}
                 blurOnSubmit={false}
               />
             </View>
@@ -722,15 +683,13 @@ function SignUp({navigation}) {
                 <BouncyCheckbox
                   style={styles.checkbox}
                   size={18}
-                  // isChecked={checkboxState}
                   disableText
                   fillColor="black"
                   unfillColor="#FFFFFF"
                   text="약관전체동의"
+                  isChecked = {allCheck}
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
-                  // textStyle={{fontFamily: 'JosefinSans-Regular'}}
-                  // onPress={handleAllCheck(isChecked)}
                   onPress={allState}
                 />
                 <Text style={styles.chkboxlabel}>약관전체동의</Text>
@@ -747,7 +706,6 @@ function SignUp({navigation}) {
                   text="운송약관"
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
-                  // textStyle={{fontFamily: 'JosefinSans-Regular'}}
                   onPress={trState}
                 />
                 <Text style={styles.chkboxlabel}>운송약관</Text>
@@ -764,10 +722,9 @@ function SignUp({navigation}) {
                   disableText
                   fillColor="black"
                   unfillColor="#FFFFFF"
-                  text="운송약관"
+                  text="이용약관"
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
-                  // textStyle={{fontFamily: 'JosefinSans-Regular'}}
                   onPress={usState}
                 />
                 <Text style={styles.chkboxlabel}>이용약관</Text>
@@ -784,10 +741,9 @@ function SignUp({navigation}) {
                   disableText
                   fillColor="black"
                   unfillColor="#FFFFFF"
-                  text="운송약관"
+                  text="개인정보보호방침"
                   innerIconStyle={{borderRadius: 0}}
                   iconStyle={{borderColor: 'red', borderRadius: 0}}
-                  // textStyle={{fontFamily: 'JosefinSans-Regular'}}
                   onPress={prState}
                 />
                 <Text style={styles.chkboxlabel}>개인정보보호방침</Text>
@@ -818,7 +774,6 @@ const styles = StyleSheet.create({
   mainView: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    //marginTop: StatusBar.currentHeight,
   },
   titlecard: {
     backgroundColor: '#FFFFFF',
