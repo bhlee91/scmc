@@ -8,7 +8,6 @@ import SignUp from './src/pages/SignUp';
 import MyLocation from './src/pages/MyLocation';
 import RecomShipInfo from './src/pages/RecomShipInfo';
 import ShipInfo from './src/pages/ShipInfo';
-import TruckOwnerInfo from './src/pages/TruckOwnerInfo';
 import Home from './src/pages/Home';
 import {Provider, useSelector} from 'react-redux';
 // import store, {useAppDispatch} from './src/store';
