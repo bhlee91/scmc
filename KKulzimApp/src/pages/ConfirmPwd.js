@@ -46,7 +46,7 @@ function ConfirmPwd({navigation}) {
 
   const onSubmit = useCallback(async () => {
     if (!password || !password.trim()) {
-      return Alert.alert('알림', '인증번호를 입력해주세요.');
+      return Alert.alert('알림', '비밀번호를 입력해주세요.');
     }
 
     // try {
@@ -80,112 +80,128 @@ function ConfirmPwd({navigation}) {
   }, [loading, password]);
 
   return (
-    <View style={styles.mainView}>
-      <View style={styles.confirmTextContainer}>
-        <Text style={styles.confirmText}>
-          차주님의 안전한 정보호보를 위해 비밀번호를 확인합니다.
-        </Text>
+    <DismissKeyboardView style={styles.mainContainer}>
+      <View style={styles.container}>
+        <View style={styles.pwdinfoTextContainer}>
+          <Text style={styles.pwdinfoTextS}>
+            차주님의 안전한 정보보호를 위해 비밀번호를 확인합니다.
+          </Text>
+        </View>
+
+        <View style={styles.formContent}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputs}
+              placeholder="비밀번호"
+              onChangeText={onChangePasswd}
+              value={password}
+              textContentType="password"
+              secureTextEntry
+              clearButtonMode="while-editing"
+              // ref={passwordRef}
+              onSubmitEditing={onSubmit}
+              underlineColorAndroid="transparent"
+            />
+          </View>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, styles.Button]}
+          onPress={onSubmit}>
+          <Text style={styles.confirmText}>확인</Text>
+        </TouchableOpacity>
       </View>
-      <DismissKeyboardView behavior style={styles.container}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <View>
-              <View style={styles.box2}>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="비밀번호"
-                  onChangeText={onChangePasswd}
-                  value={password}
-                  textContentType="password"
-                  secureTextEntry
-                  clearButtonMode="while-editing"
-                  // ref={passwordRef}
-                  onSubmitEditing={onSubmit}
-                />
-              </View>
-              <View style={styles.box2}>
-                <Pressable style={styles.Button} onPress={toMyReg}>
-                  <Text style={styles.ButtonText}>확인</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-      </DismissKeyboardView>
-    </View>
+    </DismissKeyboardView>
   );
 }
 export default ConfirmPwd;
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: '#FFD740',
+  },
   container: {
     flex: 1,
+    // flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFD740',
+    // marginTop: StatusBar.currentHeight,
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    flex: 1,
-    borderTopLeftRadius: 10, // to provide rounded corners
-    borderTopRightRadius: 10, // to provide rounded corners
-    marginLeft: 10,
-    marginRight: 10,
-  },
-  mainView: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-
-  text: {
-    color: '#545454',
-    fontWeight: '700',
-    fontSize: 15,
-  },
-
-  confirmTextContainer: {
-    marginTop: '20%',
-    marginLeft: '5%',
-    marginBottom: 20,
-  },
-  confirmText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#000000',
-    lineHeight: 29.3,
-    marginBottom: 16,
-  },
-
-  box2: {
+  formContent: {
     flexDirection: 'row',
-    height: 45,
-    marginTop: 10,
-    marginLeft: 25,
-    marginRight: 25,
-    borderWidth: 0,
+    marginTop: 5,
+    width: 300,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  textInput: {
+  inputContainer: {
+    flex: 1,
+    borderBottomColor: '#F5FCFF',
     backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    borderBottomWidth: 1,
     height: 45,
-    width: '90%',
-    margin: 12,
-    borderWidth: 1,
-    padding: 5,
-    marginTop: 8,
-    marginLeft: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 10,
+  },
 
-    fontSize: 11,
+  inputs: {
+    height: 45,
+    marginLeft: 14,
+    borderBottomColor: '#FFFFFF',
+    flex: 1,
+    fontsize: 13,
+  },
+  // icon: {
+  //   width: 30,
+  //   height: 30,
+  // },
+  // inputIcon: {
+  //   marginLeft: 15,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  buttonContainer: {
+    height: 45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft: 10,
+    width: 290,
+    borderRadius: 30,
+  },
+
+  confirmText: {
+    color: 'white',
+    fontWeight: '300',
+  },
+
+  pwdinfoTextContainer: {
+    marginTop: '30%',
+    color: '#FFFFFF',
+    alignItems: 'center',
+  },
+
+  pwdinfoTextS: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 5,
+    marginBottom: 30,
   },
 
   Button: {
-    flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 30,
     marginBottom: 5,
-    // width: '90%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#000000',
   },
 
   ButtonText: {
