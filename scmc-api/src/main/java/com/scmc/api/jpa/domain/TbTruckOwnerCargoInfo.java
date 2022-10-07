@@ -18,11 +18,12 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Entity
 @DynamicInsert @DynamicUpdate
 @Table(name = "tb_truckowner_cargoinfo")
-@Getter
+@Getter @ToString
 @Builder
 public class TbTruckOwnerCargoInfo {
 	
@@ -85,8 +86,8 @@ public class TbTruckOwnerCargoInfo {
 
 	@Builder(builderMethodName = "insertCargoInfo")
 	public TbTruckOwnerCargoInfo(long truckownerUid, String loadDt, String unloadDt, int spaceRate,
-			String cargoWeight, String departAddrSt, String departLatitude, String departLongitude,
-			String arrivalAddrSt, String arrivalLatitude, String arrivalLongitude) throws ParseException {
+			String cargoWeight, String departAddrSt, String departAddrSt2, String departLatitude, String departLongitude,
+			String arrivalAddrSt, String arrivalAddrSt2, String arrivalLatitude, String arrivalLongitude) throws ParseException {
 		super();
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -97,6 +98,24 @@ public class TbTruckOwnerCargoInfo {
 		this.spaceRate = spaceRate;
 		this.cargoWeight = cargoWeight;
 		this.departAddrSt = departAddrSt;
+		this.departAddrSt2 = departAddrSt2;
 		this.arrivalAddrSt = arrivalAddrSt;
+		this.arrivalAddrSt2 = arrivalAddrSt2;
+	}
+	
+	public void updateCargoInfo(String loadDt, String unloadDt, int spaceRate,
+			String cargoWeight, String departAddrSt, String departAddrSt2, String departLatitude, String departLongitude,
+			String arrivalAddrSt, String arrivalAddrSt2, String arrivalLatitude, String arrivalLongitude) throws ParseException {
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		this.loadDt = format.parse(loadDt);
+		this.unloadDt = format.parse(unloadDt);
+		this.spaceRate = spaceRate;
+		this.cargoWeight = cargoWeight;
+		this.departAddrSt = departAddrSt;
+		this.departAddrSt2 = departAddrSt2;
+		this.arrivalAddrSt = arrivalAddrSt;
+		this.arrivalAddrSt2 = arrivalAddrSt2;
 	}
 }

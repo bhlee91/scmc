@@ -26,6 +26,7 @@ function Address({ navigation, route }) {
         addr: { 
           road: data.roadAddress,
           jibun: data.jibunAddress,
+          buildingName: data.buildingName
         }, 
         d: route.params.d 
       },

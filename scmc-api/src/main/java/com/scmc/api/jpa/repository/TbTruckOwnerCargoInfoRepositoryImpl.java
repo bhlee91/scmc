@@ -7,9 +7,10 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
 import com.scmc.api.jpa.domain.QTbTruckOwnerCargoInfo;
-import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 
 import lombok.RequiredArgsConstructor;
@@ -19,13 +20,28 @@ import lombok.RequiredArgsConstructor;
 public class TbTruckOwnerCargoInfoRepositoryImpl implements TbTruckOwnerCargoInfoRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
-	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 
 	@Override
 	public Map<String, Object> dynamicByTruckOwnerMainInfo(long truckownerUid) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
-		TbMemberTruckOwner owner = tbMemberTruckOwnerRepository.findByTruckownerUid(truckownerUid);
+		QTbMemberTruckOwner qOwner = QTbMemberTruckOwner.tbMemberTruckOwner;
+		BooleanBuilder qOwnerBuilder = new BooleanBuilder();
+		
+		qOwnerBuilder.and(qOwner.truckownerUid.eq(truckownerUid));
+		
+		Tuple tuple = queryFactory
+						.select(
+								qOwner.truckownerUid
+								, qOwner.carNumber
+						)
+						.from(qOwner)
+						.where(qOwnerBuilder)
+						.fetchOne();
+		
+		HashMap<String, Object> owner = new HashMap<String, Object>();
+		owner.put("truckownerUid", tuple.get(qOwner.truckownerUid));
+		owner.put("carNumber", tuple.get(qOwner.carNumber));
 		
 		QTbTruckOwnerCargoInfo qInfo = QTbTruckOwnerCargoInfo.tbTruckOwnerCargoInfo;
 		BooleanBuilder qInfoBuilder = new BooleanBuilder();

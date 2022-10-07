@@ -82,11 +82,11 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(authNumber, HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "차주 화물정보 입력", notes = "차주의 화물정보를 입력한다.")
+	@ApiOperation(value = "차주 화물정보 등록/수정", notes = "차주의 화물정보를 등록/수정한다.")
 	@PostMapping("/cargo")
 	public ResponseEntity<?> setCargoInfo(@RequestBody CargoInfoDto dto) throws Exception {
 		log.info("==================");
-		log.info("차주 화물정보 입력 => " + dto.toString());
+		log.info("차주 화물정보 등록/수정 => " + dto.toString());
 		log.info("==================");
 		
 		return new ResponseEntity<>(truckOwnerService.setTruckOwnerCargoInfo(dto), HttpStatus.OK);
@@ -126,7 +126,7 @@ public class TruckOwnerController {
 			@ApiParam(value = "차주 uid", example = "1") @PathVariable(value = "truckownerUid") long truckownerUid
 			) throws Exception {
 		log.info("==================");
-		log.info("모바일 차주 메인 조회)");
+		log.info("모바일 차주 메인 조회");
 		log.info("==================");
 		
 		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(truckownerUid), HttpStatus.OK);

@@ -116,21 +116,45 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto dto) throws ParseException {
 		if (dto.getTruckownerUid() == 0) return null;
 		
-		TbTruckOwnerCargoInfo toci = TbTruckOwnerCargoInfo.insertCargoInfo()
-														.truckownerUid(dto.getTruckownerUid())
-														.loadDt(dto.getLoadDt())
-														.unloadDt(dto.getUnloadDt())
-														.departAddrSt(dto.getDepartAddrSt())
-														.arrivalAddrSt(dto.getArrivalAddrSt())
-														.spaceRate(dto.getSpaceRate())
-														.cargoWeight(dto.getCargoWeight())
-														.build();
-		
-		return tbTruckOwnerCargoInfoRepository.save(toci);
+		if (dto.getCargoUid() == 0) {
+			TbTruckOwnerCargoInfo toci = TbTruckOwnerCargoInfo.insertCargoInfo()
+											.truckownerUid(dto.getTruckownerUid())
+											.loadDt(dto.getLoadDt())
+											.unloadDt(dto.getUnloadDt())
+											.departAddrSt(dto.getDepartAddrSt())
+											.departAddrSt2(dto.getDepartAddrSt2())
+											.arrivalAddrSt(dto.getArrivalAddrSt())
+											.arrivalAddrSt2(dto.getArrivalAddrSt2())
+											.spaceRate(dto.getSpaceRate())
+											.cargoWeight(dto.getCargoWeight())
+											.build();
+			
+			return tbTruckOwnerCargoInfoRepository.save(toci);
+		} else {
+			TbTruckOwnerCargoInfo toci = tbTruckOwnerCargoInfoRepository.findByCargoUid(dto.getCargoUid());
+			
+			toci.updateCargoInfo(
+					dto.getLoadDt(), 
+					dto.getUnloadDt(),
+					dto.getSpaceRate(), 
+					dto.getCargoWeight(), 
+					dto.getDepartAddrSt(), 
+					dto.getDepartAddrSt2(), 
+					"", 
+					"", 
+					dto.getArrivalAddrSt(), 
+					dto.getArrivalAddrSt2(),
+					"",
+					""
+				);
+			
+			return toci;
+		}
 	}
 	
 	@Override

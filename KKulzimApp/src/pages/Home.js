@@ -38,6 +38,7 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import { isEmpty } from "utils/CommonUtil";
 import { formatMonthAndDay } from "utils/DateUtil";
 import {
   getMainInfo
@@ -89,19 +90,6 @@ function Home({ navigation, props }) {
 
   return (
     <ScrollView style={styles.mainView}>
-      {/* <Appbar.Header style={{height: 50}}>
-        <Appbar.Content
-          style={{
-            fontSize: 20,
-            color: '#FFFFFF',
-            fontWeight: 600,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-          title="꿀짐"
-        />
-        <Appbar.Action icon="logout" onPress={() => {}} />
-      </Appbar.Header> */}
       <View style={{flex: 1, marginTop: 5, flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <Card style={styles.card}>
@@ -133,76 +121,64 @@ function Home({ navigation, props }) {
           </Card>
         </View>
       </View>
-      {/* 차주정보 */}
-      {/* <View style={{flex: 1, flexDirection: 'row'}}>
-        <View style={{flex: 1}}>
-          <Card style={styles.card}>
-            <Card.Title title="차주정보" />
-            <Card.Content>
-              <Paragraph style={styles.text}>
-                XX가0000 차주님 안녕하세요?
-              </Paragraph>
-              <Divider />
-              <View style={styles.menuView}>
-                <View style={{flex: 1, height: 50}}>
-                  <Pressable
-                    style={styles.buttonZone}
-                    // onPress={() => Alert.alert('마이페이지로 이동합니다.')}>
-                    onPress={() => {
-                      navigation.navigate('마이페이지');
-                    }}>
-                    <Text style={styles.ButtonText}>마이페이지</Text>
-                  </Pressable>
-                </View>
-                <View style={{flex: 1, height: 50}}>
-                  <Pressable style={styles.buttonZone}>
-                    <Text style={styles.ButtonText}>로그아웃</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </Card.Content>
-          </Card>
-        </View>
-      </View> */}
       {/* 차주정보 끝 */}
       {/* 화물정보 */}
       <View style={{flex: 1, flexDirection: 'row'}}>
         <View style={{flex: 1}}>
           <Card style={styles.cargocard}>
-            <Card.Title title="화물정보" />
             <Card.Content>
-              <Paragraph style={styles.cargotitletext}>
-                상차 :{' '}
-                <Paragraph style={styles.recommendtext}>
-                  {formatMonthAndDay(cargoInfo?.loadDt)} {cargoInfo?.departAddrSt}
-                </Paragraph>
-              </Paragraph>
-              <Paragraph style={styles.cargotitletext}>
-                하차 :{' '}
-                <Paragraph style={styles.recommendtext}>
-                  {formatMonthAndDay(cargoInfo?.unloadDt)} {cargoInfo?.arrivalAddrSt}
-                </Paragraph>
-              </Paragraph>
-              <Paragraph style={styles.cargotitletext}>
-                적재함 :
-                <Paragraph style={styles.recommendtext}>
-                  {' '}
-                  {cargoInfo?.spaceRate}% / 중량 : {cargoInfo?.cargoWeight}{' '}
-                </Paragraph>
-              </Paragraph>
-              <Divider />
-              <View style={styles.menuView}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 1}}>
-                  <Pressable
-                    style={styles.buttonZone}
-                    onPress={() => {
-                      navigation.navigate('CargoReg');
-                    }}>
-                    <Text style={styles.ButtonText}>화물{cargoInfo?.cargoUid ? "수정" : "등록"}</Text>
-                  </Pressable>
-                </View>
-              </View>
+              <Paragraph style={styles.cardTitle}>화물정보</Paragraph>
+              <Card style={styles.cargocardcontents}>
+                <Card.Content>
+                  <Paragraph style={styles.cargotitletext}>
+                    상차 :{' '}
+                    <Paragraph style={styles.recommendtext}>
+                      {formatMonthAndDay(cargoInfo?.loadDt)} {cargoInfo?.departAddrSt} {isEmpty(cargoInfo?.departAddrSt2) ? "" : `(${cargoInfo?.departAddrSt2})`} 
+                    </Paragraph>
+                  </Paragraph>
+                  <Paragraph style={styles.cargotitletext}>
+                    하차 :{' '}
+                    <Paragraph style={styles.recommendtext}>
+                      {formatMonthAndDay(cargoInfo?.unloadDt)} {cargoInfo?.arrivalAddrSt} {isEmpty(cargoInfo?.arrivalAddrSt2) ? "" : `(${cargoInfo?.arrivalAddrSt2})`}
+                    </Paragraph>
+                  </Paragraph>
+                  <Paragraph style={styles.cargotitletext}>
+                    적재함 :
+                    <Paragraph style={styles.recommendtext}>
+                      {' '}
+                      {cargoInfo?.spaceRate}% / 중량 : {cargoInfo?.cargoWeight}{' '}
+                    </Paragraph>
+                  </Paragraph>
+                  <View style={styles.menuView}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 1}}>
+                      <Pressable
+                        style={styles.buttonZone}
+                        onPress={() => {
+                          cargoInfo?.cargoUid ? 
+                          navigation.reset({
+                            index: 0, 
+                            routes: [{ 
+                              name: 'CargoReg', 
+                              params: {
+                                info: cargoInfo 
+                              }
+                            }]
+                          }) 
+                          : 
+                          navigation.reset({ 
+                            index: 0, 
+                            routes: [{ 
+                              name: 'CargoReg'
+                            }]
+                          })
+                        }}>
+                        <Text style={styles.ButtonText}>화물{cargoInfo?.cargoUid ? "수정" : "등록"}</Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                </Card.Content>
+              </Card>
             </Card.Content>
           </Card>
         </View>
@@ -340,10 +316,10 @@ function Home({ navigation, props }) {
                         <Text style={styles.recommendtext}>2M x 2M x 2M</Text>
                       </Text>
                       <Text style={styles.recommendtitletext}>
-                        중량 : <Text style={styles.recommendtext}>30kg</Text>
+                        중량 : <Text style={styles.recommendtext}>30㎏</Text>
                       </Text>
                       <Text style={styles.recommendtitletext}>
-                        체적 : <Text style={styles.recommendtext}>10M3</Text>
+                        체적 : <Text style={styles.recommendtext}>10㎥</Text>
                       </Text>
                     </View>
                   </View>
@@ -443,10 +419,10 @@ function Home({ navigation, props }) {
                         <Text style={styles.recommendtext}>2M x 2M x 2M</Text>
                       </Text>
                       <Text style={styles.recommendtitletext}>
-                        중량 : <Text style={styles.recommendtext}>30kg</Text>
+                        중량 : <Text style={styles.recommendtext}>30㎏</Text>
                       </Text>
                       <Text style={styles.recommendtitletext}>
-                        체적 : <Text style={styles.recommendtext}>10M3</Text>
+                        체적 : <Text style={styles.recommendtext}>10㎥</Text>
                       </Text>
                     </View>
                   </View>
@@ -563,7 +539,19 @@ const styles = StyleSheet.create({
   },
 
   cargocard: {
-    backgroundColor: '#E8EAF6',
+    backgroundColor: '#FFF8E1',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottompRightRadius: 10,
+    // height: 550,
+    borderWidth: 0.5,
+    borderColor: '#E0E0E0',
+    marginBottom: 5,
+  },
+
+  cargocardcontents: {
+    backgroundColor: '#FFECB3',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
@@ -590,7 +578,7 @@ const styles = StyleSheet.create({
   },
 
   recommendcardcontents: {
-    backgroundColor: '#E8EAF6',
+    backgroundColor: '#FFECB3',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     borderBottomLeftRadius: 10,
@@ -615,7 +603,7 @@ const styles = StyleSheet.create({
     // color: '#536DFE',
     fontSize: 14,
     fontWeight: '500',
-    color: 'blue',
+    color: '#43A047',
     marginLeft: 40,
   },
 
@@ -623,12 +611,12 @@ const styles = StyleSheet.create({
     // color: '#536DFE',
     fontSize: 14,
     fontWeight: '500',
-    color: 'blue',
+    color: '#43A047',
   },
   datetext: {
     // color: '#536DFE',
     fontSize: 10,
-    color: 'blue',
+    color: '#43A047',
     fontWeight: '500',
   },
 
@@ -640,22 +628,23 @@ const styles = StyleSheet.create({
   },
 
   cardTitle: {
-    color: '#303F9F',
+    color: '#43A047',
     fontSize: 16,
     fontWeight: '500',
   },
 
   ButtonText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 13,
     fontWeight: '500',
   },
   buttonZone: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#FFD740',
     height: 40,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',
+    borderRadius: 30,
   },
 });

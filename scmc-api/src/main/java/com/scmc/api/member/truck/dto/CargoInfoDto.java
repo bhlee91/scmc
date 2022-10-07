@@ -7,6 +7,7 @@ import lombok.ToString;
 @Getter @Setter @ToString
 public class CargoInfoDto {
 	
+	private long cargoUid;
 	private long truckownerUid;
 	
 	private String loadDt;
@@ -16,5 +17,7 @@ public class CargoInfoDto {
 	private String cargoWeight;
 	
 	private String departAddrSt;
+	private String departAddrSt2;
 	private String arrivalAddrSt;
+	private String arrivalAddrSt2;
 }

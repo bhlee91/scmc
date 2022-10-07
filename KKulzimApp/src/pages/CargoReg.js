@@ -7,42 +7,25 @@ import React, {
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Divider,
 } from 'react-native';
 
 import {
   Card,
-  Title,
   Paragraph,
-  IconButton,
-  Badge,
-  Searchbar,
-  Appbar,
 } from 'react-native-paper';
 
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {ko} from 'date-fns/esm/locale';
-import DismissKeyboardView from '../components/DismissKeyboardView';
-// import ProgressBar from './../common/ProgressBar';
-import * as Progress from 'react-native-progress';
 import Slider from '@react-native-community/slider';
 import RNPickerSelect from "react-native-picker-select";
 
-import { formatStringToDateTime } from "utils/DateUtil";
+import { formatStringToDateTime, convertDateTime } from "utils/DateUtil";
+import { convertWeightAndDiv, isEmpty } from "utils/CommonUtil";
 import {
   setCargoInfo
 } from "api/truck/index";
@@ -105,15 +88,16 @@ Number.prototype.zf = function (len) {
 };
 
 function CargoReg({ navigation, route }) {
+  const [cargoUid, setCargoUid] = useState(0)
   const [loadDateTime, setLoadDateTime] = useState("")
   const [unloadDateTime, setUnloadDateTime] = useState("")
   const [loadAddr, setLoadAddr] = useState({
-    road: "",
-    jibun: "",
+    addr: "",
+    buildingName: "",
   })
   const [unloadAddr, setUnloadAddr] = useState({
-    road: "",
-    jibun: "",
+    addr: "",
+    buildingName: "",
   })
   const [rate, setRate] = useState(0)
   const [weight, setWeight] = useState("0")
@@ -136,17 +120,46 @@ function CargoReg({ navigation, route }) {
   const onChangeUnloadSearch = searchUnload => setUnloadAddr(searchUnload)
 
   useEffect(() => {
-    setRate(rate)
-  }, [rate])
+    if (route.params?.addr) {
+      const addr = route.params.addr
+      
+      if (route.params.d === "load")
+        setLoadAddr({ 
+          ...loadAddr,
+          addr: addr.jibun || addr.road,
+          buildingName: addr.buildingName,
+        })
+      if (route.params.d === "unload")
+        setUnloadAddr({
+          ...unloadAddr,
+          addr: addr.jibun || addr.road,
+          buildingName: addr.buildingName,
+        })
+    }
+  }, [route.params.addr])
 
   useEffect(() => {
-    if (route.params?.addr) {
-      if (route.params.d === "load")
-        setLoadAddr({ ...route.params.addr })
-      if (route.params.d === "unload")
-        setUnloadAddr({ ...route.params.addr })
+    if (route.params?.info) {
+      const wad = convertWeightAndDiv(route.params.info?.cargoWeight)
+
+      setCargoUid(route.params.info.cargoUid)
+      setLoadDateTime(convertDateTime(route.params.info.loadDt))
+      setUnloadDateTime(convertDateTime(route.params.info.unloadDt))
+      setLoadAddr({ 
+        ...loadAddr,
+        addr: route.params.info.departAddrSt,
+        buildingName: route.params.info.departAddrSt2,
+      })
+      setUnloadAddr({ 
+        ...unloadAddr,
+        addr: route.params.info.arrivalAddrSt,
+        buildingName: route.params.info.arrivalAddrSt2,
+      })
+      setRate(route.params.info.spaceRate)
+      setWeight(wad.weight)
+      setWeightDiv(wad.div)
     }
-  }, [route.params?.addr])
+  }, [cargoUid])
 
   const onChangeTons = useCallback(text => {
     setWeight(text)
@@ -155,11 +168,14 @@ function CargoReg({ navigation, route }) {
   const handleCargoSave = async () => {
 
     const obj = {
-      truckownerUid: 3,
+      cargoUid: cargoUid,
+      truckownerUid: 4,
       loadDt: formatStringToDateTime(loadDateTime),
       unloadDt: formatStringToDateTime(unloadDateTime),
-      departAddrSt: loadAddr.jibun, 
-      arrivalAddrSt: unloadAddr.jibun,
+      departAddrSt: loadAddr.addr,
+      departAddrSt2: loadAddr.buildingName,
+      arrivalAddrSt: unloadAddr.addr,
+      arrivalAddrSt2: unloadAddr.buildingName,
       spaceRate: rate,
       cargoWeight: `${weight}${weightDiv}`
     }
@@ -293,13 +309,15 @@ function CargoReg({ navigation, route }) {
                   padding: 5,
                 }}
                 onPress={() => navigation.navigate('Address', { d: "load" })}>
-                <Searchbar
+                <TextInput
                   style={styles.textInput}
                   placeholder="상차지"
                   onChangeText={onChangeLoadSearch}
                   onFocus={() => navigation.navigate('Address', { d: "load" })}
-                  value={loadAddr.jibun}
-                />
+                  editable={false}
+                >
+                  {loadAddr.addr} {isEmpty(loadAddr.buildingName) ? "" : `(${loadAddr.buildingName})`}
+                </TextInput>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{
@@ -308,13 +326,15 @@ function CargoReg({ navigation, route }) {
                   padding: 5,
                 }}
                 onPress={() => navigation.navigate('Address', { d: "unload" })}>
-                <Searchbar
+                <TextInput
                   style={styles.textInput}
                   placeholder="하차지"
                   onChangeText={onChangeUnloadSearch}
                   onFocus={() => navigation.navigate('Address', { d: "unload" })}
-                  value={unloadAddr.jibun}
-                />
+                  editable={false}
+                >
+                  {unloadAddr.addr} {isEmpty(unloadAddr.buildingName) ? "" : `(${unloadAddr.buildingName})`}
+                </TextInput>
               </TouchableOpacity>
             </Card.Content>
           </Card>
@@ -476,13 +496,13 @@ function CargoReg({ navigation, route }) {
             <Pressable
               style={styles.buttonZone}
               onPress={() =>
-                Alert.alert('꿀짐', '입력한 정보로 화물을 등록합니다', [
-                  { text: '등록', onPress: () => handleCargoSave() },
+                Alert.alert('꿀짐', `입력한 정보로 화물정보를 ${cargoUid === 0 ? "등록" : "수정"}합니다`, [
+                  { text: `${cargoUid === 0 ? "등록" : "수정"}`, onPress: () => handleCargoSave() },
                   { text: '취소', onPress: () => { return }, },
                 ])
               }
             >
-              <Text style={styles.ButtonText}>등록</Text>
+              <Text style={styles.ButtonText}>{cargoUid === 0 ? "등록" : "수정"}</Text>
             </Pressable>
           </View>
           <View style={{flex: 1}}>
@@ -576,14 +596,14 @@ const styles = StyleSheet.create({
   },
 
   ButtonText: {
-    color: '#FFFFFF',
+    color: '#000000',
     fontSize: 13,
     fontWeight: '300',
   },
   buttonZone: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#FFD740',
     height: 50,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',
