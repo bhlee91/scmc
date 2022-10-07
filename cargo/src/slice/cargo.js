@@ -43,7 +43,7 @@ const cargoSlice = createSlice({
     },
     SET_IMAGE(state, action) {
       state.step = 1
-      state.imageList = [...action.payload.contents]
+      state.imageList = [...action.payload.image]
     },
     SET_REQUEST_1(state, action) {
       state.step = 1

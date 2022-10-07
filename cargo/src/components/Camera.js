@@ -40,7 +40,7 @@ const Camera = () => {
 
   const [fileImage, setFileImage] = React.useState([])
   const [previewFile, setPreviewFile] = React.useState([
-    ...imageList.map(image => image.content)
+    ...imageList.map(image => image.contents)
   ])
 
   const handleTakePhoto = (dataUri) => {
@@ -66,7 +66,8 @@ const Camera = () => {
         dispatch(
           cargoImageSlice.actions.SET_IMAGE({
             seq: index,
-            content: baseURL
+            contents: baseURL,
+            memDiv: "M01",
           })
         )
 

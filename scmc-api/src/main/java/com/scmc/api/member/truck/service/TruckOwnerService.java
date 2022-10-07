@@ -1,5 +1,6 @@
 package com.scmc.api.member.truck.service;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,7 @@ public interface TruckOwnerService {
 	String updateTruckOwner(HashMap<String, Object> obj, long uid);
 	TbMemberTruckOwner getTruckOwner(long uid);
 	String getSmsAuthNumber(String phoneNumber);
-	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto obj) throws ParseException;
+	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto obj) throws ParseException, UnsupportedEncodingException;
 	String removeTruckOwnerCargoInfo(long uid);
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
 	TbSysSmslog getRegSmsLog(String receiverNumber, String authNumber);

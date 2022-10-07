@@ -59,10 +59,10 @@ const Address = () => {
       x: 경도(longitude)
       y: 위도(latitude)
       */
+      setIsDepartOpen(false)
       return res.data.documents[0]
     })
     .then((res) => {
-      setIsDepartOpen(false)
       setDepartAddrSt(data.roadAddress)
       setDepartAddrOld(data.jibunAddress)
       setDepartLatitude(res.y)

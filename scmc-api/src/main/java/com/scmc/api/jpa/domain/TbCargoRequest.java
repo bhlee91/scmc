@@ -161,20 +161,20 @@ public class TbCargoRequest {
 		SimpleDateFormat formatToMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		this.reqId = request.get("reqId").equals(null) ? 0 : Long.parseLong(request.get("reqId").toString());
+		this.reqId = request.containsKey("reqId") ? Long.parseLong(request.get("reqId").toString()) : 0;
 		this.ownerUid = Long.parseLong(request.get("ownerUid").toString());
-		this.cargoName = request.get("cargoName").toString();
+		this.cargoName = request.get("cargoName") == null ? null : request.get("cargoName").toString();
 		this.truckUid = Long.parseLong(request.get("truckUid").toString());
 		this.cweight = Float.parseFloat(request.get("cweight").toString());
 		this.cheight = Float.parseFloat(request.get("cheight").toString());
 		this.cwidth = Float.parseFloat(request.get("cwidth").toString());
 		this.cverticalreal = Float.parseFloat(request.get("cverticalreal").toString());
-		this.departDatetimes = request.get("departDatetimes").equals("") ? null : formatToMin.parse(request.get("departDatetimes").toString());
-		this.arrivalDatetimes = request.get("arrivalDatetimes").equals("") ? null : formatToMin.parse(request.get("arrivalDatetimes").toString());
-		this.departAddrSt = request.get("departAddrSt").toString();
-		this.departAddrOld = request.get("departAddrOld").toString();
-		this.arrivalAddrSt = request.get("arrivalAddrSt").toString();
-		this.arrivalAddrOld = request.get("arrivalAddrOld").toString();
+		this.departDatetimes = request.get("departDatetimes") == null ? null : formatToMin.parse(request.get("departDatetimes").toString());
+		this.arrivalDatetimes = request.get("arrivalDatetimes") == null ? null : formatToMin.parse(request.get("arrivalDatetimes").toString());
+		this.departAddrSt = request.get("departAddrSt") == null ? null : request.get("departAddrSt").toString();
+		this.departAddrOld = request.get("departAddrOld") == null ? null : request.get("departAddrOld").toString();
+		this.arrivalAddrSt = request.get("arrivalAddrSt") == null ? null : request.get("arrivalAddrSt").toString();
+		this.arrivalAddrOld = request.get("arrivalAddrOld") == null ? null : request.get("arrivalAddrOld").toString();
 		this.receiverPhone = request.get("receiverPhone").toString();
 		this.departLatitude = request.get("departLatitude").toString();
 		this.departLongitude = request.get("departLongitude").toString();

@@ -144,9 +144,9 @@ const ShipperRequire = () => {
 
     setRequest(request)
     .then(() => {
-      dispatch(
-        cargoSlice.actions.REQUEST_COMPLETE({})
-      )
+      // dispatch(
+      //   cargoSlice.actions.REQUEST_COMPLETE({})
+      // )
     })
     .finally(() => {
       setLoading(false)

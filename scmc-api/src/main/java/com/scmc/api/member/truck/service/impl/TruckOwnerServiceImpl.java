@@ -2,6 +2,7 @@ package com.scmc.api.member.truck.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.utils.HiWorksUtil;
+import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbSysSmslog;
@@ -38,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 public class TruckOwnerServiceImpl implements TruckOwnerService {
 
 	private final HiWorksUtil hiWorksUtil;
+	private final KaKaoLocalUtil kakaoLocalUtil;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 	private final TbTruckOwnerCargoInfoRepository tbTruckOwnerCargoInfoRepository;
 	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
@@ -128,18 +132,35 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 
 	@Transactional
 	@Override
-	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto dto) throws ParseException {
+	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto dto) throws ParseException, UnsupportedEncodingException {
 		if (dto.getTruckownerUid() == 0) return null;
 		
+		JSONObject json = kakaoLocalUtil.searchAddress(dto.getDepartAddrSt()).getJSONArray("documents").getJSONObject(0);
+		
+		// x : 경도 : longitude
+		// y : 위도 : latitude
+		dto.setDepartLatitude(json.getString("y"));
+		dto.setDepartLongitude(json.getString("x"));
+		
+		json = kakaoLocalUtil.searchAddress(dto.getArrivalAddrSt()).getJSONArray("documents").getJSONObject(0);
+		dto.setArrivalLatitude(json.getString("y"));
+		dto.setArrivalLongitude(json.getString("x"));
+		
 		if (dto.getCargoUid() == 0) {
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			
 			TbTruckOwnerCargoInfo toci = TbTruckOwnerCargoInfo.insertCargoInfo()
 											.truckownerUid(dto.getTruckownerUid())
-											.loadDt(dto.getLoadDt())
-											.unloadDt(dto.getUnloadDt())
+											.loadDt(format.parse(dto.getLoadDt()))
+											.unloadDt(format.parse(dto.getUnloadDt()))
 											.departAddrSt(dto.getDepartAddrSt())
 											.departAddrSt2(dto.getDepartAddrSt2())
+											.departLatitude(dto.getDepartLatitude())
+											.departLongitude(dto.getDepartLongitude())
 											.arrivalAddrSt(dto.getArrivalAddrSt())
 											.arrivalAddrSt2(dto.getArrivalAddrSt2())
+											.arrivalLatitude(dto.getArrivalLatitude())
+											.arrivalLongitude(dto.getArrivalLongitude())
 											.spaceRate(dto.getSpaceRate())
 											.cargoWeight(dto.getCargoWeight())
 											.build();
@@ -155,12 +176,12 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 					dto.getCargoWeight(), 
 					dto.getDepartAddrSt(), 
 					dto.getDepartAddrSt2(), 
-					"", 
-					"", 
+					dto.getDepartLatitude(), 
+					dto.getDepartLongitude(), 
 					dto.getArrivalAddrSt(), 
 					dto.getArrivalAddrSt2(),
-					"",
-					""
+					dto.getArrivalLatitude(),
+					dto.getArrivalLongitude()
 				);
 			
 			return toci;

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { PURGE } from "redux-persist"
 
 const initialState = {
-  contents: []
+  image: []
 }
 
 const cargoImageSlice = createSlice({
@@ -10,35 +10,37 @@ const cargoImageSlice = createSlice({
   initialState,
   reducers: {
     SET_IMAGE(state, action) {
-      if (state.contents.length > 0) {
-        state.contents.forEach((obj) => {
+      if (state.image.length > 0) {
+        state.image.forEach((obj) => {
           if (obj.seq === action.payload.seq) {
-            obj.content = action.payload.content
+            obj.contents = action.payload.contents
             return
           }
         })
 
-        state.contents.push(
+        state.image.push(
           {
             seq: action.payload.seq,
-            content: action.payload.content
+            contents: action.payload.contents,
+            memDiv: action.payload.memDiv,
           }
         )
 
       } else {
-        state.contents.push(
+        state.image.push(
           {
             seq: action.payload.seq,
-            content: action.payload.content
+            contents: action.payload.contents,
+            memDiv: action.payload.memDiv,
           }
         )
       }
     },
     REMOVE_IMAGE(state, action) {
-      state.contents = state.contents.filter(obj => obj.seq = action.payload.seq)
+      state.image = state.image.filter(obj => obj.seq = action.payload.seq)
     },
     RESET(state) {
-      state.contents = []
+      state.image = []
     }
   },
   extraReducers: (builder) => {

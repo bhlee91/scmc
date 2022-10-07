@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
@@ -143,5 +144,26 @@ public class TruckOwnerController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(truckownerUid), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "두 지점 거리 계산(테스트용)", notes = "두 지점 거리 계산(테스트용)")
+	@GetMapping("/truck/distance/test")
+	public ResponseEntity<?> getDistanceTest(
+			@ApiParam(value = "위도1") @RequestParam(value = "lat1", required = false) String strLat1,
+			@ApiParam(value = "경도1") @RequestParam(value = "lon1", required = false) String strLon1,
+			@ApiParam(value = "위도2") @RequestParam(value = "lat2", required = false) String strLat2,
+			@ApiParam(value = "경도2") @RequestParam(value = "lon2", required = false) String strLon2,
+			@ApiParam(value = "단위", example = "km") @RequestParam(value = "unit", required = true) String unit
+			) throws Exception {
+		log.info("==================");
+		log.info("두 지점 거리 계산(테스트용)");
+		log.info("==================");
+		
+		double lat1 = Double.parseDouble(strLat1);
+		double lon1 = Double.parseDouble(strLon1);
+		double lat2 = Double.parseDouble(strLat2);
+		double lon2 = Double.parseDouble(strLon2);
+		
+		return new ResponseEntity<>(CommonUtil.distance(lat1, lon1, lat2, lon2, unit), HttpStatus.OK);
 	}
 }

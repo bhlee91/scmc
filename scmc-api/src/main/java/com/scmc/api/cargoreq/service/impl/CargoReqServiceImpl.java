@@ -110,15 +110,12 @@ public class CargoReqServiceImpl implements CargoReqService {
 		TbCargoRequest tbcr = null;
 		
 		try {
-			tbcr = new TbCargoRequest(param);
-			tbCargoRequestRepository.save(tbcr);
+			tbcr = tbCargoRequestRepository.save(new TbCargoRequest(param));
 			
 			@SuppressWarnings("unchecked")
 			List<HashMap<String, Object>> imageList = (List<HashMap<String, Object>>) param.get("imageList");
 			
 			for (HashMap<String, Object> image : imageList) {
-				image.put("memDiv", "M01");
-				
 				TbCargoImage tci = new TbCargoImage(image);
 				tci.setTbCargoRequest(tbcr);
 				
@@ -158,7 +155,7 @@ public class CargoReqServiceImpl implements CargoReqService {
 	public String searchAddress(String query) {
 		String result;
 		try {
-			result = kakaoLocalUtil.searchAddress(query);
+			result = kakaoLocalUtil.searchAddress(query).toString();
 		} catch (UnsupportedEncodingException e) {
 			result = "잘못된 주소입니다.";
 			e.printStackTrace();

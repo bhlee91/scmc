@@ -24,7 +24,6 @@ import lombok.ToString;
 @DynamicInsert @DynamicUpdate
 @Table(name = "tb_truckowner_cargoinfo")
 @Getter @ToString
-@Builder
 public class TbTruckOwnerCargoInfo {
 	
 	@Id
@@ -85,22 +84,23 @@ public class TbTruckOwnerCargoInfo {
 	public TbTruckOwnerCargoInfo() {}
 
 	@Builder(builderMethodName = "insertCargoInfo")
-	public TbTruckOwnerCargoInfo(long truckownerUid, String loadDt, String unloadDt, int spaceRate,
+	public TbTruckOwnerCargoInfo(long truckownerUid, Date loadDt, Date unloadDt, int spaceRate,
 			String cargoWeight, String departAddrSt, String departAddrSt2, String departLatitude, String departLongitude,
 			String arrivalAddrSt, String arrivalAddrSt2, String arrivalLatitude, String arrivalLongitude) throws ParseException {
-		super();
-		
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		this.truckownerUid = truckownerUid;
-		this.loadDt = format.parse(loadDt);
-		this.unloadDt = format.parse(unloadDt);
+		this.loadDt = loadDt;
+		this.unloadDt = unloadDt;
 		this.spaceRate = spaceRate;
 		this.cargoWeight = cargoWeight;
 		this.departAddrSt = departAddrSt;
 		this.departAddrSt2 = departAddrSt2;
+		this.departLatitude = departLatitude;
+		this.departLongitude = departLongitude;
 		this.arrivalAddrSt = arrivalAddrSt;
 		this.arrivalAddrSt2 = arrivalAddrSt2;
+		this.arrivalLatitude = arrivalLatitude;
+		this.arrivalLongitude = arrivalLongitude;
 	}
 	
 	public void updateCargoInfo(String loadDt, String unloadDt, int spaceRate,
@@ -115,7 +115,11 @@ public class TbTruckOwnerCargoInfo {
 		this.cargoWeight = cargoWeight;
 		this.departAddrSt = departAddrSt;
 		this.departAddrSt2 = departAddrSt2;
+		this.departLatitude = departLatitude;
+		this.departLongitude = departLongitude;
 		this.arrivalAddrSt = arrivalAddrSt;
 		this.arrivalAddrSt2 = arrivalAddrSt2;
+		this.arrivalLatitude = arrivalLatitude;
+		this.arrivalLongitude = arrivalLongitude;
 	}
 }
