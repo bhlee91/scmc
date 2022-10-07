@@ -82,6 +82,19 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(authNumber, HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "차주 회원가입시 sms 인증확인", notes = "입력한 인증번호가 맞는지 확인한다.")
+	@GetMapping("/smsLog")
+	public ResponseEntity<?> getRegSmsLog(
+			@ApiParam(value = "휴대폰번호('-'없이 입력)") @RequestParam(value = "phoneNumber", required = true) String phoneNumber,
+			@ApiParam(value = "인증번호") @RequestParam(value = "authNumber", required = true) String authNumber
+			) throws Exception {
+		log.info("==================");
+		log.info("sms 인증 확인");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.getRegSmsLog(phoneNumber, authNumber), HttpStatus.OK);
+	}
+	
 	@ApiOperation(value = "차주 화물정보 등록/수정", notes = "차주의 화물정보를 등록/수정한다.")
 	@PostMapping("/cargo")
 	public ResponseEntity<?> setCargoInfo(@RequestBody CargoInfoDto dto) throws Exception {

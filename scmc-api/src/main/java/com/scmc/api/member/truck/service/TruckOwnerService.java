@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 
@@ -20,6 +21,6 @@ public interface TruckOwnerService {
 	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto obj) throws ParseException;
 	String removeTruckOwnerCargoInfo(long uid);
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
-	
+	TbSysSmslog getRegSmsLog(String receiverNumber, String authNumber);
 	Map<String, Object> getTruckOwnerMainInfo(long truckownerUid);
 }

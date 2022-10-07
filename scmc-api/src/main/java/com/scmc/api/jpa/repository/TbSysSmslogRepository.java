@@ -8,4 +8,6 @@ import com.scmc.api.jpa.domain.TbSysSmslog;
 @Repository
 public interface TbSysSmslogRepository extends JpaRepository<TbSysSmslog, Long> {
 	
+	
+	TbSysSmslog findTop1ByReceiverNumberAndAuthNumberOrderByRegDtDesc(String receiverNumber, String authNumber);
 }

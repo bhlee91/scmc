@@ -45,7 +45,7 @@ import DismissKeyboardView from 'components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
 import Mtimer from 'common/Mtimer';
-import { getAuthNumber, registTruckOwner } from '../api/truckowner';
+import { getAuth, getAuthNumber, registTruckOwner } from '../api/truckowner';
 
 function SignUp({navigation}) {
   const [truckownerName, setTruckownerName] = useState('');
@@ -74,6 +74,18 @@ function SignUp({navigation}) {
   const [trCheck, setTrCheck] = useState(false);
   const [usCheck, setUsCheck] = useState(false);
   const [prCheck, setPrCheck] = useState(false);
+
+  //타이머
+  const remainTime = Mtimer(); // 타이머
+
+  //sms 인증여부
+  const [smsYn, setSmsYn] = useState(false);
+  
+  // //비밀번호 유효성 여부
+  // const [valPasswd, setValPassword] = useState(false);
+
+  // //비밀번호 확인 유효성 여부
+  // const [confPasswd, setConfPasswd] = useState(false);
 
   const allState = () => {
     if(allCheck === false)  {
@@ -166,14 +178,21 @@ function SignUp({navigation}) {
   };
 
   const hasPasswordErrors = () => {
-    return !password || !password.trim() ? true : false;
+    const regPression = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/;
+    if(!regPression.test(password)){
+      return true;
+    }
+    return false;
   };
 
-  const hasPasswordConfimErrors = () => {
-    return !confirmpassword || !confirmpassword.trim() ? true : false;
+  const hasPasswordConfirmErrors = () => {
+    if(password !== '' && confirmpassword !== password){
+      return true;
+    }
+    return false;
   };
 
-  const hasCasrNoErrors = () => {
+  const hasCarNoErrors = () => {
     return !carNumber || !carNumber.trim() ? true : false;
   };
 
@@ -185,14 +204,30 @@ function SignUp({navigation}) {
     } else {
       setVisible(true);
       getAuthNumber(phoneNumber)
+      if(remainTime === null){
+        setVisible(false)
+      }
     }
   };
   const confirmAuthSms = () => {
-    setVisible(false);
+    getAuth(phoneNumber, authno)
+    .then(res => {
+      console.log(res)
+      if(res.data !== "" ){
+        Alert.alert('인증되었습니다.')
+        setSmsYn(true);
+        setVisible(false);
+      } else {
+        Alert.alert('인증번호를 다시 확인해 주세요.')
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      Alert.alert('알수 없는 오류중에 있습니다. 다시 시도해주세요.')
+    }) 
   };
 
   const onChangeTons = useCallback(text => {
-    console.log(text);
     setTruckTons(text)
   }, []);
 
@@ -355,7 +390,7 @@ function SignUp({navigation}) {
     setRadioButtonsLF(radioButtonsArray)
   }
 
-  let remainTime = Mtimer(); // 타이머
+  //let remainTime = Mtimer(); // 타이머
   const onSubmit = useCallback(async () => {
     // try {
     //   setLoading(true);
@@ -388,6 +423,58 @@ function SignUp({navigation}) {
   }, []);
 // 빈 배열 안에 들어갈 값 loading, carno, password
 
+
+  const checkValidation = () => {
+    if(hasNameErrors()) {
+      Alert.alert('성명을 입력해주세요.');
+      return false;
+    } else if (hasHpnumberErrors()) {
+      Alert.alert('휴대폰 번호를 입력해주세요.');
+      return false;
+    } else if(smsYn === false) {
+      Alert.alert('휴대폰 인증을 해주세요.');
+      return false;
+    } else if (hasBusinessNoErrors()) {
+      Alert.alert('사업자 등록번호를 확인해 주세요.');
+      return false;
+    } else if(hasPasswordErrors()) {
+      Alert.alert('비밀번호를 확인해주세요.');
+      return false;
+    } else if(hasPasswordConfirmErrors()) {
+      Alert.alert('비밀번호를 확인해주세요.');
+      return false;
+    } else if(truckTons === '' || truckTons === null || truckTons === undefined) {
+      Alert.alert('차량 톤수를 선택해주세요.');
+      return false
+    } else if(loArr.length === 0) {
+      Alert.alert('초장축 여부를 선택해주세요.');
+      return false;
+    } else if(rfArr.length === 0) {
+      Alert.alert('냉장냉동 여부를 선택해주세요.');
+      return false;
+    } else if(stArr.length === 0) {
+      Alert.alert('적재함 형태를 선택해주세요.');
+      return false;
+    } else if(lfArr.length === 0) {
+      Alert.alert('리프트 여부를 선택해주세요.');
+      return false;
+    } else if(hasCarNoErrors()) {
+      Alert.alert('차량번호를 입력해주세요.');
+      return false;
+    } else if(trCheck === false) {
+      Alert.alert('운송약관에 동의해주세요.');
+      return false;
+    } else if(usCheck === false) {
+      Alert.alert('이용약관에 동의해주세요.');
+      return false;
+    } else if(prCheck === false) {
+      Alert.alert('개인정보보호방침에 동의해주세요.');
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   const handleSignUp = () => {
     const user = {
       truckownerName: truckownerName,
@@ -401,16 +488,18 @@ function SignUp({navigation}) {
       liftType: lfArr[0]?.value,
       carNumber: carNumber,
     }
-    // registTruckOwner(user)
-    // .then(res => {
-    //   console.log(res)
-    //   navigation.navigate('LogIn')
-    //   alert(`${res.data}`)
-    // })
+    if(checkValidation()) {
+    registTruckOwner(user)
+    .then(res => {
+        console.log(res)
+        navigation.navigate('LogIn')
+        Alert.alert(`${res.data}`)
+      })
+      .catch(err => {
+        console.log(err)
+      }) 
+    }
     
-    // .catch(err => {
-    //   console.log(err)
-    // }) 
   }
   return (
     <View style={styles.mainView}>
@@ -458,7 +547,7 @@ function SignUp({navigation}) {
                 </View>
               </View>
               <Divider />
-              {visible && remainTime ? (
+              {visible ? (
                 <View>
                   <View style={styles.box2}>
                     <TextInput
@@ -475,7 +564,7 @@ function SignUp({navigation}) {
                   </View>
                   <View>
                     <HelperText type="error" visible={hasAuthErrors()}>
-                      인증번호를 입력하여 주세요. {remainTime}
+                      인증번호를 입력하여 주세요. {remainTime} 
                     </HelperText>
                   </View>
                 </View>
@@ -535,8 +624,8 @@ function SignUp({navigation}) {
                 clearButtonMode="while-editing"
                 onSubmitEditing={onSubmit}
               />
-              <HelperText type="error" visible={hasPasswordConfimErrors()}>
-                영문,숫자,특수문자를 포함한 8자리 이상을 입력해 주세요
+              <HelperText type="error" visible={hasPasswordConfirmErrors()}>
+                비밀번호를 다시 확인해주세요.
               </HelperText>
             </View>
           </Card.Content>
@@ -632,7 +721,7 @@ function SignUp({navigation}) {
               />
             </View>
             <Divider />
-            <HelperText type="error" visible={hasCasrNoErrors()}>
+            <HelperText type="error" visible={hasCarNoErrors()}>
               차량번호를 입력해 주세요
             </HelperText>
           </Card.Content>

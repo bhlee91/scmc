@@ -12,6 +12,17 @@ export const getAuthNumber = (phoneNumber) => {
   })
 }
 
+export const getAuth = (phoneNumber, authNumber) => {
+  return request({
+    url: `${BASE_URL}/smsLog`,
+    method: "get",
+    params: {
+      phoneNumber,
+      authNumber
+    }
+  })
+}
+
 export const registTruckOwner = (obj) => {
   return request({
     url: `${BASE_URL}/truck`,

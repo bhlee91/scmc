@@ -22,8 +22,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
+import com.scmc.api.jpa.repository.TbSysSmslogRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepositoryCustom;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
@@ -39,6 +41,8 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 	private final TbTruckOwnerCargoInfoRepository tbTruckOwnerCargoInfoRepository;
 	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
+	private final TbSysSmslogRepository tbSysSmslogRepository;
+	
 	private JPAQueryFactory query;
 	
 	@Autowired
@@ -114,6 +118,12 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		} catch (UnsupportedEncodingException e) {
 			return e.getMessage();
 		}
+	}
+	
+	@Override
+	public TbSysSmslog getRegSmsLog(String receiverNumber, String authNumber) {
+		TbSysSmslog tssl = tbSysSmslogRepository.findTop1ByReceiverNumberAndAuthNumberOrderByRegDtDesc(receiverNumber, authNumber);
+		return tssl;
 	}
 
 	@Transactional
@@ -215,4 +225,6 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		
 		return tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(truckownerUid);
 	}
+
+
 }
