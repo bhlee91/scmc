@@ -35,9 +35,6 @@ public class KaKaoLoginUtil {
 	@Value("${social.kakao.api.profile}")
 	private String PROFILE_API;
 	
-	@Value("${spring.host.url-local}")
-	private String LOCAL_URL;
-	
 	@Value("${spring.host.url-dev}")
 	private String DEV_URL;
 	
@@ -131,8 +128,8 @@ public class KaKaoLoginUtil {
 		
 		if (requestURL.contains(DEV_URL)) {
 			redirectUri = DEV_URL + ":3006";
-		} else if (requestURL.contains(LOCAL_URL)) {
-			redirectUri = LOCAL_URL + ":3000";
+		} else if (requestURL.contains("127.0.0.1") || requestURL.contains("localhost")) {
+			redirectUri = "localhost:3000";
 		}
 		
 		redirectUri = "http://" + redirectUri + URI;

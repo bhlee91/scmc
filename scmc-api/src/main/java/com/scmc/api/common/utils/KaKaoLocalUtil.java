@@ -24,7 +24,6 @@ public class KaKaoLocalUtil {
 	
 	public String searchAddress(String query) throws UnsupportedEncodingException {
 		String api_url = String.format(LOCAL_API + "?query=%s", URLEncoder.encode(query, "UTF-8"));
-		
 		HttpURLConnection con = apiUtil.connect(api_url);
 		String response = "";
 		
@@ -34,12 +33,11 @@ public class KaKaoLocalUtil {
 			con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
 			
 			con.setDoOutput(true);
-			
+
 			int responseCode = con.getResponseCode();
-			
-			if (responseCode == HttpURLConnection.HTTP_OK) {
+
+			if (responseCode == HttpURLConnection.HTTP_OK)
 				response = apiUtil.readBody(con.getInputStream());
-			}
 		} catch (IOException e) {
 			throw new RuntimeException("API 요청과 응답 실패", e);
 		} finally {
