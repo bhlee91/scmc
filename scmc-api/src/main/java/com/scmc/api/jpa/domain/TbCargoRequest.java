@@ -26,7 +26,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.scmc.api.common.utils.CommonUtil;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -34,7 +33,6 @@ import lombok.Setter;
 @Table(name = "tb_cargo_request")
 @Getter
 @Setter
-@NoArgsConstructor
 public class TbCargoRequest {
 
 	@Id
@@ -156,6 +154,8 @@ public class TbCargoRequest {
 	@OneToMany(mappedBy = "tbCargoRequest", fetch = FetchType.LAZY)
 	@OrderBy("image_seq asc")
 	private List<TbCargoImage> images = new ArrayList<TbCargoImage>();
+	
+	public TbCargoRequest() {}
 	
 	public TbCargoRequest(Map<String, Object> request) throws ParseException {
 		SimpleDateFormat formatToMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");

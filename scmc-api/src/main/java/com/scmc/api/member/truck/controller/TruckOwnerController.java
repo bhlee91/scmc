@@ -166,4 +166,22 @@ public class TruckOwnerController {
 		
 		return new ResponseEntity<>(CommonUtil.distance(lat1, lon1, lat2, lon2, unit), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "반경 리스트 조회(테스트용)", notes = "반경 리스트 조회(테스트용)")
+	@GetMapping("/truck/request")
+	public ResponseEntity<?> getCargoListInRadius(
+			@ApiParam(value = "현재 위도(latitude)") @RequestParam(value = "lat", required = true) String strLat,
+			@ApiParam(value = "현재 경도(longitude)") @RequestParam(value = "lon", required = true) String strLon,
+			@ApiParam(value = "반경", example = "10") @RequestParam(value = "rad", required = false, defaultValue = "10") String strRad
+			) throws Exception {
+		log.info("==================");
+		log.info("반경 리스트 조회(테스트용)");
+		log.info("==================");
+		
+		double lat = Double.parseDouble(strLat);
+		double lon = Double.parseDouble(strLon);
+		int rad = Integer.parseInt(strRad);
+		
+		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad), HttpStatus.OK);
+	}
 }

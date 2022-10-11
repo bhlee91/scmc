@@ -24,3 +24,11 @@ export const convertDateTime = (dateString) => {
 
   return dateString
 }
+
+export const formatDateTimeToString = (dateString) => {
+  if (dateString === null || dateString === undefined) return ""
+
+  dateString = moment(dateString).format("YYYY년MM월DD일 HH시mm분")
+
+  return dateString
+}

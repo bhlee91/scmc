@@ -136,7 +136,7 @@ function CargoReg({ navigation, route }) {
           buildingName: addr.buildingName,
         })
     }
-  }, [route.params.addr])
+  }, [route.params?.addr])
 
   useEffect(() => {
     if (route.params?.info) {
@@ -311,12 +311,11 @@ function CargoReg({ navigation, route }) {
                 onPress={() => navigation.navigate('Address', { d: "load" })}>
                 <TextInput
                   style={styles.textInput}
-                  placeholder="상차지"
                   onChangeText={onChangeLoadSearch}
                   onFocus={() => navigation.navigate('Address', { d: "load" })}
                   editable={false}
                 >
-                  {loadAddr.addr} {isEmpty(loadAddr.buildingName) ? "" : `(${loadAddr.buildingName})`}
+                  {loadAddr.addr === "" ? "상차지" : loadAddr.addr} {isEmpty(loadAddr.buildingName) ? "" : `(${loadAddr.buildingName})`}
                 </TextInput>
               </TouchableOpacity>
               <TouchableOpacity
@@ -328,12 +327,11 @@ function CargoReg({ navigation, route }) {
                 onPress={() => navigation.navigate('Address', { d: "unload" })}>
                 <TextInput
                   style={styles.textInput}
-                  placeholder="하차지"
                   onChangeText={onChangeUnloadSearch}
                   onFocus={() => navigation.navigate('Address', { d: "unload" })}
                   editable={false}
                 >
-                  {unloadAddr.addr} {isEmpty(unloadAddr.buildingName) ? "" : `(${unloadAddr.buildingName})`}
+                  {unloadAddr.addr === "" ? "하차지" : unloadAddr.addr} {isEmpty(unloadAddr.buildingName) ? "" : `(${unloadAddr.buildingName})`}
                 </TextInput>
               </TouchableOpacity>
             </Card.Content>

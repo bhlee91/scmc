@@ -37,28 +37,74 @@ import {
 } from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Geolocation from '@react-native-community/geolocation';
 
 import { isEmpty } from "utils/CommonUtil";
-import { formatMonthAndDay } from "utils/DateUtil";
+import { formatMonthAndDay, formatDateTimeToString } from "utils/DateUtil";
 import {
-  getMainInfo
+  getMainInfo,
+  getRequestListInRadius
 } from "api/truck/index";
 
 function Home({ navigation, props }) {
   const [user, setUser] = useState({})
   const [cargoInfo, setCargoInfo] = useState({})
+  const [location, setLocation] = useState({
+    latitude: 0,
+    longitude: 0,
+  })
+  const [requestList, setRequestList] = useState([])
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        setLocation({
+          ...location,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+      },
+      error => {
+        console.log(error)
+      },
+      { 
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000
+      },
+    )
+  }
 
   // truckownerUid = 4
 
   useEffect(() => {
-    const params = {
-      truckownerUid: 4
-    }
+    getCurrentLocation()
 
-    getMainInfo(params)
+    const truckownerUid = 4
+
+    getMainInfo(truckownerUid)
     .then(res => {
       setUser(res.data.owner)
       setCargoInfo(res.data.info)
+    })
+
+    /* 현위치(신영시그마2, 탄천상로 164)
+    x: 위도
+    y: 경도
+    rad: 반경(기본값: 10, 단위: km)
+    */
+    const currentLocation = {
+      lat: "37.3443860150331",
+      lon: "127.105427987959",
+      rad: "30"
+    }
+    
+    getRequestListInRadius(currentLocation)
+    .then(res => {
+      setRequestList([...res.data])
+    })
+    .catch(err => {
+      console.log(err)
     })
 
     const backAction = () => {
@@ -84,7 +130,8 @@ function Home({ navigation, props }) {
     navigation.navigate('CargoDetail')
   }, [navigation])
 
-  const toRecomDetail = useCallback(() => {
+  const toRecomDetail = useCallback((param) => {
+    console.log(param)
     navigation.navigate('RecomDetail')
   }, [navigation])
 
@@ -286,209 +333,111 @@ function Home({ navigation, props }) {
             <Card.Content>
               <Paragraph style={styles.cardTitle}>추천화물정보</Paragraph>
               {/* 단건 추천 영역 */}
-              <Card
-                style={styles.recommendcardcontents}
-                onPress={toRecomDetail}>
-                <Card.Content>
-                  {/* 이미지 화물사이즈 */}
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      borderWidth: 1,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      borderColor: '#E0E0E0',
-                      backgroundColor: '#FFFFFF',
-                    }}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{
-                        width: 80,
-                        height: 80,
-                        resizeMode: 'cover',
-                        marginLeft: 2,
-                        marginRight: 8,
-                      }}></Image>
-                    <View style={{flexDirection: 'column'}}>
-                      <Text></Text>
-                      <Text style={styles.recommendtitletext}>
-                        크기 :{' '}
-                        <Text style={styles.recommendtext}>2M x 2M x 2M</Text>
-                      </Text>
-                      <Text style={styles.recommendtitletext}>
-                        중량 : <Text style={styles.recommendtext}>30㎏</Text>
-                      </Text>
-                      <Text style={styles.recommendtitletext}>
-                        체적 : <Text style={styles.recommendtext}>10㎥</Text>
-                      </Text>
-                    </View>
-                  </View>
+              {requestList?.map(req => {
+                return (
+                  <Card
+                    key={req.reqid}
+                    style={styles.recommendcardcontents}
+                    onPress={() => toRecomDetail(req.reqid)}>
+                    <Card.Content>
+                      {/* 이미지 화물사이즈 */}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          borderWidth: 1,
+                          borderRadius: 4,
+                          marginBottom: 5,
+                          borderColor: '#E0E0E0',
+                          backgroundColor: '#FFFFFF',
+                        }}>
+                        <Image
+                          source={require('/assets/images/logo11.png')}
+                          style={{
+                            width: 80,
+                            height: 80,
+                            resizeMode: 'cover',
+                            marginLeft: 2,
+                            marginRight: 8,
+                          }}></Image>
+                        <View style={{flexDirection: 'column'}}>
+                          <Text></Text>
+                          <Text style={styles.recommendtitletext}>
+                            크기 :{' '}
+                            <Text style={styles.recommendtext}>{req.cwidth}m x {req.cverticalreal}m x {req.cheight}</Text>
+                          </Text>
+                          <Text style={styles.recommendtitletext}>
+                            중량 : <Text style={styles.recommendtext}>{req.cweight}㎏</Text>
+                          </Text>
+                          <Text style={styles.recommendtitletext}>
+                            체적 : <Text style={styles.recommendtext}>{(req.cwidth * req.cverticalreal * req.cheight).toFixed(1)}㎥</Text>
+                          </Text>
+                        </View>
+                      </View>
 
-                  {/* 이미지 화물사이즈 */}
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{justifyContent: 'center', padding: 10}}>
-                      <Icon
-                        name="angle-double-right"
-                        size={20}
-                        color="#3F51B5"
-                      />
-                    </View>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.text}>운송금액</Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          flex: 1,
-                          height: 50,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.text}>120,000원</Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                </Card.Content>
-              </Card>
-              {/* 단건 추천 영역 */}
-
-              {/* 단건 2번째 추천 영역 */}
-              <Card
-                style={styles.recommendcardcontents}
-                onPress={toCargoDetail}>
-                <Card.Content>
-                  {/* 이미지 화물사이즈 */}
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      borderWidth: 1,
-                      borderRadius: 4,
-                      marginBottom: 5,
-                      borderColor: '#E0E0E0',
-                      backgroundColor: '#FFFFFF',
-                    }}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{
-                        width: 80,
-                        height: 80,
-                        resizeMode: 'cover',
-                        marginLeft: 2,
-                        marginRight: 8,
-                      }}></Image>
-                    <View style={{flexDirection: 'column'}}>
-                      <Text></Text>
-                      <Text style={styles.recommendtitletext}>
-                        크기 :{' '}
-                        <Text style={styles.recommendtext}>2M x 2M x 2M</Text>
-                      </Text>
-                      <Text style={styles.recommendtitletext}>
-                        중량 : <Text style={styles.recommendtext}>30㎏</Text>
-                      </Text>
-                      <Text style={styles.recommendtitletext}>
-                        체적 : <Text style={styles.recommendtext}>10㎥</Text>
-                      </Text>
-                    </View>
-                  </View>
-
-                  {/* 이미지 화물사이즈 */}
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{justifyContent: 'center', padding: 10}}>
-                      <Icon
-                        name="angle-double-right"
-                        size={20}
-                        color="#3F51B5"
-                      />
-                    </View>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.text}>운송금액</Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.text}>120,000원</Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                </Card.Content>
-              </Card>
-              {/* 단건 2번째 추천 영역 끝 */}
+                      {/* 이미지 화물사이즈 */}
+                      <View style={styles.recommendView}>
+                        <View style={{flex: 1, width: '45%'}}>
+                          <Card>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {req.depart_addr_st}
+                              </Paragraph>
+                              <Paragraph style={styles.datetext}>
+                                {formatDateTimeToString(req.depart_datetimes)}
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                        <View style={{justifyContent: 'center', padding: 10}}>
+                          <Icon
+                            name="angle-double-right"
+                            size={20}
+                            color="#3F51B5"
+                          />
+                        </View>
+                        <View style={{flex: 1, width: '45%'}}>
+                          <Card>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {req.arrival_addr_st}
+                              </Paragraph>
+                              <Paragraph style={styles.datetext}>
+                                {formatDateTimeToString(req.arrival_datetimes)}
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                      </View>
+                      <View style={styles.recommendView}>
+                        <View style={{flex: 1, width: '50%'}}>
+                          <Card
+                            style={{
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Card.Content>
+                              <Paragraph style={styles.text}>운송금액</Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                        <View style={{flex: 1, width: '50%'}}>
+                          <Card
+                            style={{
+                              flex: 1,
+                              height: 50,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Card.Content>
+                              <Paragraph style={styles.text}>{req.transit_fare}원</Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                )
+              })}
             </Card.Content>
           </Card>
         </View>

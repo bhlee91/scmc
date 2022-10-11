@@ -3,6 +3,7 @@ package com.scmc.api.member.truck.service;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
@@ -24,4 +25,6 @@ public interface TruckOwnerService {
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
 	TbSysSmslog getRegSmsLog(String receiverNumber, String authNumber);
 	Map<String, Object> getTruckOwnerMainInfo(long truckownerUid);
+	
+	List<?> getCargoListInRadius(double lat, double lon, int rad);
 }

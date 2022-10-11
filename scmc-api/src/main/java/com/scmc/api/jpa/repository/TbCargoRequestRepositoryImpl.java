@@ -26,12 +26,12 @@ import lombok.RequiredArgsConstructor;
 public class TbCargoRequestRepositoryImpl implements TbCargoRequestRepositoryCustom {
 
 	private final JPAQueryFactory queryFactory;
+	
+	private QTbCargoRequest request = QTbCargoRequest.tbCargoRequest;
 
 	@Override
 	public List<TbCargoRequest> dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(String departDate,
 			String arrivalDate, String phoneNumber, String status) throws ParseException {
-		
-		QTbCargoRequest request = QTbCargoRequest.tbCargoRequest;
 		
 		BooleanBuilder builder = new BooleanBuilder();
 		
@@ -63,7 +63,6 @@ public class TbCargoRequestRepositoryImpl implements TbCargoRequestRepositoryCus
 	public List<MatchingDto> dynamicByMatching(String departDate, String arrivalDate, String phoneNumber,
 			String cargoName, String status) throws ParseException {
 		
-		QTbCargoRequest request = QTbCargoRequest.tbCargoRequest;
 		QTbCargoImage images = QTbCargoImage.tbCargoImage; 
 		
 		BooleanBuilder builder = new BooleanBuilder();

@@ -27,6 +27,7 @@ import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
+import com.scmc.api.jpa.repository.TbCargoRequestRepository;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.jpa.repository.TbSysSmslogRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
@@ -46,6 +47,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private final TbTruckOwnerCargoInfoRepository tbTruckOwnerCargoInfoRepository;
 	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
 	private final TbSysSmslogRepository tbSysSmslogRepository;
+	private final TbCargoRequestRepository tbCargoRequestRepository;
 	
 	private JPAQueryFactory query;
 	
@@ -247,5 +249,9 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		return tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(truckownerUid);
 	}
 
-
+	@Override
+	public List<?> getCargoListInRadius(double lat, double lon, int rad) {
+		
+		return tbCargoRequestRepository.findByEarthDistance(lat, lon, rad);
+	}
 }
