@@ -25,4 +25,6 @@ public interface CargoReqService {
 	String searchAddress(String query);
 	
 	List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid);
+	
+	TbCargoRequest selectCargoRequestDetail(Long reqId);
 }

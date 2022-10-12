@@ -311,6 +311,7 @@ function CargoReg({ navigation, route }) {
                 onPress={() => navigation.navigate('Address', { d: "load" })}>
                 <TextInput
                   style={styles.textInput}
+                  placeholder="상차지"
                   onChangeText={onChangeLoadSearch}
                   onFocus={() => navigation.navigate('Address', { d: "load" })}
                   editable={false}

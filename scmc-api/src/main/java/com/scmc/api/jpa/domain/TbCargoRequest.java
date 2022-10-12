@@ -143,6 +143,14 @@ public class TbCargoRequest {
 	@Formula("(SELECT com.code_name FROM tb_common_cd com WHERE com.cdid = status)")
 	private String statusName;
 	
+	// 상차방법
+	@Formula("(SELECT com.code_name FROM tb_common_cd com WHERE com.cdid = load_method)")
+	private String loadMethodName;
+
+	// 하차방법
+	@Formula("(SELECT com.code_name FROM tb_common_cd com WHERE com.cdid = unload_method)")
+	private String unloadMethodName;
+	
 	@Formula("(SELECT cargo.owner_name FROM tb_member_cargoowner cargo WHERE cargo.owner_uid = owner_uid)")
 	private String cargoownerName;
 	

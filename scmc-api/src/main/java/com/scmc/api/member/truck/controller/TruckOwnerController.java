@@ -137,13 +137,28 @@ public class TruckOwnerController {
 	@ApiOperation(value = "모바일 차주 메인", notes = "모바일 차주 메인 관련 정보를 조회한다.")
 	@GetMapping("/truck/main/{truckownerUid}")
 	public ResponseEntity<?> getTruckOwnerMainInfo(
-			@ApiParam(value = "차주 uid", example = "1") @PathVariable(value = "truckownerUid") long truckownerUid
+			@ApiParam(value = "차주 uid", example = "1") @PathVariable(value = "truckownerUid") long uid,
+			@ApiParam(value = "현위치 위도") @RequestParam(value = "lat", required = false) String lat,
+			@ApiParam(value = "현위치 경도") @RequestParam(value = "lon", required = false) String lon
 			) throws Exception {
 		log.info("==================");
 		log.info("모바일 차주 메인 조회");
 		log.info("==================");
 		
-		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(truckownerUid), HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(uid, lat, lon), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "모바일 차주 현위치 새로고침", notes = "모바일 차주 현위치를 다시 조회한다.")
+	@GetMapping("/truck/main/location")
+	public ResponseEntity<?> getTruckOwnerRefreshLocation(
+			@ApiParam(value = "현위치 위도") @RequestParam(value = "lat", required = false) String lat,
+			@ApiParam(value = "현위치 경도") @RequestParam(value = "lon", required = false) String lon
+			) throws Exception {
+		log.info("==================");
+		log.info("모바일 차주 현위치 새로고침");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.getTruckOwnerCurrentLocation(lat, lon), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "모바일 차주 로그인", notes = "모바일 차주 메인 관련 정보를 조회한다.")
@@ -182,7 +197,8 @@ public class TruckOwnerController {
 	public ResponseEntity<?> getCargoListInRadius(
 			@ApiParam(value = "현재 위도(latitude)") @RequestParam(value = "lat", required = true) String strLat,
 			@ApiParam(value = "현재 경도(longitude)") @RequestParam(value = "lon", required = true) String strLon,
-			@ApiParam(value = "반경", example = "10") @RequestParam(value = "rad", required = false, defaultValue = "10") String strRad
+			@ApiParam(value = "반경", example = "10") @RequestParam(value = "rad", required = false, defaultValue = "10") String strRad,
+			@ApiParam(value = "기준", example = "reg") @RequestParam(value = "div", required = false, defaultValue = "reg") String div
 			) throws Exception {
 		log.info("==================");
 		log.info("반경 리스트 조회(테스트용)");
@@ -192,6 +208,6 @@ public class TruckOwnerController {
 		double lon = Double.parseDouble(strLon);
 		int rad = Integer.parseInt(strRad);
 		
-		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad), HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad, div), HttpStatus.OK);
 	}
 }

@@ -2,9 +2,16 @@ import request from "request"
 
 const BASE_URL = "/member"
 
-export const getMainInfo = (uid) => {
+export const getMainInfo = (params) => {
   return request({
-    url: `${BASE_URL}/truck/main/${uid}`,
+    url: `${BASE_URL}/truck/main/${params.uid}?lat=${params.lat}&lon=${params.lon}`,
+    method: "get"
+  })
+}
+
+export const getTruckOwnerCurrentLocation = (params) => {
+  return request({
+    url: `${BASE_URL}/truck/main/location?lat=${params.lat}&lon=${params.lon}`,
     method: "get"
   })
 }
@@ -17,9 +24,9 @@ export const setCargoInfo = (obj) => {
   })
 }
 
-export const getRequestListInRadius = (param) => {
+export const getRequestListInRadius = (params) => {
   return request({
-    url: `${BASE_URL}/truck/request?lat=${param.lat}&lon=${param.lon}&rad=${param.rad}`,
+    url: `${BASE_URL}/truck/request?lat=${params.lat}&lon=${params.lon}&rad=${params.rad}&div=${params.div}`,
     method: "get"
   })
 }

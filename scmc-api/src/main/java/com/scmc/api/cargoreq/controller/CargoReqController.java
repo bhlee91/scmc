@@ -142,4 +142,16 @@ public class CargoReqController {
 		log.info("파라미터 = "+truckownerUid);
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByTruckOwnerUid(truckownerUid), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "화물 정보 조회", notes = "화물 정보를 조회한다.")
+	@GetMapping("/request/detail/{reqId}")
+	public ResponseEntity<?> selectCargoRequestDetail(
+			@ApiParam(value = "의뢰 번호", example = "1") @PathVariable(value = "reqId") Long reqId
+			) throws Exception {
+		log.info("========================");
+		log.info("차주 운송내역 리스트 조회");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.selectCargoRequestDetail(reqId), HttpStatus.OK);
+	}
 }

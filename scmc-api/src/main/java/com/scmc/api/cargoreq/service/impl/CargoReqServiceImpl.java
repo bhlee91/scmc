@@ -172,4 +172,16 @@ public class CargoReqServiceImpl implements CargoReqService {
 		
 		return result;
 	}
+
+	@Override
+	public TbCargoRequest selectCargoRequestDetail(Long reqId) {
+
+		TbCargoRequest request = tbCargoRequestRepository.findByReqId(reqId);
+		
+		for (TbCargoImage image : request.getImages()) {
+			image.setContents(new String(image.getImageContents()));
+		}
+		
+		return request;
+	}
 }

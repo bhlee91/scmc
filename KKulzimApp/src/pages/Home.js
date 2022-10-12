@@ -22,6 +22,7 @@ import {
   TouchableOpacity,
   ScrollView,
   BackHandler,
+  Keyboard,
 } from 'react-native';
 
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
@@ -36,24 +37,40 @@ import {
   Button,
 } from 'react-native-paper';
 
+import RNPickerSelect from "react-native-picker-select";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Geolocation from '@react-native-community/geolocation';
 
-import { isEmpty } from "utils/CommonUtil";
+import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatMonthAndDay, formatDateTimeToString } from "utils/DateUtil";
 import {
   getMainInfo,
+  getTruckOwnerCurrentLocation,
   getRequestListInRadius
 } from "api/truck/index";
+
+const divList = [
+  {
+    label: "거리순",
+    value: "dist",
+  },
+  {
+    label: "시간순",
+    value: "reg",
+  },
+]
 
 function Home({ navigation, props }) {
   const [user, setUser] = useState({})
   const [cargoInfo, setCargoInfo] = useState({})
+  const [currentLocation, setCurrentLocation] = useState("")
   const [location, setLocation] = useState({
     latitude: 0,
     longitude: 0,
+    loading: false,
   })
   const [requestList, setRequestList] = useState([])
+  const [div, setDiv] = useState("reg")
 
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
@@ -61,7 +78,8 @@ function Home({ navigation, props }) {
         setLocation({
           ...location,
           latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+          longitude: position.coords.longitude,
+          loading: true,
         })
       },
       error => {
@@ -75,37 +93,8 @@ function Home({ navigation, props }) {
     )
   }
 
-  // truckownerUid = 4
-
   useEffect(() => {
     getCurrentLocation()
-
-    const truckownerUid = 4
-
-    getMainInfo(truckownerUid)
-    .then(res => {
-      setUser(res.data.owner)
-      setCargoInfo(res.data.info)
-    })
-
-    /* 현위치(신영시그마2, 탄천상로 164)
-    x: 위도
-    y: 경도
-    rad: 반경(기본값: 10, 단위: km)
-    */
-    const currentLocation = {
-      lat: "37.3443860150331",
-      lon: "127.105427987959",
-      rad: "30"
-    }
-    
-    getRequestListInRadius(currentLocation)
-    .then(res => {
-      setRequestList([...res.data])
-    })
-    .catch(err => {
-      console.log(err)
-    })
 
     const backAction = () => {
       Alert.alert('꿀짐', '앱을 종료하시겠습니까?', [
@@ -126,13 +115,79 @@ function Home({ navigation, props }) {
     return () => backHandler.remove()
   }, [])
 
+  useEffect(() => {
+    const mainParams = {
+      uid: 4,
+      lat: location.latitude,
+      lon: location.longitude,
+    }
+    
+    getMainInfo(mainParams)
+    .then(res => {
+      setUser(res.data?.owner)
+      setCargoInfo(res.data?.info)
+      setCurrentLocation(res.data.documents?.address.address_name)
+    })
+
+    /* 현위치(신영시그마2, 탄천상로 164)
+    x: 위도
+    y: 경도
+    rad: 반경(기본값: 10, 단위: km)
+    */
+    const currentLocation = {
+      lat: location.latitude,
+      lon: location.longitude,
+      rad: 30,
+      div: div,
+    }
+    
+    getRequestListInRadius(currentLocation)
+    .then(res => {
+      setRequestList([...res.data])
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [location.loading])
+
+  useEffect(() => {
+    const currentLocation = {
+      lat: location.latitude,
+      lon: location.longitude,
+      rad: 30,
+      div: div,
+    }
+
+    getRequestListInRadius(currentLocation)
+    .then(res => {
+      setRequestList([...res.data])
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [div])
+
+  const refreshCurrentLocation = () => {
+    const params = {
+      lat: location.latitude,
+      lon: location.longitude,
+    }
+
+    getTruckOwnerCurrentLocation(params)
+    .then(res => {
+      setCurrentLocation(res.data.address?.address_name)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+
   const toCargoDetail = useCallback(() => {
     navigation.navigate('CargoDetail')
   }, [navigation])
 
-  const toRecomDetail = useCallback((param) => {
-    console.log(param)
-    navigation.navigate('RecomDetail')
+  const toRecomDetail = useCallback((reqId) => {
+    navigation.navigate('RecomDetail', { reqId: reqId })
   }, [navigation])
 
   return (
@@ -152,7 +207,7 @@ function Home({ navigation, props }) {
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                   }}>
-                  <Button icon="refresh"></Button>
+                  <Button icon="refresh" onPress={refreshCurrentLocation}></Button>
                 </View>
                 <View
                   style={{
@@ -161,7 +216,7 @@ function Home({ navigation, props }) {
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                   }}>
-                  <Text>서울특별시 강남구 테헤란로 100(임시)</Text>
+                  <Text>{currentLocation}</Text>
                 </View>
               </View>
             </Card.Content>
@@ -331,14 +386,33 @@ function Home({ navigation, props }) {
         <View style={{flex: 1}}>
           <Card style={styles.recommendcard}>
             <Card.Content>
-              <Paragraph style={styles.cardTitle}>추천화물정보</Paragraph>
+              <View style={{ width: "50%" }}>
+                <Text 
+                  style={{ 
+                    color: '#43A047',
+                    fontSize: 16,
+                    fontWeight: '500',
+                  }}
+                >
+                  추천화물정보
+                  <Text style={{ fontSize: 14, color: "black" }}>(반경 30km)</Text>
+                </Text>
+              </View>
+              <View style={{ width: "40%" }}>
+                <RNPickerSelect
+                  value={div}
+                  onValueChange={(value) => setDiv(value)}
+                  onOpen={() => Keyboard.dismiss()}
+                  items={divList}
+                />
+              </View>
               {/* 단건 추천 영역 */}
               {requestList?.map(req => {
                 return (
                   <Card
-                    key={req.reqid}
+                    key={req.reqId}
                     style={styles.recommendcardcontents}
-                    onPress={() => toRecomDetail(req.reqid)}>
+                    onPress={() => toRecomDetail(req.reqId)}>
                     <Card.Content>
                       {/* 이미지 화물사이즈 */}
                       <View
@@ -351,7 +425,7 @@ function Home({ navigation, props }) {
                           backgroundColor: '#FFFFFF',
                         }}>
                         <Image
-                          source={require('/assets/images/logo11.png')}
+                          source={req.images.length === 0 ? require('/assets/images/logo11.png') : { uri: req.images[0].contents }}
                           style={{
                             width: 80,
                             height: 80,
@@ -380,10 +454,10 @@ function Home({ navigation, props }) {
                           <Card>
                             <Card.Content>
                               <Paragraph style={styles.recommendtext}>
-                                {req.depart_addr_st}
+                                {req.departAddrSt}
                               </Paragraph>
                               <Paragraph style={styles.datetext}>
-                                {formatDateTimeToString(req.depart_datetimes)}
+                                {formatDateTimeToString(req.departDatetimes)}
                               </Paragraph>
                             </Card.Content>
                           </Card>
@@ -399,10 +473,10 @@ function Home({ navigation, props }) {
                           <Card>
                             <Card.Content>
                               <Paragraph style={styles.recommendtext}>
-                                {req.arrival_addr_st}
+                                {req.arrivalAddrSt}
                               </Paragraph>
                               <Paragraph style={styles.datetext}>
-                                {formatDateTimeToString(req.arrival_datetimes)}
+                                {formatDateTimeToString(req.arrivalDatetimes)}
                               </Paragraph>
                             </Card.Content>
                           </Card>
@@ -429,7 +503,7 @@ function Home({ navigation, props }) {
                               justifyContent: 'center',
                             }}>
                             <Card.Content>
-                              <Paragraph style={styles.text}>{req.transit_fare}원</Paragraph>
+                              <Paragraph style={styles.text}>{formatFare(req.transitFare)}원</Paragraph>
                             </Card.Content>
                           </Card>
                         </View>

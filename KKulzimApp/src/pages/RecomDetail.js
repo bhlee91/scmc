@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -25,7 +25,24 @@ import {useSelector} from 'react-redux';
 import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function RecomDetail({navigation}) {
+import { isEmpty, formatFare } from "utils/CommonUtil";
+import { convertDateTime, formatDateTimeToString } from "utils/DateUtil";
+import {
+  getCargoRequestDetail
+} from "api/cargo/index";
+
+function RecomDetail({ navigation, route }) {
+  const [detail, setDetail] = useState({})
+
+  useEffect(() => {
+    if (!isEmpty(route.params.reqId)) {
+      getCargoRequestDetail(route.params.reqId)
+      .then(res => {
+        setDetail(() => res.data)
+      })
+    }
+  }, [route.params?.reqId])
+
   return (
     <ScrollView style={styles.mainView}>
       {/* 화물정보 */}
@@ -43,7 +60,7 @@ function RecomDetail({navigation}) {
                   borderColor: '#E0E0E0',
                 }}>
                 <Image
-                  source={require('/assets/images/logo11.png')}
+                  source={detail?.images === undefined ? require('/assets/images/logo11.png') : { uri: detail?.images[0].contents }}
                   style={{
                     width: 80,
                     height: 80,
@@ -54,13 +71,13 @@ function RecomDetail({navigation}) {
                   <Text></Text>
                   <Text style={styles.recommendtitletext}>
                     크기 :{' '}
-                    <Text style={styles.recommendtext}>2M x 2M x 2M</Text>
+                    <Text style={styles.recommendtext}>{detail?.cwidth}m x {detail?.cverticalreal}m x {detail?.cheight}</Text>
                   </Text>
                   <Text style={styles.recommendtitletext}>
-                    중량 : <Text style={styles.recommendtext}>30kg</Text>
+                    중량 : <Text style={styles.recommendtext}>{detail?.cweight}㎏</Text>
                   </Text>
                   <Text style={styles.recommendtitletext}>
-                    체적 : <Text style={styles.recommendtext}>10M3</Text>
+                    체적 : <Text style={styles.recommendtext}>{(detail?.cwidth * detail?.cverticalreal * detail?.cheight).toFixed(1)}㎥</Text>
                   </Text>
                 </View>
               </View>
@@ -85,7 +102,7 @@ function RecomDetail({navigation}) {
                         fontSize: 15,
                         fontWeight: 'bold',
                       }}>
-                      경기도 성남시 탄천상로 200
+                      {detail?.departAddrSt} {isEmpty(detail?.departAddrSt2) ? "" : `(${detail?.departAddrSt2})`} 
                     </Paragraph>
                     <Paragraph
                       style={{
@@ -93,7 +110,7 @@ function RecomDetail({navigation}) {
                         fontSize: 14,
                         color: 'blue',
                       }}>
-                      2020년 12월11일 12시 00분
+                      {convertDateTime(detail?.departDatetimes)}
                     </Paragraph>
                   </Card.Content>
                 </Card>
@@ -109,7 +126,7 @@ function RecomDetail({navigation}) {
                         fontSize: 15,
                         fontWeight: 'bold',
                       }}>
-                      경기도 성남시 탄천상로 200
+                      {detail?.arrivalAddrSt} {isEmpty(detail?.arrivalAddrSt2) ? "" : `(${detail?.arrivalAddrSt2})`} 
                     </Paragraph>
                     <Paragraph
                       style={{
@@ -117,7 +134,7 @@ function RecomDetail({navigation}) {
                         fontSize: 14,
                         color: 'blue',
                       }}>
-                      2020년 12월11일 12시 00분
+                      {convertDateTime(detail?.arrivalDatetimes)}
                     </Paragraph>
                   </Card.Content>
                 </Card>
@@ -152,7 +169,7 @@ function RecomDetail({navigation}) {
                   fontWeight: '500',
                   color: 'blue',
                 }}>
-                운송비용 : 150,000원
+                운송비용 : {formatFare(detail?.transitFare)}원
               </Paragraph>
               <Divider />
               <Paragraph
@@ -176,7 +193,7 @@ function RecomDetail({navigation}) {
                     padding: 5,
                     fontSize: 14,
                   }}>
-                  010-1234-5678
+                  {detail?.receiverPhone}
                 </Paragraph>
               </Paragraph>
               <Divider />
@@ -186,13 +203,13 @@ function RecomDetail({navigation}) {
                   fontSize: 15,
                   fontWeight: 'bold',
                 }}>
-                상차지연락처 :{' '}
+                하차지연락처 :{' '}
                 <Paragraph
                   style={{
                     padding: 5,
                     fontSize: 14,
                   }}>
-                  010-1234-5678
+                  {''}
                 </Paragraph>
               </Paragraph>
             </Card.Content>
@@ -228,7 +245,7 @@ function RecomDetail({navigation}) {
                     padding: 5,
                     fontSize: 14,
                   }}>
-                  지게차
+                  {detail?.loadMethodName}
                 </Paragraph>
               </Paragraph>
               <Divider />
@@ -244,7 +261,7 @@ function RecomDetail({navigation}) {
                     padding: 5,
                     fontSize: 14,
                   }}>
-                  지게차
+                  {detail?.unloadMethodName}
                 </Paragraph>
               </Paragraph>
 
@@ -429,6 +446,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 40,
     fontWeight: '500',
-    color: 'blue',
+    color: '#43A047',
   },
 });

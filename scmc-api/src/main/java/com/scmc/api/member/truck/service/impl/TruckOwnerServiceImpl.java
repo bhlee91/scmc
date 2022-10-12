@@ -26,6 +26,8 @@ import com.scmc.api.common.jwt.JwtTokenProvider;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbCargoImage;
+import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
@@ -259,14 +261,41 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	}
 
 	@Override
-	public Map<String, Object> getTruckOwnerMainInfo(long truckownerUid) {
+	public Map<String, Object> getTruckOwnerMainInfo(long uid, String lat, String lon) {
+		Map<String, Object> result = tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(uid);
+		result.put("documents", this.getTruckOwnerCurrentLocation(lat, lon));
 		
-		return tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(truckownerUid);
+		return result;
+	}
+	
+	@Override
+	public Map<String, Object> getTruckOwnerCurrentLocation(String lat, String lon) {
+		Map<String, Object> loc_map = null;
+		
+		if (!(lat.equals("0") || lon.equals("0")))
+			loc_map = kakaoLocalUtil.coord2Address(lat, lon).getJSONArray("documents").getJSONObject(0).toMap();
+		
+		return loc_map;
 	}
 
 	@Override
-	public List<?> getCargoListInRadius(double lat, double lon, int rad) {
+	public List<?> getCargoListInRadius(double lat, double lon, int rad, String d) {
+		List<TbCargoRequest> result = null;
 		
-		return tbCargoRequestRepository.findByEarthDistance(lat, lon, rad);
+		if (lat == 0 || lon == 0) return result;
+		
+		if (d.equals("dist")) result = tbCargoRequestRepository.findByEarthDistanceByDistance(lat, lon, rad);
+		else if (d.equals("reg")) result = tbCargoRequestRepository.findByEarthDistanceByReg(lat, lon, rad);
+		
+		if (result != null) {
+			for (TbCargoRequest request : result) {
+				
+				for (TbCargoImage image : request.getImages()) {
+					image.setContents(new String(image.getImageContents()));
+				}
+			}
+		}
+		
+		return result;
 	}
 }

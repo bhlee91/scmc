@@ -25,5 +25,11 @@ export const convertWeightAndDiv = (str) => {
 // null || undefined || 빈문자열 || 공백일 때 return true
 // 아니면 return false
 export const isEmpty = (str) => {
-  return str === null || str === undefined || str === "" || str.trim() === ""
+  
+  return str === null || str === undefined || String(str) === "" || String(str).trim() === ""
+}
+
+// 금액 콤마 찍기
+export const formatFare = (fare) => {
+  return String(fare).replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
 }
