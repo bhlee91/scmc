@@ -12,7 +12,7 @@ import {
 
 import AppInner from './AppInner';
 // import store from './src/store';
-// import {Provider as StoreProvider} from 'react-redux';
+import {Provider as StoreProvider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 
 const theme = {
@@ -29,13 +29,13 @@ const theme = {
 
 function App() {
   return (
-    // <StoreProvider store={store}>
-    <PaperProvider theme={theme}>
-      <NavigationContainer>
-        <AppInner />
-      </NavigationContainer>
-    </PaperProvider>
-    // </StoreProvider>
+    //<StoreProvider store={store}>
+      <PaperProvider theme={theme}>
+        <NavigationContainer>
+          <AppInner />
+        </NavigationContainer>
+      </PaperProvider>
+    //</StoreProvider>
   );
 }
 

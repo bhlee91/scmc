@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.scmc.api.common.jwt.JwtTokenProvider;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
@@ -48,13 +50,26 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
 	private final TbSysSmslogRepository tbSysSmslogRepository;
 	private final TbCargoRequestRepository tbCargoRequestRepository;
-	
+	private final PasswordEncoder passwordEncoder;
+	private final JwtTokenProvider jwtTokenProvider;
 	private JPAQueryFactory query;
 	
 	@Autowired
 	private EntityManager em;
 	
 	QTbMemberTruckOwner tmto = QTbMemberTruckOwner.tbMemberTruckOwner;
+	
+	@Override
+	public String truckOwnerLogin(HashMap<String, Object> param) {
+		TbMemberTruckOwner user = 
+				tbMemberTruckOwnerRepository.findByCarNumber(param.get("carNumber").toString())
+				.orElseThrow(() -> new IllegalArgumentException("가입되지 않은 차량 번호입니다."));
+		if(!passwordEncoder.matches((CharSequence) param.get("password"), user.getPassword())) {
+			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
+		}
+																				
+		return jwtTokenProvider.createTruckToken(user.getCarNumber());
+	}
 	
 	@Transactional
 	@Override
@@ -63,7 +78,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		TbMemberTruckOwner tmto = TbMemberTruckOwner.insertBuilder()
 				.carNumber(obj.get("carNumber").toString())
 				.phoneNumber(obj.get("phoneNumber").toString())
-				.password(obj.get("password").toString())
+				.password(passwordEncoder.encode(obj.get("password").toString()))
 				.truckownerName(obj.get("truckownerName").toString())
 				.businessNo(obj.get("businessNo").toString())
 				.truckTons(obj.get("truckTons").toString())

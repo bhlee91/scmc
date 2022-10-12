@@ -1,6 +1,7 @@
 package com.scmc.api.jpa.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,6 @@ public interface TbMemberTruckOwnerRepository extends JpaRepository<TbMemberTruc
 	TbMemberTruckOwner findByTruckownerUid(Long truckownerUid);
 	
 	TbMemberTruckOwner findByTruckownerUid(int truckownerUid);
+	
+	Optional<TbMemberTruckOwner> findByCarNumber(String carNumber);
 }

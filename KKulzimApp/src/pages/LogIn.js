@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from 'react';
 import {
-  StyleSheet,
+  StyleSheet, 
   View,
   ImageBackground,
   Text,
@@ -30,7 +30,8 @@ import Config from 'react-native-config';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
+import { loginTruckOwner } from '../api/truckowner';
 
 function LogIn({navigation}) {
   const [carno, setCarno] = useState('');
@@ -56,12 +57,32 @@ function LogIn({navigation}) {
     navigation.navigate('ConfirmSms');
   }, [navigation]);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(() => {
+    const info = {
+      carNumber: carno,
+      password: password
+    }
     if (!carno || !carno.trim()) {
       return Alert.alert('알림', '차량번호를 입력해주세요.');
     }
     if (!password || !password.trim()) {
       return Alert.alert('알림', '비밀번호를 입력해주세요.');
+    }
+    try{
+      setLoading(true)
+      loginTruckOwner(info)
+      .then(res => {
+        if(res.data !== null ){
+
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      
+
+    }catch{
+
     }
     // try {
     //   setLoading(true);

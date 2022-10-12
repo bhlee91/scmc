@@ -499,7 +499,6 @@ function SignUp({navigation}) {
         console.log(err)
       }) 
     }
-    
   }
   return (
     <View style={styles.mainView}>

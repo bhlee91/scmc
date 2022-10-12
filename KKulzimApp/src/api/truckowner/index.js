@@ -30,3 +30,11 @@ export const registTruckOwner = (obj) => {
     data: obj
   })
 }
+
+export const loginTruckOwner = (obj) => {
+  return request({
+    url: `${BASE_URL}/truck/login`,
+    method: "post",
+    data: obj
+  })
+}

@@ -56,6 +56,19 @@ public class JwtTokenProvider {
 				.compact();
 	}
 	
+	public String createTruckToken(String carNumber) {
+		Claims claims = Jwts.claims().setSubject(carNumber);
+		
+		Date now = new Date();
+		
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuedAt(now)
+				.setExpiration(new Date(now.getTime() + tokenValidTime))
+				.signWith(SignatureAlgorithm.HS256, secretKey)
+				.compact();
+	}
+	
 	// JWT 토큰에서 인증 정보 조회
 	public Authentication getAuthentication(String token) {
 		UserDetails userDetails = customUserDetailsService.loadUserByUsername(this.getUserIdFromJwt(token));

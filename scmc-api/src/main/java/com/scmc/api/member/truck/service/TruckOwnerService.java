@@ -25,6 +25,7 @@ public interface TruckOwnerService {
 	Page<TbMemberTruckOwner> selectTruckOwner(String carNumber, String truckownerName, String businessNo, Pageable page);
 	TbSysSmslog getRegSmsLog(String receiverNumber, String authNumber);
 	Map<String, Object> getTruckOwnerMainInfo(long truckownerUid);
+	String truckOwnerLogin(HashMap<String, Object> param);
 	
 	List<?> getCargoListInRadius(double lat, double lon, int rad);
 }

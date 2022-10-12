@@ -146,6 +146,16 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(truckOwnerService.getTruckOwnerMainInfo(truckownerUid), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "모바일 차주 로그인", notes = "모바일 차주 메인 관련 정보를 조회한다.")
+	@PostMapping("/truck/login")
+	public ResponseEntity<?> truckownerLogin(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("==================");
+		log.info("모바일 차주 로그인");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.truckOwnerLogin(param), HttpStatus.OK);
+	}
+	
 	@ApiOperation(value = "두 지점 거리 계산(테스트용)", notes = "두 지점 거리 계산(테스트용)")
 	@GetMapping("/truck/distance/test")
 	public ResponseEntity<?> getDistanceTest(
