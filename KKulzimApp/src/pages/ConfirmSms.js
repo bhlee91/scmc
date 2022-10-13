@@ -31,23 +31,65 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {NavigationContainer} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
+import { getAuth, getAuthNumber } from '../api/truckowner';
+import store, { useAppDispatch } from '../store';
+import userSlice from '../slices/user';
 
 function ConfirmSms({navigation}) {
-  const [authsms, setAuthsms] = useState('');
+  const [authno, setAuthno] = useState('');
   const [loading, setLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const dispatch = useAppDispatch();
+
+  const authSms = () => {
+    if(phoneNumber === '' || phoneNumber === undefined || phoneNumber === null){
+      Alert.alert('휴대폰 번호를 입력해 주세요.')
+    } else if(phoneNumber.length !== 11 ) {
+      Alert.alert('입력하신 휴대폰 번호를 확인해 주세요.')  
+    } else {
+      Alert.alert('문자가 전송되었습니다.')  
+      getAuthNumber(phoneNumber)
+    }
+  };
+
+  const confirmAuthSms = () => {
+    getAuth(phoneNumber, authno)
+    .then(res => {
+      console.log(res)
+      if(res.data !== "" ){
+        dispatch(
+          userSlice.actions.SET_CHPWD({
+            phoneNumber : phoneNumber,
+            isLoggedIn : false
+          })
+        )
+        Alert.alert('인증되었습니다.')
+        toConfirmPassword()
+      } else {
+        Alert.alert('인증번호를 다시 확인해 주세요.')
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      Alert.alert('알수 없는 오류중에 있습니다. 다시 시도해주세요.')
+    }) 
+  };
+  const onChangeHpnumber = useCallback(text => {
+    setPhoneNumber(text.trim());
+  }, []);
 
   const onChangeAuth = useCallback(text => {
-    setAuthsms(text.trim());
+    setAuthno(text.trim());
   }, []);
 
   const toConfirmPassword = useCallback(() => {
     navigation.navigate('ResetPassword');
   }, [navigation]);
 
-  const onSubmit = useCallback(async () => {
-    if (!authsms || !authsms.trim()) {
-      return Alert.alert('알림', '인증번호를 입력해주세요.');
-    }
+  // const onSubmit = useCallback(async () => {
+  //   if (!authno || !authno.trim()) {
+  //     return Alert.alert('알림', '인증번호를 입력해주세요.');
+  //   }
 
     // try {
     //   setLoading(true);
@@ -77,7 +119,7 @@ function ConfirmSms({navigation}) {
     // } finally {
     //   setLoading(false);
     // }
-  }, [loading, authsms]);
+    //  }, [loading, authno]);
 
   return (
     <View style={styles.mainView}>
@@ -93,25 +135,38 @@ function ConfirmSms({navigation}) {
       <DismissKeyboardView behavior style={styles.container}>
         <Card style={styles.card}>
           <Card.Content>
+          <View style={styles.box2}>
+                  <TextInput
+                    style={styles.textInput}
+                    onChangeText={onChangeHpnumber}
+                    Outlined
+                    placeholder="휴대폰번호"
+                    placeholderTextColor="#666"
+                    value={phoneNumber}
+                    keyboardType="numeric"
+                    returnKeyType="next"
+                  />
+                <Pressable
+                  style={styles.Button}
+                  onPress={authSms}>
+                  <Text style={styles.ButtonText}>문자전송</Text>
+                </Pressable>
+            </View>
+          </Card.Content>
+          <Card.Content>
             <View>
+              
               <View style={styles.box2}>
                 <TextInput
                   style={styles.textInput}
                   placeholder="인증번호"
                   onChangeText={onChangeAuth}
-                  value={authsms}
+                  value={authno}
                   clearButtonMode="while-editing"
-                  // ref={passwordRef}
-                  onSubmitEditing={onSubmit}
                 />
                 <Pressable
                   style={styles.Button}
-                  onPress={() => Alert.alert('전송이 완료되었습니다.')}>
-                  <Text style={styles.ButtonText}>문자전송</Text>
-                </Pressable>
-              </View>
-              <View style={styles.box2}>
-                <Pressable style={styles.Button} onPress={toConfirmPassword}>
+                  onPress={confirmAuthSms}>
                   <Text style={styles.ButtonText}>확인</Text>
                 </Pressable>
               </View>
@@ -191,11 +246,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#000000',
   },
 
   ButtonText: {

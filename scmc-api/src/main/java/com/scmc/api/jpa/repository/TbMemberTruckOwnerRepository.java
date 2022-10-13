@@ -18,4 +18,6 @@ public interface TbMemberTruckOwnerRepository extends JpaRepository<TbMemberTruc
 	TbMemberTruckOwner findByTruckownerUid(int truckownerUid);
 	
 	Optional<TbMemberTruckOwner> findByCarNumber(String carNumber);
+	
+	TbMemberTruckOwner findByPhoneNumber(String phoneNumber);
 }

@@ -43,7 +43,7 @@ import CargoDetail from './src/pages/CargoDetail';
 import RecomDetail from './src/pages/RecomDetail';
 import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
-
+import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Tab = createBottomTabNavigator();
@@ -104,6 +104,7 @@ function Main() {
         component={Home}
         options={{
           tabBarLabel: 'Home',
+          unmountOnBlur: true,
           // headerShown: false,
         }}
       />
@@ -136,8 +137,11 @@ function Main() {
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   //   const isLoggedIn = useSelector(state => !!state.user.email);
-  const [isLoggedIn, SetIsLoggedIn] = useState(false);
-  console.log('isLoggedIn', isLoggedIn);
+  const isLoggedIn = store.getState().user.isLoggedIn
+  // const [isLoggedIn, SetIsLoggedIn] = useState(false);
+  
+  // SetIsLoggedIn(st)
+  //console.log('isLoggedIn', isLoggedIn);
 
   //   const [socket, disconnect] = useSocket();
 
@@ -320,7 +324,9 @@ function AppInner({navigation}) {
           <Stack.Screen
             name="Main"
             component={Main}
-            // options={{headerShown: false}}
+             options={{headerShown: false, 
+                        unmountOnBlur: true,}}
+            
           />
           <Stack.Screen
             name="Address"

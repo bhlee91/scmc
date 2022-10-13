@@ -9,7 +9,7 @@ import {
   Card,
   Button,
 } from 'react-native-paper';
-
+import store from './src/store/index/'
 import AppInner from './AppInner';
 // import store from './src/store';
 import {Provider as StoreProvider} from 'react-redux';
@@ -29,13 +29,13 @@ const theme = {
 
 function App() {
   return (
-    //<StoreProvider store={store}>
+    <StoreProvider store={store}>
       <PaperProvider theme={theme}>
         <NavigationContainer>
           <AppInner />
         </NavigationContainer>
       </PaperProvider>
-    //</StoreProvider>
+    </StoreProvider>
   );
 }
 

@@ -38,3 +38,11 @@ export const loginTruckOwner = (obj) => {
     data: obj
   })
 }
+
+export const changePassword = (obj) => {
+  return request({
+    url: `${BASE_URL}/truck/chpwd`,
+    method: "post",
+    data: obj
+  })
+}

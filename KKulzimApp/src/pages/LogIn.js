@@ -32,6 +32,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { loginTruckOwner } from '../api/truckowner';
+import store, { useAppDispatch } from '../store';
+import userSlice from '../slices/user';
 
 function LogIn({navigation}) {
   const [carno, setCarno] = useState('');
@@ -39,6 +41,7 @@ function LogIn({navigation}) {
   const [loading, setLoading] = useState(false);
   const carnoRef = useRef();
   const passwordRef = useRef();
+  const dispatch = useAppDispatch();
 
   const toSignUp = useCallback(() => {
     navigation.navigate('SignUp');
@@ -73,14 +76,18 @@ function LogIn({navigation}) {
       loginTruckOwner(info)
       .then(res => {
         if(res.data !== null ){
-
+         console.log(res.data)
+         dispatch(
+          userSlice.actions.SET_LOGIN({
+            isLoggedIn : true
+          })
+         ) 
+         navigation.navigate('')
         }
       })
       .catch(err => {
         console.log(err)
       })
-      
-
     }catch{
 
     }
@@ -112,7 +119,7 @@ function LogIn({navigation}) {
     // } finally {
     //   setLoading(false);
     // }
-  }, [loading, carno, password]);
+  }, [loading, carno, password, navigation]);
 
   return (
     <View style={styles.container}>

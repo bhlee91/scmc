@@ -150,7 +150,6 @@ function SignUp({navigation}) {
   }, []);
   const onChangeHpnumber = useCallback(text => {
     setPhoneNumber(text.trim());
-    
   }, []);
 
   const onChangeAuthNo = useCallback(text => {

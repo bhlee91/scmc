@@ -25,71 +25,53 @@ import {NavigationContainer} from '@react-navigation/native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import store from '../../src/store';
+import { changePassword } from '../api/truckowner';
 
 function ResetPassword({navigation}) {
-  const [password, setPassword] = useState('');
-  const [confirmpassword1, setconfirmpassword1] = useState('');
-  const [confirmpassword2, setconfirmpassword2] = useState('');
+  const phoneNumber = store.getState().user.phoneNumber
+  const [newPassword, setnewPassword] = useState('');
+  const [confirmNewPassword, setconfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const onChangePassword = useCallback(text => {
-    setPassword(text.trim());
+  const onChangeNewPassword = useCallback(text => {
+    setnewPassword(text.trim());
   }, []);
-
-  const onChangeConrirmPassword1 = useCallback(text => {
-    setconfirmpassword1(text.trim());
-  }, []);
-  const onChangeConrirmPassword2 = useCallback(text => {
-    setconfirmpassword2(text.trim());
+  const onChangeConrirmNewPassword = useCallback(text => {
+    setconfirmNewPassword(text.trim());
   }, []);
 
   // const canGoNext = confirmpassword1 && password;
 
+  const onClickChpwd = () =>{
+    const info = {
+      phoneNumber : phoneNumber,
+      password : newPassword
+    }
+    const regPression = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
+    if(!regPression.test(newPassword)) {
+      Alert.alert('영문,숫자,특수문자를 포함한 8자리 이상을 입력해 주세요')
+    } else if (confirmNewPassword !== newPassword){
+      Alert.alert('비밀번호를 다시 확인해주세요.')
+    } else {
+      changePassword(info)
+      .then(res => {
+        if(res.data !== null || res.data !== ""){
+          Alert.alert(`${res.data}`)
+          navigation.navigate('LogIn');
+        } else {
+          Alert.alert('알수 없는 오류중에 있습니다. 다시 시도해 주세요.')
+        }
+      })
+      .catch(err =>{
+        console.log(err)
+      })
+    }
+  }
+
   const toLogin = useCallback(() => {
     navigation.navigate('Login');
   }, [navigation]);
-
-  const onSubmit = useCallback(async () => {
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '현재비밀번호를 입력해주세요.');
-    }
-
-    if (!confirmpassword1 || !confirmpassword1.trim()) {
-      return Alert.alert('알림', '새비밀번호 확인을 입력해주세요.');
-    }
-
-    if (!confirmpassword2 || !confirmpassword2.trim()) {
-      return Alert.alert('알림', '새비밀번호 확인을 입력해주세요.');
-    }
-    // try {
-    //   setLoading(true);
-    //   const response = await axios.post(`${Config.API_URL}/login`, {
-    //     carno,
-    //     password,
-    //   });
-    //   console.log(response.data);
-    //   Alert.alert('알림', '로그인 되었습니다.');
-    //   dispatch(
-    //     userSlice.actions.setUser({
-    //       name: response.data.data.name,
-    //       carno: response.data.data.carno,
-    //       accessToken: response.data.data.accessToken, //유효기간이 있는 토근 10, 5분 등, 짧을 수록 보안에......좋음, Redux에만 저장
-    //       refreshToken: response.data.data.refreshToken, //유효기간 1일 30일 1년 ==> accessToken보다 크다 EncryptedStorage에 저장
-    //     }),
-    //   );
-    //   await EncryptedStorage.setItem(
-    //     'refreshToken',
-    //     response.data.data.refreshToken,
-    //   );
-    // } catch (error) {
-    //   const errorResponse = error.response;
-    //   if (errorResponse) {
-    //     Alert.alert('알림', errorResponse.data.message);
-    //   }
-    // } finally {
-    //   setLoading(false);
-    // }
-  }, [loading, confirmpassword1, confirmpassword2, password]);
 
   return (
     <DismissKeyboardView style={styles.maincontainer}>
@@ -103,44 +85,16 @@ function ResetPassword({navigation}) {
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.inputs}
-            placeholder="현재 비밀번호"
-            placeholderTextColor="#666"
-            importantForAutofill="yes"
-            onChangeText={onChangePassword}
-            value={password}
-            autoComplete="password"
-            textContentType="password"
-            secureTextEntry
-            returnKeyType="send"
-            clearButtonMode="while-editing"
-            // ref={passwordRef}
-            onSubmitEditing={onSubmit}
-            underlineColorAndroid="transparent"
-          />
-          <Icon
-            style={[styles.icon, styles.inputIcon]}
-            name="eye"
-            color="black"
-            size={20}
-          />
-        </View>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.inputs}
             placeholder="새 비밀번호"
             placeholderTextColor="#666"
             importantForAutofill="yes"
-            onChangeText={onChangeConrirmPassword1}
-            value={confirmpassword1}
-            // autoComplete="password"
+            onChangeText={onChangeNewPassword}
+            value={newPassword}
             textContentType="password"
             secureTextEntry
             returnKeyType="send"
             clearButtonMode="while-editing"
             underlineColorAndroid="transparent"
-            // ref={passwordRef}
-            onSubmitEditing={onSubmit}
           />
           <Icon
             style={[styles.icon, styles.inputIcon]}
@@ -156,15 +110,14 @@ function ResetPassword({navigation}) {
             placeholder="새 비밀번호 확인"
             placeholderTextColor="#666"
             importantForAutofill="yes"
-            onChangeText={onChangeConrirmPassword2}
-            value={confirmpassword2}
+            onChangeText={onChangeConrirmNewPassword}
+            value={confirmNewPassword}
             // autoComplete="password"
             textContentType="password"
             secureTextEntry
             returnKeyType="send"
             clearButtonMode="while-editing"
             // ref={passwordRef}
-            onSubmitEditing={onSubmit}
           />
           <Icon
             style={[styles.icon, styles.inputIcon]}
@@ -176,7 +129,7 @@ function ResetPassword({navigation}) {
 
         <TouchableOpacity
           style={[styles.buttonContainer, styles.confirmButton]}
-          onPress={onSubmit}>
+          onPress={onClickChpwd}>
           <Text style={styles.confirmText}>확인</Text>
         </TouchableOpacity>
       </View>
