@@ -1,6 +1,7 @@
 package com.scmc.api.member.truck.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -219,5 +220,15 @@ public class TruckOwnerController {
 		int rad = Integer.parseInt(strRad);
 		
 		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad, div), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "차주 화물 의뢰 운송하기", notes = "차주 화물 의뢰 운송하기")
+	@PostMapping("/truck/request/confirm")
+	public ResponseEntity<?> setRequestConfirm(@RequestBody Map<String, Long> obj) throws Exception {
+		log.info("==================");
+		log.info("화물 운송하기");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.setRequestTransportConfirm(obj), HttpStatus.OK);
 	}
 }

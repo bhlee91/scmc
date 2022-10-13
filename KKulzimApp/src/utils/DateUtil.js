@@ -19,7 +19,7 @@ export const formatMonthAndDay = (dateString) => {
 }
 
 // return korean time
-export const convertDateTime = (dateString) => {
+export const formatDateTimeToKorea = (dateString) => {
   dateString = moment(dateString).tz("Asia/Seoul").format("YYYY년MM월DD일 HH시mm분")
 
   return dateString
@@ -29,6 +29,15 @@ export const formatDateTimeToString = (dateString) => {
   if (dateString === null || dateString === undefined) return ""
 
   dateString = moment(dateString).format("YYYY년MM월DD일 HH시mm분")
+
+  return dateString
+}
+
+// return YYYY년MM월DD일
+export const formatDate = (dateString) => {
+  if (dateString === null || dateString === undefined) return ""
+
+  dateString = moment(dateString).format("YYYY년MM월DD일")
 
   return dateString
 }

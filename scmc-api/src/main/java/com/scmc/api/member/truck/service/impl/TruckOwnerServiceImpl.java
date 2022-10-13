@@ -3,6 +3,8 @@ package com.scmc.api.member.truck.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,17 +28,21 @@ import com.scmc.api.common.jwt.JwtTokenProvider;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
+import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
+import com.scmc.api.jpa.repository.TbCargoHistRepository;
+import com.scmc.api.jpa.repository.TbCargoHistRepositoryCustom;
 import com.scmc.api.jpa.repository.TbCargoRequestRepository;
 import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 import com.scmc.api.jpa.repository.TbSysSmslogRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepositoryCustom;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
+import com.scmc.api.member.truck.dto.HistoryDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,6 +58,9 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	private final TbTruckOwnerCargoInfoRepositoryCustom tbTruckOwnerCargoInfoRepositoryCustom;
 	private final TbSysSmslogRepository tbSysSmslogRepository;
 	private final TbCargoRequestRepository tbCargoRequestRepository;
+	private final TbCargoHistRepository tbCargoHistRepository;
+	private final TbCargoHistRepositoryCustom tbCargoHistRepositoryCustom;
+	
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private JPAQueryFactory query;
@@ -283,6 +292,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	public Map<String, Object> getTruckOwnerMainInfo(long uid, String lat, String lon) {
 		Map<String, Object> result = tbTruckOwnerCargoInfoRepositoryCustom.dynamicByTruckOwnerMainInfo(uid);
 		result.put("documents", this.getTruckOwnerCurrentLocation(lat, lon));
+		result.put("cargo_list", this.getCargoListByTruckOwner(uid));
 		
 		return result;
 	}
@@ -295,6 +305,13 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 			loc_map = kakaoLocalUtil.coord2Address(lat, lon).getJSONArray("documents").getJSONObject(0).toMap();
 		
 		return loc_map;
+	}
+	
+	@Override
+	public List<HistoryDto> getCargoListByTruckOwner(long uid) {
+		List<HistoryDto> hist_list = tbCargoHistRepositoryCustom.dynamicBytruckownerUidAndStatusNotIn(uid, Arrays.asList("MO", "RO", "TF", "TN"));
+		
+		return hist_list;
 	}
 
 	@Override
@@ -316,5 +333,37 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		}
 		
 		return result;
+	}
+	
+	@Transactional
+	@Override
+	public boolean setRequestTransportConfirm(Map<String, Long> dto) {
+		TbCargoRequest request = tbCargoRequestRepository.findByReqId(dto.get("reqId"));
+		TbMemberTruckOwner truckowner = tbMemberTruckOwnerRepository.findByTruckownerUid(dto.get("truckownerUid"));
+		
+		/*
+		 * RO: 준비/등록중
+		 * MO: 최적차량검색
+		 * MF: 매칭완료
+		 * LC: 상차완료
+		 * TO: 운송중
+		 * UC: 하차완료
+		 * TF: 운송완료
+		 * TN: 운송취소
+		 */
+		TbCargoHist hist = new TbCargoHist(request, truckowner, "MF");
+		
+		try {
+			tbCargoHistRepository.save(hist);
+			
+			request.setStatus("MF");
+			request.setModDt(new Date());
+			
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 }

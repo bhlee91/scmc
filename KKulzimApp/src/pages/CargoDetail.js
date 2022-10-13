@@ -25,7 +25,7 @@ import {useSelector} from 'react-redux';
 import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-function CargoDetail({navigation}) {
+function CargoDetail({ navigation, route }) {
   const [image, setImage] = useState({
     uri: '',
     name: '',
@@ -131,7 +131,7 @@ function CargoDetail({navigation}) {
         <View style={{flex: 1}}>
           <Card style={styles.detailcard}>
             <Card.Content>
-              <Title>화물정보</Title>
+              <Title style={styles.title2}>화물정보</Title>
               <View
                 style={{
                   flexDirection: 'row',
@@ -201,7 +201,7 @@ function CargoDetail({navigation}) {
         <View style={{flex: 1}}>
           <Card style={styles.detailcard}>
             <Card.Content>
-              <Title>상차지</Title>
+              <Title style={styles.title2}>상차지</Title>
               <Paragraph>2022년 10월04일 12시 00분</Paragraph>
               <View
                 style={{
@@ -288,7 +288,7 @@ function CargoDetail({navigation}) {
         <View style={{flex: 1}}>
           <Card style={styles.detailcard}>
             <Card.Content>
-              <Title>하차지</Title>
+              <Title style={styles.title2}>하차지</Title>
               <Paragraph>2022년 10월04일 12시 00분</Paragraph>
               <View
                 style={{
@@ -383,7 +383,7 @@ function CargoDetail({navigation}) {
                   padding: 5,
                   fontSize: 16,
                   fontWeight: '500',
-                  color: 'blue',
+                  color: '#43A047',
                 }}>
                 운송비용 : 150,000원
               </Paragraph>
@@ -393,6 +393,7 @@ function CargoDetail({navigation}) {
                   padding: 5,
                   fontSize: 16,
                   fontWeight: '500',
+                  color: '#43A047',
                 }}>
                 차량정보
               </Paragraph>
@@ -424,7 +425,7 @@ function CargoDetail({navigation}) {
         <View style={styles.menuView}>
           <View style={{flex: 1}}>
             <Pressable
-              style={styles.buttonZone}
+              style={styles.bottomButtonZone}
               onPress={() => navigation.goBack()}>
               <Text style={styles.ButtonText}>닫기</Text>
             </Pressable>
@@ -525,6 +526,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
+  title2: {
+    fontSize: 20,
+    color: '#43A047',
+  },
+
   cardTitle: {
     color: '#303F9F',
     fontSize: 20,
@@ -539,7 +545,17 @@ const styles = StyleSheet.create({
   buttonZone: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#FFD740',
+    height: 40,
+    borderWidth: 0.5,
+    borderColor: '#E0E0E0',
+    borderRadius: 30,
+  },
+
+  bottomButtonZone: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFD740',
     height: 40,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',
@@ -569,7 +585,7 @@ const styles = StyleSheet.create({
     // color: '#536DFE',
     fontSize: 14,
     fontWeight: '500',
-    color: 'blue',
+    color: '#43A047',
     marginLeft: 40,
   },
 });

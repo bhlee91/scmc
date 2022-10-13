@@ -42,7 +42,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Geolocation from '@react-native-community/geolocation';
 
 import { isEmpty, formatFare } from "utils/CommonUtil";
-import { formatMonthAndDay, formatDateTimeToString } from "utils/DateUtil";
+import { formatMonthAndDay, formatDateTimeToString, formatDate } from "utils/DateUtil";
 import {
   getMainInfo,
   getTruckOwnerCurrentLocation,
@@ -70,6 +70,7 @@ function Home({ navigation, props }) {
     loading: false,
   })
   const [requestList, setRequestList] = useState([])
+  const [cargoList, setCargoList] = useState([])
   const [div, setDiv] = useState("reg")
 
   const getCurrentLocation = () => {
@@ -126,6 +127,7 @@ function Home({ navigation, props }) {
     .then(res => {
       setUser(res.data?.owner)
       setCargoInfo(res.data?.info)
+      setCargoList(res.data.cargo_list)
       setCurrentLocation(res.data.documents?.address.address_name)
     })
 
@@ -182,12 +184,12 @@ function Home({ navigation, props }) {
     })
   }
 
-  const toCargoDetail = useCallback(() => {
-    navigation.navigate('CargoDetail')
+  const toCargoDetail = useCallback((reqId) => {
+    navigation.navigate('CargoDetail', { reqId: reqId })
   }, [navigation])
 
   const toRecomDetail = useCallback((reqId) => {
-    navigation.navigate('RecomDetail', { reqId: reqId })
+    navigation.navigate('RecomDetail', { reqId: reqId, truckownerUid: 4 })
   }, [navigation])
 
   return (
@@ -293,87 +295,96 @@ function Home({ navigation, props }) {
           <Card style={styles.recommendcard}>
             <Card.Content>
               <Paragraph style={styles.cardTitle}>운송정보</Paragraph>
-              <Card
-                style={styles.recommendcardcontents}
-                onPress={toCargoDetail}>
-                <Card.Content>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{justifyContent: 'center', padding: 10}}>
-                      <Icon
-                        name="angle-double-right"
-                        size={20}
-                        color="#3F51B5"
-                      />
-                    </View>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                          <Paragraph style={styles.datetext}>
-                            2022년 10월 05일
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            운송중
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.text}>120,000원</Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
+              {
+                cargoList.length > 0 ?
+                cargoList.map((cargo) => {
+                  return (
+                    <Card
+                      style={styles.recommendcardcontents}
+                      onPress={() => toCargoDetail(cargo.request.reqId)}>
+                      <Card.Content>
+                        <View style={styles.recommendView}>
+                          <View style={{flex: 1, width: '45%'}}>
+                            <Card>
+                              <Card.Content>
+                                <Paragraph style={styles.recommendtext}>
+                                  {cargo.request.departAddrSt}
+                                </Paragraph>
+                                <Paragraph style={styles.datetext}>
+                                  {formatDate(cargo.request.departDatetimes)}
+                                </Paragraph>
+                              </Card.Content>
+                            </Card>
+                          </View>
+                          <View style={{justifyContent: 'center', padding: 10}}>
+                            <Icon
+                              name="angle-double-right"
+                              size={20}
+                              color="#3F51B5"
+                            />
+                          </View>
+                          <View style={{flex: 1, width: '45%'}}>
+                            <Card>
+                              <Card.Content>
+                                <Paragraph style={styles.recommendtext}>
+                                  {cargo.request.arrivalAddrSt}
+                                </Paragraph>
+                                <Paragraph style={styles.datetext}>
+                                  {formatDate(cargo.request.arrivalDatetimes)}
+                                </Paragraph>
+                              </Card.Content>
+                            </Card>
+                          </View>
+                        </View>
+                        <View style={styles.recommendView}>
+                          <View style={{flex: 1, width: '50%'}}>
+                            <Card
+                              style={{
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <Card.Content>
+                                <Paragraph style={styles.recommendtext}>
+                                  {cargo.request.statusName}
+                                </Paragraph>
+                              </Card.Content>
+                            </Card>
+                          </View>
+                          <View style={{flex: 1, width: '50%'}}>
+                            <Card
+                              style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              <Card.Content>
+                                <Paragraph style={styles.text}>{formatFare(cargo.request.transitFare)}원</Paragraph>
+                              </Card.Content>
+                            </Card>
+                          </View>
+                        </View>
 
-                  {/* 버튼 영역 수학 했을 경우에만 Display */}
-                  <Divider />
-                  <View>
-                    <View style={styles.menuView}>
-                      <View style={{flex: 1}}>
-                        <Pressable
-                          style={styles.buttonZone}
-                          onPress={toCargoDetail}>
-                          <Text style={styles.ButtonText}>상하차 정보등록</Text>
-                        </Pressable>
-                      </View>
-                    </View>
-                  </View>
-                  {/* 버튼 영역 수학 했을 경우에만 Display */}
-                </Card.Content>
-              </Card>
+                        {/* 버튼 영역 수학 했을 경우에만 Display */}
+                        <Divider />
+                        <View>
+                          <View style={styles.menuView}>
+                            <View style={{flex: 1}}>
+                              <Pressable
+                                style={styles.buttonZone}
+                                onPress={() => toCargoDetail(cargo.request.reqId)}>
+                                <Text style={styles.ButtonText}>상하차 정보등록</Text>
+                              </Pressable>
+                            </View>
+                          </View>
+                        </View>
+                        {/* 버튼 영역 수학 했을 경우에만 Display */}
+                      </Card.Content>
+                    </Card>
+                  )
+                })
+                :
+                null
+              }
               {/* 단건 2번째 추천 영역 끝 */}
             </Card.Content>
           </Card>

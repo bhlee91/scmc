@@ -30,3 +30,11 @@ export const getRequestListInRadius = (params) => {
     method: "get"
   })
 }
+
+export const setRequestTransportConfirm = (obj) => {
+  return request({
+    url: `${BASE_URL}/truck/request/confirm`,
+    method: "post",
+    data: obj
+  })
+}

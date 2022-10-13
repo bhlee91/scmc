@@ -24,7 +24,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Slider from '@react-native-community/slider';
 import RNPickerSelect from "react-native-picker-select";
 
-import { formatStringToDateTime, convertDateTime } from "utils/DateUtil";
+import { formatStringToDateTime, formatDateTimeToKorea } from "utils/DateUtil";
 import { convertWeightAndDiv, isEmpty } from "utils/CommonUtil";
 import {
   setCargoInfo
@@ -143,8 +143,8 @@ function CargoReg({ navigation, route }) {
       const wad = convertWeightAndDiv(route.params.info?.cargoWeight)
 
       setCargoUid(route.params.info.cargoUid)
-      setLoadDateTime(convertDateTime(route.params.info.loadDt))
-      setUnloadDateTime(convertDateTime(route.params.info.unloadDt))
+      setLoadDateTime(formatDateTimeToKorea(route.params.info.loadDt))
+      setUnloadDateTime(formatDateTimeToKorea(route.params.info.unloadDt))
       setLoadAddr({ 
         ...loadAddr,
         addr: route.params.info.departAddrSt,

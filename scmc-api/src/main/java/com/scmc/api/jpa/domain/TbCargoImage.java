@@ -62,6 +62,7 @@ public class TbCargoImage {
 		this.memDiv = request.get("memDiv").toString();
 		this.imageSeq = Integer.parseInt(request.get("seq").toString());
 		this.imageContents = request.get("contents").toString().getBytes();
+		this.contents = new String(imageContents);
 	}
 	
 }

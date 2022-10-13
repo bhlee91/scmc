@@ -1,7 +1,6 @@
 package com.scmc.api.jpa.domain;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -16,13 +15,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
+@DynamicInsert
 @Table(name = "tb_cargo_history")
 @Getter
 @Setter
@@ -34,10 +38,10 @@ public class TbCargoHist {
 	@Column(name = "hist_uid")
 	private Long histUid;
 	
-	
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)	
 	@JoinColumn(name = "req_id", referencedColumnName = "req_id")
-	private TbCargoRequest requests;
+	@ToString.Exclude
+	private TbCargoRequest request;
 	
 	@Column(name = "owner_uid")
 	private Long ownerUid;
@@ -45,7 +49,9 @@ public class TbCargoHist {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "truckowner_uid", referencedColumnName = "truckowner_uid")
 	@JsonBackReference
-	private TbMemberTruckOwner tbMemberTruckOwner;
+	@JsonIgnore
+	@ToString.Exclude
+	private TbMemberTruckOwner truckowner;
 	
 	@Column(name = "status")
 	private String status;
@@ -55,11 +61,16 @@ public class TbCargoHist {
 	
 	public TbCargoHist(Map<String, Object> hist) throws ParseException {
 		
-		this.requests = (TbCargoRequest) hist.get("reqId");
-		this.ownerUid = Long.parseLong(hist.get("ownerUid").toString());
-		this.tbMemberTruckOwner = (TbMemberTruckOwner) hist.get("tbMemberTruckOwner");
+		this.request = (TbCargoRequest) hist.get("request");
+		this.ownerUid = this.request.getOwnerUid();
+		this.truckowner = (TbMemberTruckOwner) hist.get("truckowner");
 		this.status = hist.get("status").toString();
 	}
-
 	
+	public TbCargoHist(TbCargoRequest request, TbMemberTruckOwner truckowner, String status) {
+		this.request = request;
+		this.ownerUid = request.getOwnerUid();
+		this.truckowner = truckowner;
+		this.status = status;
+	}
 }

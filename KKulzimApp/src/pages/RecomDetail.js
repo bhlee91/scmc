@@ -26,13 +26,18 @@ import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { isEmpty, formatFare } from "utils/CommonUtil";
-import { convertDateTime, formatDateTimeToString } from "utils/DateUtil";
+import { formatDateTimeToKorea } from "utils/DateUtil";
 import {
   getCargoRequestDetail
 } from "api/cargo/index";
+import {
+  setRequestTransportConfirm
+} from "api/truck/index";
 
 function RecomDetail({ navigation, route }) {
-  const [detail, setDetail] = useState({})
+  const [detail, setDetail] = useState({
+    images: []
+  })
 
   useEffect(() => {
     if (!isEmpty(route.params.reqId)) {
@@ -42,6 +47,26 @@ function RecomDetail({ navigation, route }) {
       })
     }
   }, [route.params?.reqId])
+
+  const handleRequestConfirm = () => {
+    const obj = {
+      reqId: route.params.reqId,
+      truckownerUid: route.params.truckownerUid,
+    }
+
+    setRequestTransportConfirm(obj)
+    .then(res => {
+      if (res.data) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }]
+        })
+      }
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
 
   return (
     <ScrollView style={styles.mainView}>
@@ -60,7 +85,7 @@ function RecomDetail({ navigation, route }) {
                   borderColor: '#E0E0E0',
                 }}>
                 <Image
-                  source={detail?.images === undefined ? require('/assets/images/logo11.png') : { uri: detail?.images[0].contents }}
+                  source={detail?.images.length === 0 ? require('/assets/images/logo11.png') : (detail?.images[0].contents === null ? require('/assets/images/logo11.png') : { uri: detail?.images[0].contents })}
                   style={{
                     width: 80,
                     height: 80,
@@ -108,9 +133,9 @@ function RecomDetail({ navigation, route }) {
                       style={{
                         padding: 5,
                         fontSize: 14,
-                        color: 'blue',
+                        color: '#43A047',
                       }}>
-                      {convertDateTime(detail?.departDatetimes)}
+                      {formatDateTimeToKorea(detail?.departDatetimes)}
                     </Paragraph>
                   </Card.Content>
                 </Card>
@@ -132,9 +157,9 @@ function RecomDetail({ navigation, route }) {
                       style={{
                         padding: 5,
                         fontSize: 14,
-                        color: 'blue',
+                        color: '#43A047',
                       }}>
-                      {convertDateTime(detail?.arrivalDatetimes)}
+                      {formatDateTimeToKorea(detail?.arrivalDatetimes)}
                     </Paragraph>
                   </Card.Content>
                 </Card>
@@ -146,7 +171,7 @@ function RecomDetail({ navigation, route }) {
                     <Pressable
                       style={styles.buttonZone}
                       onPress={() => Alert.alert('T-map 로직')}>
-                      <Text style={styles.ButtonText}>예상경로</Text>
+                      <Text style={styles.buttonText}>예상경로</Text>
                     </Pressable>
                   </View>
                 </View>
@@ -167,7 +192,7 @@ function RecomDetail({ navigation, route }) {
                   padding: 5,
                   fontSize: 16,
                   fontWeight: '500',
-                  color: 'blue',
+                  color: '#43A047',
                 }}>
                 운송비용 : {formatFare(detail?.transitFare)}원
               </Paragraph>
@@ -177,6 +202,7 @@ function RecomDetail({ navigation, route }) {
                   padding: 5,
                   fontSize: 16,
                   fontWeight: 'bold',
+                  color: '#43A047'
                 }}>
                 화주정보
               </Paragraph>
@@ -227,7 +253,7 @@ function RecomDetail({ navigation, route }) {
                   padding: 5,
                   fontSize: 16,
                   fontWeight: 'bold',
-                  color: 'blue',
+                  color: '#43A047',
                 }}>
                 기타정보
               </Paragraph>
@@ -290,16 +316,22 @@ function RecomDetail({ navigation, route }) {
         <View style={styles.menuView}>
           <View style={{flex: 1}}>
             <Pressable
-              style={styles.buttonZone}
-              onPress={() => Alert.alert('운송하기 로직')}>
-              <Text style={styles.ButtonText}>운송하기</Text>
+              style={styles.bottomButtonZone}
+              onPress={() => 
+                Alert.alert('꿀짐', '진행하시겠습니까?', [
+                  { text: '확인', onPress: () => handleRequestConfirm() },
+                  { text: '취소', onPress: () => { return }, },
+                ])
+              }
+            >
+              <Text style={styles.buttonText}>운송하기</Text>
             </Pressable>
           </View>
           <View style={{flex: 1}}>
             <Pressable
-              style={styles.buttonZone}
+              style={styles.bottomButtonZone}
               onPress={() => navigation.goBack()}>
-              <Text style={styles.ButtonText}>이전</Text>
+              <Text style={styles.buttonText}>이전</Text>
             </Pressable>
           </View>
         </View>
@@ -393,7 +425,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 
-  ButtonText: {
+  buttonText: {
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '300',
@@ -402,7 +434,17 @@ const styles = StyleSheet.create({
   buttonZone: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#FFD740',
+    height: 40,
+    borderWidth: 0.5,
+    borderColor: '#E0E0E0',
+    borderRadius: 30,
+  },
+
+  bottomButtonZone: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFD740',
     height: 40,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',
@@ -427,11 +469,11 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: 'yellow',
     fontSize: 15,
-    color: 'blue',
+    color: '#43A047',
   },
   title2: {
     fontSize: 15,
-    color: 'blue',
+    color: '#43A047',
   },
 
   recommendtext: {

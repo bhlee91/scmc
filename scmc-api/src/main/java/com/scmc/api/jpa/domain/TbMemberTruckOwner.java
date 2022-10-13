@@ -99,7 +99,7 @@ public class TbMemberTruckOwner {
 	private TbSysAttachfile attachFile;
 	
 	@JsonManagedReference
-	@OneToMany(mappedBy = "tbMemberTruckOwner", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "truckowner", fetch = FetchType.LAZY)
 	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();
 	
 	@JsonManagedReference
