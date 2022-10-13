@@ -127,7 +127,7 @@ function Home({ navigation, props }) {
     .then(res => {
       setUser(res.data?.owner)
       setCargoInfo(res.data?.info)
-      setCargoList(res.data.cargo_list)
+      setCargoList(res.data?.cargo_list)
       setCurrentLocation(res.data.documents?.address.address_name)
     })
 
@@ -300,6 +300,7 @@ function Home({ navigation, props }) {
                 cargoList.map((cargo) => {
                   return (
                     <Card
+                      key={cargo.histUid}
                       style={styles.recommendcardcontents}
                       onPress={() => toCargoDetail(cargo.request.reqId)}>
                       <Card.Content>
