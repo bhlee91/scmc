@@ -171,6 +171,16 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(truckOwnerService.truckOwnerLogin(param), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "차주 비밀번호 변경", notes = "차주 비밀번호를 변경한다.")
+	@PostMapping("/truck/chpwd")
+	public ResponseEntity<?> changePassowrd(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("==================");
+		log.info("차주 비밀번호 변경");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.changePassowrd(param), HttpStatus.OK);
+	}
+	
 	@ApiOperation(value = "두 지점 거리 계산(테스트용)", notes = "두 지점 거리 계산(테스트용)")
 	@GetMapping("/truck/distance/test")
 	public ResponseEntity<?> getDistanceTest(

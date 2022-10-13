@@ -73,6 +73,25 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		return jwtTokenProvider.createTruckToken(user.getCarNumber());
 	}
 	
+	@Override
+	@Transactional
+	public String changePassowrd(HashMap<String, Object> param) {
+		
+		String msg = "";
+		
+		TbMemberTruckOwner tmto = tbMemberTruckOwnerRepository.findByPhoneNumber(param.get("phoneNumber").toString());
+		
+		if(tmto != null) {
+			tmto.setPassword(passwordEncoder.encode((CharSequence) param.get("password".toString())));
+			tbMemberTruckOwnerRepository.save(tmto);
+			msg = " 비밀번호 변경이 완료되었습니다. 다시 로그인해주세요.";	
+		} else { 
+			msg = "알 수 없는 오류가 발생했습니다. 다시 시도해주세요.";
+		}
+		
+		return msg;
+	}
+	
 	@Transactional
 	@Override
 	public String insertTruckOwner(HashMap<String, Object> obj) {

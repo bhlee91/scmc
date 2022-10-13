@@ -27,6 +27,6 @@ public interface TruckOwnerService {
 	Map<String, Object> getTruckOwnerMainInfo(long uid, String lat, String lon);
 	Map<String, Object> getTruckOwnerCurrentLocation(String lat, String lon);
 	String truckOwnerLogin(HashMap<String, Object> param);
-	
+	String changePassowrd(HashMap<String, Object> param);
 	List<?> getCargoListInRadius(double lat, double lon, int rad, String d);
 }
