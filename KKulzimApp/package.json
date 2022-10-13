@@ -51,6 +51,8 @@
     "react-native-webview": "^11.23.1",
     "react-redux": "^8.0.2",
     "redux-flipper": "^2.0.2",
+    "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "rn-async-storage-flipper": "^0.0.10",
     "socket.io-client": "^4.5.2"
   },
