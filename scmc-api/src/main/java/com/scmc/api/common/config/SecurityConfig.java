@@ -41,6 +41,7 @@ public class SecurityConfig {
 				.csrf()
 					.disable()
 				.exceptionHandling()
+				.authenticationEntryPoint(null)
 					.and()
 				.authorizeHttpRequests()
 				.antMatchers(

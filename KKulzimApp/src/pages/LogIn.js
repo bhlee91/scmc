@@ -41,6 +41,8 @@ function LogIn({navigation}) {
   const [loading, setLoading] = useState(false);
   const carnoRef = useRef();
   const passwordRef = useRef();
+  // const [accessToken, setAccessToken] = useState('')
+  // const [refreshToken, setRefreshToken] = useState('')
   const dispatch = useAppDispatch();
 
   const toSignUp = useCallback(() => {
@@ -74,19 +76,22 @@ function LogIn({navigation}) {
       setLoading(true)
       loginTruckOwner(info)
       .then(res => {
-        if(res.data !== null ){
-         console.log(res.data)
+        const tokens = res.data
+        if(res.data !== null ){ 
          dispatch(
-          userSlice.actions.SET_LOGIN({ 
-            isLoggedIn : true
+          userSlice.actions.SET_LOGIN({
+            isLoggedIn : true,
+            accessToken : res.data.accessToken,
+            refreshToken: res.data.refreshToken
           })
-         )
-         navigation.replace('Main')
+         
+        ) 
+         AsyncStorage.setItem('isLoggedIn', true) 
+         AsyncStorage.setItem('accessToken', res.data.accessToken)
+         AsyncStorage.setItem('refreshToken', res.data.refreshToken)
+         navigation.navigate("Main")
         }
       })
-      // .then(() =>{
-      //   
-      // })
       .catch(err => {
         console.log(err)
       })
@@ -110,12 +115,17 @@ function LogIn({navigation}) {
       loginTruckOwner(info)
       .then(res => {
         if(res.data !== null ){
-         console.log(res.data)
+         setAccessToken(res.data.accessToken)
+         setRefreshToken(res.data.refreshToken)
          dispatch(
           userSlice.actions.SET_LOGIN({
-            isLoggedIn : true
+            isLoggedIn : true,
+            accessToken : accessToken,
+            refreshToken: refreshToken
           })
          ) 
+         AsyncStorage.setItem('accessToken', res.data.accessToken)
+         AsyncStorage.setItem('refreshToken', res.data.refreshToken)
          navigation.navigate("Main")
         }
       })

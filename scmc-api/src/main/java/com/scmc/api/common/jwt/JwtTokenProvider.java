@@ -3,6 +3,7 @@ package com.scmc.api.common.jwt;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -11,6 +12,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.scmc.api.jpa.domain.TbMemberTruckOwner;
+import com.scmc.api.jpa.repository.TbMemberTruckOwnerRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,6 +41,9 @@ public class JwtTokenProvider {
 	
 	private final CustomUserDetailsService customUserDetailsService;
 	
+	
+	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
+	
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -56,17 +63,38 @@ public class JwtTokenProvider {
 				.compact();
 	}
 	
-	public String createTruckToken(String carNumber) {
+	public TokenDto createTruckToken(String carNumber) {
 		Claims claims = Jwts.claims().setSubject(carNumber);
 		
 		Date now = new Date();
 		
-		return Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + tokenValidTime))
-				.signWith(SignatureAlgorithm.HS256, secretKey)
-				.compact();
+		String refreshToken = "";
+		
+		TbMemberTruckOwner user = 
+				tbMemberTruckOwnerRepository.findByCarNumber(carNumber).orElseThrow();
+		
+		String accessToken = Jwts.builder()
+							.setClaims(claims)
+							.setIssuedAt(now)
+							.setExpiration(new Date(now.getTime() + tokenValidTime))
+							.signWith(SignatureAlgorithm.HS256, secretKey)
+							.compact(); 
+		
+		if(user.getRefreshToken() == null) {
+			refreshToken = Jwts.builder()
+					.setExpiration(new Date(now.getTime() + tokenValidTime * 7))
+					.signWith(SignatureAlgorithm.HS256, secretKey)
+					.compact();
+		}else {
+			refreshToken = user.getRefreshToken();
+		}
+		
+		TokenDto res = new TokenDto();
+		res.setAccessToken(accessToken);
+		res.setRefreshToken(refreshToken);
+		
+		
+		return res;
 	}
 	
 	// JWT 토큰에서 인증 정보 조회

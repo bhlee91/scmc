@@ -3,6 +3,8 @@ import { PURGE } from 'redux-persist';
 
 const initialState = {
     isLoggedIn: false,
+    accessToken: '',
+    refreshToken:'',
     phoneNumber: ''
 }
 
@@ -13,10 +15,14 @@ const userSlice = createSlice({
     SET_LOGIN(state, action) {
       state.phoneNumber = action.payload.phoneNumber;
       state.isLoggedIn = action.payload.isLoggedIn;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     },
     SET_LOGOUT(state) {
       state.phoneNumber = '';
       state.isLoggedIn = false;
+      state.accessToken = '';
+      state.refreshToken = '';
     },
     SET_CHPWD(state, action) {
       state.phoneNumber = action.payload.phoneNumber;

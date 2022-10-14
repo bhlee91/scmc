@@ -46,6 +46,7 @@ import Address from "./src/common/Address";
 import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useIsFocused } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -139,13 +140,14 @@ function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   //   const isLoggedIn = useSelector(state => !!state.user.email);
   const isFocused = useIsFocused();
-  const isLoggedIn = store.getState().user.isLoggedIn
+  const isLoggedIn = AsyncStorage.getItem('isLoggedIn')
+  const accessToken = AsyncStorage.getItem('accessToken')
+  const refreshToken = AsyncStorage.getItem('refreshToken')
   const [loading, setLoading] = useState(false);
   //const isLoggedIn = true
 
-  console.log(isLoggedIn)    
   useEffect(() => {
-    console.log()    
+    console.log(accessToken)
   },[isFocused, isLoggedIn])
 
   return (
@@ -165,8 +167,8 @@ function AppInner({navigation}) {
         headerTitleStyle: {fontsize: 24},
         headerTintColor: '#ffffff',
       }}>
-      <Stack.Group screenOptions={{headerShown: false}}>
-      {isLoggedIn ? (
+      <Stack.Group screenOptions={{headerShown: true}}>
+      {isLoggedIn && accessToken !== null  && refreshToken !== null ? (
         // Screens for logged in users
         <>
           <Stack.Screen

@@ -98,6 +98,9 @@ public class TbMemberTruckOwner {
 	@JoinColumn(name = "attachId")
 	private TbSysAttachfile attachFile;
 	
+	@Column(name = "refresh_token")
+	private String refreshToken;
+	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "truckowner", fetch = FetchType.LAZY)
 	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();

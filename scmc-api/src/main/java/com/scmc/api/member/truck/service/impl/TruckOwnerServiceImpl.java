@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.scmc.api.common.jwt.JwtTokenProvider;
+import com.scmc.api.common.jwt.TokenDto;
 import com.scmc.api.common.utils.HiWorksUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
 import com.scmc.api.jpa.domain.QTbMemberTruckOwner;
@@ -71,15 +72,21 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	QTbMemberTruckOwner tmto = QTbMemberTruckOwner.tbMemberTruckOwner;
 	
 	@Override
-	public String truckOwnerLogin(HashMap<String, Object> param) {
+	public TokenDto truckOwnerLogin(HashMap<String, Object> param) {
 		TbMemberTruckOwner user = 
 				tbMemberTruckOwnerRepository.findByCarNumber(param.get("carNumber").toString())
 				.orElseThrow(() -> new IllegalArgumentException("가입되지 않은 차량 번호입니다."));
 		if(!passwordEncoder.matches((CharSequence) param.get("password"), user.getPassword())) {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
+		
+		TokenDto token = jwtTokenProvider.createTruckToken(user.getCarNumber());
+		if(user != null) {
+			user.setRefreshToken(token.getRefreshToken());
+			tbMemberTruckOwnerRepository.save(user);
+		}
 																				
-		return jwtTokenProvider.createTruckToken(user.getCarNumber());
+		return token;
 	}
 	
 	@Override
