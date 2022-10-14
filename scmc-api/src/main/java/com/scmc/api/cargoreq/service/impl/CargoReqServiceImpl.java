@@ -180,6 +180,16 @@ public class CargoReqServiceImpl implements CargoReqService {
 		
 		for (TbCargoImage image : request.getImages()) {
 			image.setContents(new String(image.getImageContents()));
+			
+			if (image.getMemDiv().equals("M01")) {
+				request.getCargoImages().add(image);
+			} else if (image.getMemDiv().equals("M02")) {
+				if (image.getMethodDiv().equals("LM")) {
+					request.getLoadImages().add(image);
+				} else {
+					request.getUnloadImages().add(image);
+				}
+			}
 		}
 		
 		return request;

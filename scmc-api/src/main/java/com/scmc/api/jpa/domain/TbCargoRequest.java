@@ -160,8 +160,15 @@ public class TbCargoRequest {
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "tbCargoRequest", fetch = FetchType.LAZY)
-	@OrderBy("image_seq asc")
+	@OrderBy("mem_div asc, method_div asc, image_seq asc")
 	private List<TbCargoImage> images = new ArrayList<TbCargoImage>();
+	
+	@Transient
+	private List<TbCargoImage> cargoImages = new ArrayList<TbCargoImage>();
+	@Transient
+	private List<TbCargoImage> loadImages = new ArrayList<TbCargoImage>();
+	@Transient
+	private List<TbCargoImage> unloadImages = new ArrayList<TbCargoImage>();
 	
 	public TbCargoRequest() {}
 	

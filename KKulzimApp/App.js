@@ -14,6 +14,7 @@ import AppInner from './AppInner';
 // import store from './src/store';
 import {Provider as StoreProvider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
+import { MenuProvider } from 'react-native-popup-menu';
 
 const theme = {
   ...DefaultTheme,
@@ -29,13 +30,15 @@ const theme = {
 
 function App() {
   return (
-    <StoreProvider store={store}>
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <AppInner />
-        </NavigationContainer>
-      </PaperProvider>
-    </StoreProvider>
+    <MenuProvider style={{ backgroundColor: 'white', padding: 10, justifyContent: 'space-between' }}>
+      <StoreProvider store={store}>
+        <PaperProvider theme={theme}>
+          <NavigationContainer>
+            <AppInner />
+          </NavigationContainer>
+        </PaperProvider>
+      </StoreProvider>
+    </MenuProvider>
   );
 }
 

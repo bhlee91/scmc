@@ -46,6 +46,9 @@ public class TbCargoImage {
 	@Column(name = "image_contents")
 	private byte[] imageContents;
 	
+	@Column(name = "method_div")
+	private String methodDiv;
+	
 	@Transient
 	private String contents;
 	
@@ -63,6 +66,8 @@ public class TbCargoImage {
 		this.imageSeq = Integer.parseInt(request.get("seq").toString());
 		this.imageContents = request.get("contents").toString().getBytes();
 		this.contents = new String(imageContents);
+		
+		if (request.containsKey("methodDiv")) this.methodDiv = request.get("methodDiv").toString();
 	}
 	
 }

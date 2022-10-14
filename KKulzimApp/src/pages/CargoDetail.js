@@ -1,48 +1,83 @@
-import React, {useCallback, useState} from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
-  Alert,
   Pressable,
   Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
-  TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
-import {Card, Title, Divider, Paragraph, Badge, Chip} from 'react-native-paper';
+import {Card, Title, Divider, Paragraph, Chip} from 'react-native-paper';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers,
+} from 'react-native-popup-menu';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer'; //사이즈가 커 리사이징 필요
-import axios, {AxiosError} from 'axios';
-import Config from 'react-native-config';
-import {useSelector} from 'react-redux';
-import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import { isEmpty, formatFare } from "utils/CommonUtil";
+import { formatDateTimeToKorea } from "utils/DateUtil";
+import {
+  getCargoRequestDetail
+} from "api/cargo/index";
+
 function CargoDetail({ navigation, route }) {
+  const { Popover } = renderers
+
+  const [cargo, setCargo] = useState({
+    images: []
+  })
+  const [loadImages, setLoadImages] = useState([])
+  const [unloadImages, setUnloadImages] = useState([])
+  const [cargoThumbnail, setCargoThumbnail] = useState("")
   const [image, setImage] = useState({
     uri: '',
     name: '',
     type: '',
-  });
+  })
+  const [preview, setPreview] = useState()
+  const [fileImage, setFileImage] = React.useState([])
+  const [previewFile, setPreviewFile] = React.useState([])
 
-  const [preview, setPreview] = useState();
+  useEffect(() => {
+    getCargoRequestDetail(route.params.reqId)
+    .then(res => {
+      if (res.data !== null) {
+        if (res.data.cargoImages.length > 0) {
+          setCargoThumbnail(res.data.cargoImages[0])
+        }
 
-  const onResponse = useCallback(async response => {
+        if (res.data.loadImages.length > 0) {
+          setLoadImages(res.data.loadImages)
+        }
+
+        if (res.data.unloadImages.length > 0) {
+          setUnloadImages(res.data.unloadImages)
+        }
+
+        delete res.data.images
+        setCargo(res.data)
+      }
+    })
+  }, [route.params?.reqId])
+
+  const onResponse = useCallback(async (response, d, i) => {
     // console.log(
     //   '카메라 : ' + '카메라 w' + response.width,
     //   '카메라 높이 : ' + response.height,
     //   +'방향 : ' + response.exif,
     // );
-
-    setPreview({uri: `data:${response.mime};base64,${response.data}`});
-    const orientation = response.exif?.Orientation;
+    console.log('onResponse')
+    console.log(d, i)
+    console.log(response)
+    setPreview({uri: `data:${response.mime};base64,${response.data}`})
+    const orientation = response.exif?.Orientation
 
     return ImageResizer.createResizedImage(
       response.path, //파일의 경로 file://안드로이드 경로
@@ -52,37 +87,40 @@ function CargoDetail({ navigation, route }) {
       100, // 사진의 품질
       0, // rotation
     )
-      .then(r => {
-        console.log(
-          '리사이징 : ' + r.uri,
-          '이름 : ' + r.name,
-          '타입 : ' + response.mime,
-        );
-        // 리사이징 이미지
+    .then(r => {
+      console.log(r)
+      console.log(
+        '리사이징 : ' + r.uri,
+        '이름 : ' + r.name,
+        '타입 : ' + response.mime,
+      )
+      // 리사이징 이미지
 
-        setImage({
-          uri: r.uri,
-          name: r.name,
-          type: response.mime,
-        });
+      setImage({
+        uri: r.uri,
+        name: r.name,
+        type: response.mime,
       })
-      .catch(err => {
-        console.log('리사이즈 에러 + ' + err);
-        ImagePicker.clean();
-      });
-  }, []);
+    })
+    .catch(err => {
+      console.log('리사이즈 에러 + ' + err)
+      ImagePicker.clean()
+    })
+  }, [])
 
-  const onTakePhoto = useCallback(() => {
-    return ImagePicker.openCamera({
+  const onTakePhoto = useCallback(async (d, i) => {
+    console.log('onTakePhoto')
+    console.log(d, i)
+    return await ImagePicker.openCamera({
       includeBase64: true, //미리 보기 표시를 위해
       includeExif: true, //카메라 찍는 방향
       saveToPhotos: true,
     })
-      .then(onResponse)
-      .catch(e => {
-        console.log('카메라 에러 ==> ' + e);
-      });
-  }, [onResponse]);
+    .then(r => onResponse(r, d, i))
+    .catch(e => {
+      console.log('카메라 에러 ==> ' + e)
+    })
+  }, [onResponse])
 
   const onChangeFile = useCallback(() => {
     return ImagePicker.openPicker({
@@ -90,9 +128,9 @@ function CargoDetail({ navigation, route }) {
       includeBase64: true,
       mediaType: 'photo',
     })
-      .then(onResponse)
-      .catch(console.log);
-  }, [onResponse]);
+    .then(onResponse)
+    .catch(console.log)
+  }, [onResponse])
 
   // const onComplete = useCallback(async () => {
   //   if (!image) {
@@ -124,6 +162,23 @@ function CargoDetail({ navigation, route }) {
   //   }
   // }, [dispatch, navigation, image, orderId, accessToken]);
 
+  const onAddImage = (d, i) => {
+    onTakePhoto(d, i)
+  }
+
+  const onDeleteImage = (d, i) => {
+    console.log(d, i)
+  }
+
+  const handleImageList = (d, i) => {
+    switch(d) {
+      case 'load':
+        break;
+      case 'unload':
+        break;
+    }
+  }
+
   return (
     <ScrollView style={styles.mainView}>
       {/* 화물정보 */}
@@ -142,10 +197,10 @@ function CargoDetail({ navigation, route }) {
                   backgroundColor: '#FFFFFF',
                 }}>
                 <Image
-                  source={require('/assets/images/logo11.png')}
+                  source={isEmpty(cargoThumbnail.contents) ? require('/assets/images/logo11.png'): { uri: cargoThumbnail.contents }}
                   style={{
-                    width: 80,
-                    height: 80,
+                    width: 90,
+                    height: 90,
                     resizeMode: 'cover',
                     marginLeft: 2,
                     marginRight: 8,
@@ -156,41 +211,19 @@ function CargoDetail({ navigation, route }) {
                     style={{
                       marginLeft: 40,
                     }}>
-                    운송중
+                    {cargo.statusName}
                   </Chip>
                   <Text style={styles.cargotitletext}>
-                    크기 : <Text style={styles.cargotext}>2M x 2M x 2M</Text>
+                    크기 : <Text style={styles.cargotext}>{cargo?.cwidth}m x {cargo?.cverticalreal}m x {cargo?.cheight}</Text>
                   </Text>
                   <Text style={styles.cargotitletext}>
-                    중량 : <Text style={styles.cargotext}>30kg</Text>
+                    중량 : <Text style={styles.cargotext}>{cargo?.cweight}㎏</Text>
                   </Text>
                   <Text style={styles.cargotitletext}>
-                    체적 : <Text style={styles.cargotext}>10M3</Text>
+                    체적 : <Text style={styles.cargotext}>{(cargo?.cwidth * cargo?.cverticalreal * cargo?.cheight).toFixed(1)}㎥</Text>
                   </Text>
                 </View>
               </View>
-              {/* <View
-                style={{
-                  height: 150,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <View style={{width: '40%'}}>
-                  <View style={{width: 100, height: 100, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 100, height: 100}}
-                    />
-                  </View>
-                </View>
-                <View style={{flex: 1, width: '60%', marginLeft: 5}}>
-                  <Chip icon="information">운송완료</Chip>
-                  <Text style={{fontSize: 16}}>크기 : 2M x 2M x 2M</Text>
-                  <Text style={{fontSize: 16}}>중량 : 30kg</Text>
-                  <Text style={{fontSize: 16}}>체적 : 10M3</Text>
-                </View>
-              </View> */}
             </Card.Content>
           </Card>
         </View>
@@ -202,7 +235,12 @@ function CargoDetail({ navigation, route }) {
           <Card style={styles.detailcard}>
             <Card.Content>
               <Title style={styles.title2}>상차지</Title>
-              <Paragraph>2022년 10월04일 12시 00분</Paragraph>
+              <Paragraph>
+                {formatDateTimeToKorea(cargo?.departDatetimes)}
+              </Paragraph>
+              <Paragraph>
+                {cargo?.departAddrSt} {isEmpty(cargo?.departAddrSt2) ? "" : `(${cargo?.departAddrSt2})`}
+              </Paragraph>
               <View
                 style={{
                   height: 120,
@@ -217,11 +255,28 @@ function CargoDetail({ navigation, route }) {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                  <View style={{ width: 120, height: 120, borderWidth: 0.5 }}>
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(loadImages[0]?.contents) ? require('/assets/images/logo11.png') : { uri: loadImages[0].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          disabled={!isEmpty(loadImages[0]?.contents)}
+                          onSelect={() => onAddImage('load', 0)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          disabled={isEmpty(loadImages[0]?.contents)}
+                          onSelect={() => onDeleteImage('load', 0)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
                 <View
@@ -233,10 +288,25 @@ function CargoDetail({ navigation, route }) {
                     justifyContent: 'center',
                   }}>
                   <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(loadImages[1]?.contents) ? require('/assets/images/logo11.png') : { uri: loadImages[1].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('load', 1)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('load', 1)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
               </View>
@@ -255,10 +325,25 @@ function CargoDetail({ navigation, route }) {
                     justifyContent: 'center',
                   }}>
                   <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(loadImages[2]?.contents) ? require('/assets/images/logo11.png') : { uri: loadImages[2].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('load', 2)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('load', 2)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
                 <View
@@ -270,10 +355,25 @@ function CargoDetail({ navigation, route }) {
                     justifyContent: 'center',
                   }}>
                   <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(loadImages[3]?.contents) ? require('/assets/images/logo11.png') : { uri: loadImages[3].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('load', 3)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('load', 3)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
               </View>
@@ -289,7 +389,12 @@ function CargoDetail({ navigation, route }) {
           <Card style={styles.detailcard}>
             <Card.Content>
               <Title style={styles.title2}>하차지</Title>
-              <Paragraph>2022년 10월04일 12시 00분</Paragraph>
+              <Paragraph>
+                {formatDateTimeToKorea(cargo?.arrivalDatetimes)}
+              </Paragraph>
+              <Paragraph>
+                {cargo?.arrivalAddrSt} {isEmpty(cargo?.arrivalAddrSt2) ? "" : `(${cargo?.arrivalAddrSt2})`}
+              </Paragraph>
               <View
                 style={{
                   height: 120,
@@ -305,10 +410,25 @@ function CargoDetail({ navigation, route }) {
                     justifyContent: 'center',
                   }}>
                   <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(unloadImages[0]?.contents) ? require('/assets/images/logo11.png') : { uri: unloadImages[0].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('unload', 0)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('unload', 0)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
                 <View
@@ -320,51 +440,92 @@ function CargoDetail({ navigation, route }) {
                     justifyContent: 'center',
                   }}>
                   <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                    <Image
-                      source={require('/assets/images/logo11.png')}
-                      style={{width: 120, height: 120}}
-                    />
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(unloadImages[1]?.contents) ? require('/assets/images/logo11.png') : { uri: unloadImages[1].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('unload', 1)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('unload', 1)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
               </View>
-              {preview && (
+              <View
+                style={{
+                  height: 120,
+                  marginTop: 5,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                 <View
                   style={{
-                    height: 120,
-                    marginTop: 5,
-                    flexDirection: 'row',
+                    width: '50%',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <View
-                    style={{
-                      flex: 1,
-                      marginLeft: 20,
-                      alignItems: 'flex-start',
-                      justifyContent: 'center',
-                    }}>
-                    <View style={{width: 120, height: 120, borderWidth: 0.5}}>
-                      <View>
-                        <Image style={styles.previewImage} source={preview} />
-                      </View>
-                    </View>
+                  <View style={{width: 120, height: 120, borderWidth: 0.5}}>
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(unloadImages[2]?.contents) ? require('/assets/images/logo11.png') : { uri: unloadImages[2].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('unload', 2)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('unload', 2)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
-              )}
-              <View>
-                <View style={styles.menuView}>
-                  <View
-                    style={{
-                      flex: 1,
-                    }}>
-                    <Pressable style={styles.buttonZone} onPress={onTakePhoto}>
-                      <Icon name="camera-alt" color="white" size={30} />
-                    </Pressable>
-                  </View>
-                  <View style={{flex: 1}}>
-                    <Pressable style={styles.buttonZone} onPress={onChangeFile}>
-                      <Icon name="image-search" color="white" size={30} />
-                    </Pressable>
+                <View
+                  style={{
+                    flex: 1,
+                    width: '50%',
+                    marginLeft: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <View style={{width: 120, height: 120, borderWidth: 0.5}}>
+                    <Menu renderer={Popover} rendererProps={{ preferredPlacement: 'bottom' }}>
+                      <MenuTrigger>
+                        <Image
+                          source={isEmpty(unloadImages[3]?.contents) ? require('/assets/images/logo11.png') : { uri: unloadImages[3].contents }}
+                          style={{width: 120, height: 120}}
+                        />
+                      </MenuTrigger>
+                      <MenuOptions style={{ padding: 20 }}>
+                        <MenuOption 
+                          onSelect={() => onAddImage('unload', 3)}>
+                          <Text style={{ color: 'black' }}>추가</Text>
+                        </MenuOption>
+                        <Text>{' '}</Text>
+                        <MenuOption 
+                          onSelect={() => onDeleteImage('unload', 3)}>
+                          <Text style={{ color: 'black' }}>삭제</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
                   </View>
                 </View>
               </View>
@@ -385,7 +546,7 @@ function CargoDetail({ navigation, route }) {
                   fontWeight: '500',
                   color: '#43A047',
                 }}>
-                운송비용 : 150,000원
+                운송비용 : {formatFare(cargo?.transitFare)}원
               </Paragraph>
               <Divider />
               <Paragraph
@@ -404,7 +565,7 @@ function CargoDetail({ navigation, route }) {
                   fontSize: 15,
                   fontWeight: '500',
                 }}>
-                화주명 : 홍길동
+                화주명 : {cargo?.cargoownerName}
               </Paragraph>
               <Divider />
               <Paragraph
@@ -413,7 +574,7 @@ function CargoDetail({ navigation, route }) {
                   fontSize: 15,
                   fontWeight: '500',
                 }}>
-                화주연락처 : 010-1234-5678
+                화주연락처 : {cargo?.receiverPhone}
               </Paragraph>
             </Card.Content>
           </Card>
