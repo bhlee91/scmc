@@ -60,6 +60,40 @@ function LogIn({navigation}) {
     navigation.navigate('ConfirmSms');
   }, [navigation]);
 
+  const onLoginClick = () => {
+    const info = {
+      carNumber: carno,
+      password: password
+    }
+    if (!carno || !carno.trim()) {
+      return Alert.alert('알림', '차량번호를 입력해주세요.');
+    }
+    else if (!password || !password.trim()) {
+      return Alert.alert('알림', '비밀번호를 입력해주세요.');
+    } else {
+      setLoading(true)
+      loginTruckOwner(info)
+      .then(res => {
+        if(res.data !== null ){
+         console.log(res.data)
+         dispatch(
+          userSlice.actions.SET_LOGIN({ 
+            isLoggedIn : true
+          })
+         )
+         navigation.replace('Main')
+        }
+      })
+      // .then(() =>{
+      //   
+      // })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+
+  }
+
   const onSubmit = useCallback(() => {
     const info = {
       carNumber: carno,
@@ -82,7 +116,7 @@ function LogIn({navigation}) {
             isLoggedIn : true
           })
          ) 
-         navigation.navigate('')
+         navigation.navigate("Main")
         }
       })
       .catch(err => {
@@ -178,13 +212,12 @@ function LogIn({navigation}) {
             clearButtonMode="while-editing"
             underlineColorAndroid="transparent"
             ref={passwordRef}
-            onSubmitEditing={onSubmit}
           />
         </View>
 
         <TouchableOpacity
           style={[styles.buttonContainer, styles.loginButton]}
-          onPress={onSubmit}>
+          onPress={onLoginClick}>
           <Text style={styles.loginText}>로그인</Text>
         </TouchableOpacity>
 

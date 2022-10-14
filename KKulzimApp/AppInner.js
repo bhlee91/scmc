@@ -45,6 +45,7 @@ import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
 import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useIsFocused } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -56,7 +57,7 @@ function Main() {
   return (
     <Tab.Navigator
       style={styles.tabbar}
-      screenOptions={({route, navigation}) => ({
+      screenOptions={({route}) => ({
         cardStyle: {backgroundColor: '#ffffff'},
         headerStyle: {
           height: 60,
@@ -137,173 +138,19 @@ function Main() {
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   //   const isLoggedIn = useSelector(state => !!state.user.email);
+  const isFocused = useIsFocused();
   const isLoggedIn = store.getState().user.isLoggedIn
-  // const [isLoggedIn, SetIsLoggedIn] = useState(false);
-  
-  // SetIsLoggedIn(st)
-  //console.log('isLoggedIn', isLoggedIn);
+  const [loading, setLoading] = useState(false);
+  //const isLoggedIn = true
 
-  //   const [socket, disconnect] = useSocket();
-
-  //   const dispatch = useAppDispatch();
-
-  //   usePermissions();
-
-  // 키,값
-
-  //   useEffect(() => {
-  //     const callback = (data) => {
-  //       console.log(data);
-  //       dispatch(orderSlice.actions.addOrder(data));
-  //     };
-  //     if (socket && isLoggedIn) {
-  //       socket.emit('acceptOrder', 'hello');
-  //       socket.on('order', callback);
-  //     }
-  //     return () => {
-  //       if (socket) {
-  //         socket.off('order', callback);
-  //       }
-  //     };
-  //   }, [dispatch, isLoggedIn, socket]);
-
-  //   useEffect(() => {
-  //     if (!isLoggedIn) {
-  //       console.log('!isLoggedIn', !isLoggedIn);
-  //       disconnect();
-  //     }
-  //   }, [isLoggedIn, disconnect]);
-  // 중복 된 상황이 계속 발생 시 Axios interceptors 를 사용
-  //   useEffect(() => {
-  //     axios.interceptors.response.use(
-  //       response => {
-  //         return response;
-  //       },
-  //       async error => {
-  //         const {
-  //           config,
-  //           response: {status},
-  //         } = error;
-  //         if (status === 419) {
-  //           if (error.response.data.code === 'expired') {
-  //             const originalRequest = config;
-  //             const refreshToken = await EncryptedStorage.getItem('refreshToken');
-  //             // token refresh 요청
-  //             const {data} = await axios.post(
-  //               `${Config.API_URL}/refreshToken`, // token refresh api
-  //               {},
-  //               {headers: {authorization: `Bearer ${refreshToken}`}},
-  //             );
-  //             // 새로운 토큰 저장
-  //             dispatch(userSlice.actions.setAccessToken(data.data.accessToken));
-  //             originalRequest.headers.authorization = `Bearer ${data.data.accessToken}`; //엣날 요청 보냈던 것은 새로은 토근으로 갱신
-  //             // 419로 요청 실패했던 요청 새로운 토큰으로 재요청
-  //             return axios(originalRequest);
-  //           }
-  //         }
-  //         return Promise.reject(error);
-  //       },
-  //     );
-  //   }, [dispatch]);
-
-  // 앱 껏다 켜돟 로그인 유지 하도록********
-  // Refresh 토큰 확인 하여 서버에 보내 토근 확인 하기
-  //   useEffect(() => {
-  //     const getTokenAndRefresh = async () => {
-  //       try {
-  //         const token = await EncryptedStorage.getItem('refreshToken');
-  //         if (!token) {
-  //           return;
-  //         }
-  //         const response = await axios.post(
-  //           `${Config.API_URL}/refreshToken`,
-  //           {},
-  //           {
-  //             headers: {
-  //               authorization: `Bearer ${token}`,
-  //             },
-  //           },
-  //         );
-  //         dispatch(
-  //           userSlice.actions.setUser({
-  //             name: response.data.data.name,
-  //             email: response.data.data.email,
-  //             accessToken: response.data.data.accessToken,
-  //           }),
-  //         );
-  //       } catch (error) {
-  //         console.error(error);
-  //         if ((error as AxiosError).response?.data.code === 'expired') {
-  //           Alert.alert('알림', '다시 로그인 해주세요.');
-  //         }
-  //       } finally {
-  //         // 스플래시 스크린 없애기
-  //       }
-  //     };
-  //     getTokenAndRefresh();
-  //   }, [dispatch]);
+  console.log(isLoggedIn)    
+  useEffect(() => {
+    console.log()    
+  },[isFocused, isLoggedIn])
 
   return (
-    // <Tab.Navigator
-    //   style={styles.tabbar}
-    //   screenOptions={({route}) => ({
-    //     tabBarIcon: ({focused, color, size}) => {
-    //       let iconName;
-    //       if (route.name === 'Home') {
-    //         iconName = focused
-    //           ? require('./src/assets/images/home.png')
-    //           : require('./src/assets/images/outline_home.png');
-    //       } else if (route.name === '화물등록') {
-    //         iconName = focused
-    //           ? require('./src/assets/images/register.png')
-    //           : require('./src/assets/images/outline_register.png');
-    //       } else if (route.name === '추천화물') {
-    //         iconName = focused
-    //           ? require('./src/assets/images/recommend.png')
-    //           : require('./src/assets/images/outline_recommend.png');
-    //       } else if (route.name === '마이페이지') {
-    //         iconName = focused
-    //           ? require('./src/assets/images/my.png')
-    //           : require('./src/assets/images/outline_my.png');
-    //       }
-
-    //       return <Image source={iconName} style={{width: 25, height: 25}} />;
-    //     },
-    //     tabBarActiveTintColor: '#e91e63',
-    //   })}>
-    //   <Tab.Screen
-    //     name="Home"
-    //     component={Home}
-    //     options={{
-    //       tabBarLabel: 'Home',
-    //     }}
-    //   />
-    //   <Tab.Screen
-    //     name="화물등록"
-    //     component={ShipInfo}
-    //     options={{
-    //       tabBarLabel: '화물등록',
-    //     }}
-    //   />
-    //   <Tab.Screen
-    //     name="추천화물"
-    //     component={RecomShipInfo}
-    //     options={{
-    //       tabBarLabel: '추천화물',
-    //     }}
-    //   />
-
-    //   <Tab.Screen
-    //     name="마이페이지"
-    //     component={MyInfo}
-    //     options={{
-    //       tabBarLabel: '마이페이지',
-    //     }}
-    //   />
-    // </Tab.Navigator>
-
     <Stack.Navigator
-      initialRouteName="Main"
+      //initialRouteName="Main"
       screenOptions={{
         cardStyle: {backgroundColor: '#ffffff'},
         headerStyle: {
@@ -318,37 +165,47 @@ function AppInner({navigation}) {
         headerTitleStyle: {fontsize: 24},
         headerTintColor: '#ffffff',
       }}>
+      <Stack.Group screenOptions={{headerShown: false}}>
       {isLoggedIn ? (
         // Screens for logged in users
-        <Stack.Group screenOptions={{headerShown: false}}>
+        <>
           <Stack.Screen
             name="Main"
             component={Main}
-             options={{headerShown: false, 
-                        unmountOnBlur: true,}}
-            
+             options={{headerShown: false, unmountOnBlur: true}}
           />
           <Stack.Screen
             name="Address"
             component={Address}
             options={{title: '주소찾기'}}
           />
-        </Stack.Group>
+        </>
       ) : (
         // Auth screens
-        <Stack.Group screenOptions={{headerShown: false}}>
+        <>
           <Stack.Screen
             name="LogIn"
             component={LogIn}
-            options={{title: '로그인'}}
+            options={{title: '로그인', unmountOnBlur: true}}
           />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
             options={{title: '회원가입'}}
           />
-        </Stack.Group>
+          <Stack.Screen
+            name="Main"
+            component={Main}
+             options={{headerShown: true, unmountOnBlur: true}}
+          />
+          <Stack.Screen
+            name="Address"
+            component={Address}
+            options={{title: '주소찾기'}}
+          />
+        </>
       )}
+      </Stack.Group>
       {/* Common modal screens */}
       <Stack.Group screenOptions={{headerShown: true}}>
         <Stack.Screen
@@ -419,6 +276,7 @@ function AppInner({navigation}) {
         />
       </Stack.Group>
     </Stack.Navigator>
+
   );
 }
 
