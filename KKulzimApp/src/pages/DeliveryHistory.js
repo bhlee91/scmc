@@ -1,18 +1,12 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 
 import {
   StyleSheet,
   View,
-  ImageBackground,
-  Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
   Image,
@@ -23,16 +17,26 @@ import {
   ScrollView,
 } from 'react-native';
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-
+import store from '../../src/store';
 import {Card, Title, Divider, Paragraph, Badge} from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { getMyTransit } from '../api/cargo';
 
 function DeliveryHistoy({navigation}) {
   const toGoDetail = useCallback(() => {
     navigation.navigate('CargoDetail');
   }, [navigation]);
+
+  const truckownerUid = store.getState().user.truckownerUid;
+
+  useEffect(() =>{
+    getMyTransit(truckownerUid)
+    .then(res => {
+      console.log(res)
+    })
+  },[])
+
   return (
     <ScrollView style={styles.mainView}>
       {/* 추천 화물정보 랭킹 탑 2 까지 보여지기 */}
@@ -119,7 +123,7 @@ function DeliveryHistoy({navigation}) {
                       <Card>
                         <Card.Content>
                           <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
+                            서울 성동구 천호동??
                           </Paragraph>
                         </Card.Content>
                       </Card>

@@ -172,6 +172,17 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(truckOwnerService.truckOwnerLogin(param), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "차주 계정 확인", notes = "나의 정보에서 비밀번호를 확인할 때 실행된다..")
+	@PostMapping("/truck/confirm")
+	public ResponseEntity<?> confirmAccount(@RequestBody HashMap<String, Object> param) throws Exception {
+		log.info("==================");
+		log.info("차주 계정 확인");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.confirmAccount(param), HttpStatus.OK);
+	}
+	
+	
 	@ApiOperation(value = "차주 비밀번호 변경", notes = "차주 비밀번호를 변경한다.")
 	@PostMapping("/truck/chpwd")
 	public ResponseEntity<?> changePassowrd(@RequestBody HashMap<String, Object> param) throws Exception {
@@ -180,6 +191,18 @@ public class TruckOwnerController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(truckOwnerService.changePassowrd(param), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "차주정보가져오기", notes = "모바일 차주관련 정보를 조회한다.")
+	@GetMapping("/truckowner/{carNumber}")
+	public ResponseEntity<?> getTruckOwnerInfo(
+			@ApiParam(value = "차량 번호", example = "45오4545") @PathVariable(value = "carNumber") String carNumber
+			) throws Exception {
+		log.info("==================");
+		log.info("모바일 차주 정보 조회");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.getTruckOwner(carNumber), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "두 지점 거리 계산(테스트용)", notes = "두 지점 거리 계산(테스트용)")

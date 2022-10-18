@@ -1,211 +1,70 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
-  TouchableOpacity,
 } from 'react-native';
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-
 import {
-  Button,
   Card,
   Title,
   Divider,
-  Paragraph,
   HelperText,
   TextInput,
-  Portal,
-  Modal,
 } from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import axios, {AxiosError} from 'axios';
-import Config from 'react-native-config';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
-import Mtimer from '../common/Mtimer';
+import store from '../store';
+import { getTruckowner } from '../api/truckowner';
 
 function MyReg({navigation}) {
   const [name, setName] = useState('');
-  const [hpnumber, setHpnumber] = useState('');
   const [businessno, setBusinessno] = useState('');
   const [tons, setTons] = useState('');
-  const [cardiv, setDiv] = useState('');
   const [carno, setCarno] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmpassword, setConfirmpassword] = useState('');
-  const [authno, setAuthno] = useState('');
-  const [longyn, setLongyn] = useState('');
+  const [info, setInfo] = useState('')
 
-  const [visible, setVisible] = useState(false);
-  const [modalvisible, setModalVisible] = React.useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loArr, setLoArr] = useState([]);
+  const [lfArr, setLfArr] = useState([]);
+  const [rfArr, setRfArr] = useState([]);
+  const [stArr, setStArr] = useState([]);
 
-  const showModal = () => setModalVisible(true);
-  const hideModal = () => setModalVisible(false);
-  //약관정보
-  const [allCheck, setAllCheck] = React.useState(false);
-  const [trCheck, setTrCheck] = useState(false);
-  const [usCheck, setUsCheck] = useState(false);
-  const [prCheck, setPrCheck] = useState(false);
+  const [selected, setSelected] = useState('')
 
-  const allState = () => {
-    if (allCheck === false) {
-      setAllCheck(true);
-      setTrCheck(true);
-      setUsCheck(true);
-      setPrCheck(true);
-    } else {
-      setAllCheck(false);
-      setTrCheck(false);
-      setUsCheck(false);
-      setPrCheck(false);
-    }
-  };
-
-  const trState = () => {
-    if (trCheck === false) {
-      setTrCheck(true);
-    } else {
-      setTrCheck(false);
-      console.log(trCheck);
-    }
-  };
-
-  const usState = () => {
-    if (usCheck === false) {
-      setUsCheck(true);
-    } else {
-      setUsCheck(false);
-    }
-    console.log(usCheck);
-  };
-
-  const prState = () => {
-    if (prCheck === false) {
-      setPrCheck(true);
-    } else {
-      setPrCheck(false);
-    }
-    console.log(prCheck);
-  };
+  const carNumber = store.getState().user.carNumber;
 
   useEffect(() => {
-    if (trCheck === true && usCheck === true && prCheck === true) {
-      setAllCheck(true);
-    } else {
-      setAllCheck(false);
-    }
-    console.log(trCheck + 'aaa' + usCheck + 'bb' + prCheck);
-  }, [trCheck, usCheck, prCheck]);
+    getInfo();
+    
+  }, []);
 
-  const toTrTerms = useCallback(() => {
-    navigation.navigate('TrTerms');
-  }, [navigation]);
 
-  const toPrTerms = useCallback(() => {
-    navigation.navigate('PrTerms');
-  }, [navigation]);
-
-  const toUsTerms = useCallback(() => {
-    navigation.navigate('UsTerms');
-  }, [navigation]);
+  const getInfo = () =>{
+    getTruckowner(carNumber)
+    .then(res => {
+      setInfo(res.data)
+      setCarno(res.data.carNumber)
+      setDefaultRadioLO()
+    })
+  }
 
   const onChangeCarno = useCallback(text => {
     setCarno(text.trim());
   }, []);
-  const onChangePassword = useCallback(text => {
-    setPassword(text.trim());
-  }, []);
-
-  const onChangeConfirmpassword = useCallback(text => {
-    setConfirmpassword(text.trim());
-  }, []);
-
-  const onChangeName = useCallback(text => {
-    setName(text.trim());
-  }, []);
-  const onChangeHpnumber = useCallback(text => {
-    setHpnumber(text.trim());
-  }, []);
-
-  const onChangeAuthNo = useCallback(text => {
-    setAuthno(text.trim());
-  }, []);
-
-  const onChangeBusinessno = useCallback(text => {
-    setBusinessno(text.trim());
-  }, []);
-
-  const hasNameErrors = () => {
-    return !name || !name.trim() ? true : false;
-  };
-
-  const hasHpnumberErrors = () => {
-    return !hpnumber || !hpnumber.trim() ? true : false;
-  };
-
-  const hasAuthErrors = () => {
-    return !authno || !authno.trim() ? true : false;
-  };
-  const hasBusinessNoErrors = () => {
-    return !businessno || !businessno.trim() ? true : false;
-  };
-
-  const hasPasswordErrors = () => {
-    return !password || !password.trim() ? true : false;
-  };
-
-  const hasPasswordConfimErrors = () => {
-    return !confirmpassword || !confirmpassword.trim() ? true : false;
-  };
-
-  const hasCasrNoErrors = () => {
-    return !carno || !carno.trim() ? true : false;
-  };
-
-  const authSms = () => {
-    setVisible(true);
-  };
-  const confirmAuthSms = () => {
-    setVisible(false);
-  };
-
-  const saveCardiv = () => {
-    setModalVisible(false);
-  };
 
   const onChangeTons = useCallback(text => {
     console.log(text);
   }, []);
 
-  const toCardiv = useCallback(() => {
-    navigation.navigate('Cardiv');
-  }, [navigation]);
-
   // 차량정보 초장축여부 데이타
-  const radioButtonsData = [
+  const radioButtonsLOData = [
     {
       id: '1', // acts as primary key, should be unique and non-empty string
       label: '초장축',
@@ -226,10 +85,21 @@ function MyReg({navigation}) {
     },
   ];
 
-  const [radioButtons, setRadioButtons] = useState(radioButtonsData);
+  const setDefaultRadioLO = (radioButtonsArray) =>{
+    radioButtonsArray.map(key =>{
+      radioButtonsArray.filter(key => key.value === info.longyn)
+      console.log(radioButtonsArray)
+    })
+  }
 
-  function onPressRadioButton(radioButtonsArray) {
-    setRadioButtons(radioButtonsArray);
+  const [radioButtonsLO, setRadioButtonsLO] = useState(radioButtonsLOData);
+
+  function onPressRadioButtonLO(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setLoArr(radioButtonsArray.filter(key => key.selected === true))
+      console.log(radioButtonsLO)
+    })
+    setRadioButtonsLO(radioButtonsArray);
   }
 
   // 차량정보 데이타 끝
@@ -264,9 +134,12 @@ function MyReg({navigation}) {
     },
   ];
 
-  const [RadioButtonsrf, setRadioButtonsRF] = useState(radioButtonsRFData);
+  const [radioButtonsRF, setRadioButtonsRF] = useState(radioButtonsRFData);
 
   function onPressRadioButtonRF(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setRfArr(radioButtonsArray.filter(key => key.selected === true))
+    })
     setRadioButtonsRF(radioButtonsArray);
   }
 
@@ -315,16 +188,19 @@ function MyReg({navigation}) {
     },
   ];
 
-  const [RadioButtonsst, setRadioButtonsST] = useState(radioButtonsSTData);
+  const [radioButtonsST, setRadioButtonsST] = useState(radioButtonsSTData);
 
   function onPressRadioButtonST(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setStArr(radioButtonsArray.filter(key => key.selected === true))
+    })
     setRadioButtonsST(radioButtonsArray);
   }
 
   // 차량정보 적재함형태 데이타 끝
 
   // 차량정보 리프트여부 데이타
-  const radioButtonsDataLF = [
+  const radioButtonsLFData = [
     {
       id: '1', // acts as primary key, should be unique and non-empty string
       label: '리프트',
@@ -345,79 +221,17 @@ function MyReg({navigation}) {
     },
   ];
 
-  const [radioButtonslf, setRadioButtonsLF] = useState(radioButtonsDataLF);
+  const [radioButtonsLF, setRadioButtonsLF] = useState(radioButtonsLFData);
 
   function onPressRadioButtonLF(radioButtonsArray) {
-    setRadioButtonsLF(radioButtonsArray);
+    radioButtonsArray.map((key) => {
+      setLfArr(radioButtonsArray.filter(key => key.selected === true))
+    })
+    setRadioButtonsLF(radioButtonsArray)
   }
 
-  // 차량정보 리프트여부 데이타 끝
-
-  // 약관정보 데이타
-  // const chkdata = [
-  //   {id: 0, title: '운송약관'},
-  //   {id: 1, title: '이용약관'},
-  //   {id: 2, title: '개인정보보호방침'},
-  // ];
-  // const [checkItems, setCheckItems] = useState([]);
-
-  // // 체크박스 단일 선택
-  // const handleSingleCheck = (isChecked, id) => {
-  //   if (isChecked) {
-  //     // 단일 선택 시 체크된 아이템을 배열에 추가
-  //     setCheckItems(prev => [...prev, id]);
-  //   } else {
-  //     // 단일 선택 해제 시 체크된 아이템을 제외한 배열 (필터)
-  //     setCheckItems(checkItems.filter(el => el !== id));
-  //   }
-  // };
-
-  // // 체크박스 전체 선택
-  // const handleAllCheck = isChecked => {
-  //   if (isChecked) {
-  //     // 전체 선택 클릭 시 데이터의 모든 아이템(id)를 담은 배열로 checkItems 상태 업데이트
-  //     const idArray = [];
-  //     chkdata.forEach(el => idArray.push(el.id));
-  //     setCheckItems(idArray);
-  //   } else {
-  //     // 전체 선택 해제 시 checkItems 를 빈 배열로 상태 업데이트
-  //     setCheckItems([]);
-  //   }
-  // };
-
-  // /약관정보 데이타 끝
-
-  let reaminTime = Mtimer(); // 타이머
   const onSubmit = useCallback(async () => {
-    // try {
-    //   setLoading(true);
-    //   const response = await axios.post(`${Config.API_URL}/login`, {
-    //     carno,
-    //     password,
-    //   });
-    //   console.log(response.data);
-    //   Alert.alert('알림', '로그인 되었습니다.');
-    //   dispatch(
-    //     userSlice.actions.setUser({
-    //       name: response.data.data.name,
-    //       carno: response.data.data.carno,
-    //       accessToken: response.data.data.accessToken, //유효기간이 있는 토근 10, 5분 등, 짧을 수록 보안에......좋음, Redux에만 저장
-    //       refreshToken: response.data.data.refreshToken, //유효기간 1일 30일 1년 ==> accessToken보다 크다 EncryptedStorage에 저장
-    //     }),
-    //   );
-    //   await EncryptedStorage.setItem(
-    //     'refreshToken',
-    //     response.data.data.refreshToken,
-    //   );
-    // } catch (error) {
-    //   const errorResponse = error.response;
-    //   if (errorResponse) {
-    //     Alert.alert('알림', errorResponse.data.message);
-    //   }
-    // } finally {
-    //   setLoading(false);
-    // }
-  }, [loading, carno, password]);
+  }, []);
 
   return (
     <View style={styles.mainView}>
@@ -429,131 +243,31 @@ function MyReg({navigation}) {
               <View>
                 <TextInput
                   style={styles.textInput}
-                  onChangeText={onChangeName}
                   Outlined
                   placeholder="성명"
-                  // label="성명"
                   placeholderTextColor="#666"
-                  value={name}
+                  value={info.truckownerName}
                   returnKeyType="next"
-                  // ref={carnoRef}
-                  // onSubmitEditing={() => passwordRef.current?.focus()}
+                  editable={false}
                 />
-                <HelperText type="error" visible={hasNameErrors()}>
-                  성명을 입력하여 주세요.
-                </HelperText>
               </View>
               <Divider />
-              <View>
-                <View style={styles.box2}>
-                  <TextInput
-                    style={styles.hptextInput}
-                    onChangeText={onChangeHpnumber}
-                    Outlined
-                    // label="휴대폰번호"
-                    placeholder="휴대폰번호"
-                    placeholderTextColor="#666"
-                    value={hpnumber}
-                    keyboardType="numeric"
-                    returnKeyType="next"
-                    // ref={carnoRef}
-                    // onSubmitEditing={() => passwordRef.current?.focus()}
-                  />
-                  <Pressable style={styles.hpButton} onPress={authSms}>
-                    <Text style={styles.ButtonText}>인증하기</Text>
-                  </Pressable>
-                </View>
-                <View>
-                  <HelperText type="error" visible={hasHpnumberErrors()}>
-                    휴대폰번호를 - 없이 입력하여 주세요.
-                  </HelperText>
-                </View>
-              </View>
+
               <Divider />
-              {visible ? (
-                <View>
-                  <View style={styles.box2}>
-                    <TextInput
-                      style={styles.hptextInput}
-                      onChangeText={onChangeAuthNo}
-                      Outlined
-                      // label="인증번호"
-                      placeholder="인증번호 "
-                      value={authno}
-                      keyboardType="numeric"
-                      // ref={carnoRef}
-                      // onSubmitEditing={() => passwordRef.current?.focus()}
-                    />
-                    <Pressable style={styles.hpButton} onPress={confirmAuthSms}>
-                      <Text style={styles.ButtonText}>확인</Text>
-                    </Pressable>
-                  </View>
-                  <View>
-                    <HelperText type="error" visible={hasAuthErrors()}>
-                      인증번호를 입력하여 주세요. {reaminTime}
-                    </HelperText>
-                  </View>
-                </View>
-              ) : (
-                <Divider />
-              )}
               <View>
                 <TextInput
                   style={styles.textInput}
-                  onChangeText={onChangeBusinessno}
                   // label="사업자등록번호"
                   placeholder="사업자등록번호"
-                  value={businessno}
+                  value={info.businessNo}
                   returnKeyType="next"
                   clearButtonMode="while-editing"
-                  // ref={carnoRef}
-                  // onSubmitEditing={() => passwordRef.current?.focus()}
+                  editable={false}
                   blurOnSubmit={false}
                 />
-                <HelperText type="error" visible={hasBusinessNoErrors()}>
-                  사업자등록번호를 입력하세요.
-                </HelperText>
               </View>
             </View>
             <Divider />
-            <View>
-              <TextInput
-                style={styles.textInput}
-                // label="비밀번호"
-                placeholder="비밀번호"
-                onChangeText={onChangePassword}
-                value={password}
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="next"
-                clearButtonMode="while-editing"
-                // ref={passwordRef}
-                onSubmitEditing={onSubmit}
-                right={<TextInput.Icon icon="eye" />}
-              />
-              <HelperText type="error" visible={hasPasswordErrors()}>
-                영문,숫자,특수문자를 포함한 8자리 이상을 입력해 주세요
-              </HelperText>
-            </View>
-            <Divider />
-            <View>
-              <TextInput
-                style={styles.textInput}
-                // label="비밀번호확인"
-                placeholder="비밀번호확인"
-                onChangeText={onChangeConfirmpassword}
-                value={confirmpassword}
-                textContentType="password"
-                secureTextEntry
-                returnKeyType="next"
-                clearButtonMode="while-editing"
-                // ref={passwordRef}
-                onSubmitEditing={onSubmit}
-              />
-              <HelperText type="error" visible={hasPasswordConfimErrors()}>
-                영문,숫자,특수문자를 포함한 8자리 이상을 입력해 주세요
-              </HelperText>
-            </View>
           </Card.Content>
         </Card>
         <Divider />
@@ -570,7 +284,7 @@ function MyReg({navigation}) {
                   label: '차량톤수',
                 }}
                 // fixAndroidTouchableBug={true}
-                value={tons}
+                value={info.truckTons}
                 onValueChange={value => onChangeTons(value)}
                 items={[
                   {label: '1톤', value: '1000T', key: '1'},
@@ -600,9 +314,10 @@ function MyReg({navigation}) {
                       <Title style={styles.radiocardtext2}>초장축여부</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={radioButtons}
-                          onPress={onPressRadioButton}
+                          radioButtons={radioButtonsLO}
+                          onPress={onPressRadioButtonLO}
                           layout="row"
+                          selected={selected === info.longyn}
                         />
                       </Card.Content>
                     </Card>
@@ -610,10 +325,12 @@ function MyReg({navigation}) {
                     <Card>
                       <Title style={styles.radiocardtext2}>냉장냉동여부</Title>
                       <Card.Content>
-                        <RadioGroup
-                          radioButtons={RadioButtonsrf}
+                        <RadioGroup row defaultValue={info.refrigeratedFrozen}
+                          radioButtons={radioButtonsRF}
                           onPress={onPressRadioButtonRF}
                           layout="row"
+                          value={info.refrigeratedFrozen}
+                          
                         />
                       </Card.Content>
                     </Card>
@@ -621,9 +338,10 @@ function MyReg({navigation}) {
                       <Title style={styles.radiocardtext2}>적재함형태</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={RadioButtonsst}
+                          radioButtons={radioButtonsST}
                           onPress={onPressRadioButtonST}
                           layout="row"
+                          value={info.stowageType}
                         />
                       </Card.Content>
                     </Card>
@@ -632,9 +350,10 @@ function MyReg({navigation}) {
                       <Title style={styles.radiocardtext2}>리프트여부</Title>
                       <Card.Content>
                         <RadioGroup
-                          radioButtons={radioButtonslf}
+                          radioButtons={radioButtonsLF}
                           onPress={onPressRadioButtonLF}
                           layout="row"
+                          value={info.liftType}
                         />
                       </Card.Content>
                     </Card>
@@ -651,15 +370,11 @@ function MyReg({navigation}) {
                 value={carno}
                 returnKeyType="next"
                 clearButtonMode="while-editing"
-                // ref={carnoRef}
-                // onSubmitEditing={() => passwordRef.current?.focus()}
+                defaultValue={carno}
                 blurOnSubmit={false}
               />
             </View>
             <Divider />
-            <HelperText type="error" visible={hasCasrNoErrors()}>
-              차량번호를 입력해 주세요
-            </HelperText>
           </Card.Content>
         </Card>
 
@@ -743,11 +458,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#283593',
+    backgroundColor: '#000000',
   },
 
   ButtonText: {

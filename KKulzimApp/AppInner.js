@@ -142,7 +142,7 @@ function AppInner({navigation}) {
   const isLoggedIn = store.getState().user.isLoggedIn
 
   useEffect(() => {
-    console.log()
+    console.log(isLoggedIn)
   },[isFocused])
 
   return (

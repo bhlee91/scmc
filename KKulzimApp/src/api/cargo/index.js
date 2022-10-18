@@ -8,3 +8,10 @@ export const getCargoRequestDetail = (param) => {
     method: "get"
   })
 }
+
+export const getMyTransit = (truckownerUid) => {
+  return request({
+    url: `${BASE_URL}/transit/${truckownerUid}`,
+    method: "get"
+  })
+}

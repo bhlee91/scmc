@@ -16,6 +16,7 @@ import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.dto.HistoryDto;
+import com.scmc.api.member.truck.dto.TruckOwnerDto;
 
 public interface TruckOwnerService {
 
@@ -34,5 +35,7 @@ public interface TruckOwnerService {
 	String changePassowrd(HashMap<String, Object> param);
 	boolean setRequestTransportConfirm(Map<String, Long> dto);
 	List<?> getCargoListInRadius(double lat, double lon, int rad, String d);
+	String confirmAccount(HashMap<String, Object> param);
+	TruckOwnerDto getTruckOwner(String carNumber);
 	
 }

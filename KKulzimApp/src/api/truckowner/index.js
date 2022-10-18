@@ -46,3 +46,21 @@ export const changePassword = (obj) => {
     data: obj
   })
 }
+
+export const confirmAccount = (obj) => {
+  return request({
+    url: `${BASE_URL}/truck/confirm`,
+    method: "post",
+    data: obj
+  })
+}
+
+export const getTruckowner = (carNumber) => {
+  return request({
+    url: `${BASE_URL}/truckowner/${carNumber}`,
+    method: "get",
+    params: {
+      carNumber
+    }
+  })
+}

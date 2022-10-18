@@ -1,13 +1,7 @@
 import React, {useEffect} from 'react';
 import {
-  configureFonts,
-  DarkTheme,
-  useTheme,
-  withTheme,
   MD3LightTheme as DefaultTheme,
   Provider as PaperProvider,
-  Card,
-  Button,
 } from 'react-native-paper';
 //import store from './src/store/index/'
 import AppInner from './AppInner';

@@ -2,37 +2,23 @@ import React, {
   useState,
   useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 import {
   StyleSheet, 
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   TextInput,
   Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
   TouchableOpacity,
 } from 'react-native';
-import {Button, Card, Title, Divider, Paragraph} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import axios, {AxiosError} from 'axios';
-import Config from 'react-native-config';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
 import { loginTruckOwner } from '../api/truckowner';
 import store, { useAppDispatch } from '../store';
+import { persistor } from '../../App';
 import userSlice from '../slices/user';
 
 function LogIn({navigation}) {
@@ -44,8 +30,8 @@ function LogIn({navigation}) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setCarno('');
-    setPassword('');
+    persistor.purge();
+    AsyncStorage.removeItem('userData');
   })
 
   const toSignUp = useCallback(() => {

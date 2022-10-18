@@ -44,6 +44,7 @@ import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepository;
 import com.scmc.api.jpa.repository.TbTruckOwnerCargoInfoRepositoryCustom;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.dto.HistoryDto;
+import com.scmc.api.member.truck.dto.TruckOwnerDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
 import lombok.RequiredArgsConstructor;
@@ -94,6 +95,42 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		obj.put("token", token);
 																				
 		return obj;
+	}
+	
+	@Override
+	public String confirmAccount(HashMap<String, Object> param) {
+		String msg = "";
+		TbMemberTruckOwner user = 
+				tbMemberTruckOwnerRepository.findByCarNumber(param.get("carNumber").toString())
+				.orElseThrow();
+		if(!passwordEncoder.matches((CharSequence) param.get("password"), user.getPassword())) {
+			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
+		} else {
+			msg = "확인되었습니다.";
+		}
+		return msg;
+	}
+	
+	@Override
+	public TruckOwnerDto getTruckOwner(String carNumber) {
+		TruckOwnerDto to = new TruckOwnerDto();
+		
+		TbMemberTruckOwner user = 
+				tbMemberTruckOwnerRepository.findByCarNumber(carNumber)
+				.orElseThrow();
+		
+		to.setTruckownerUid(user.getTruckownerUid());
+		to.setTruckownerName(user.getTruckownerName());
+		to.setBusinessNo(user.getBusinessNo());
+		to.setCarNumber(carNumber);
+		to.setLiftType(user.getLiftType());
+		to.setLongyn(user.getLongyn());
+		to.setRefrigeratedFrozen(user.getRefrigeratedFrozen());
+		to.setStowageType(user.getStowageType());
+		to.setTruckTons(user.getTruckTons());
+		to.setPhoneNumber(user.getPhoneNumber());
+		
+		return to;
 	}
 	
 	@Override

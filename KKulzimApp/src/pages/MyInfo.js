@@ -30,8 +30,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon3 from 'react-native-vector-icons/AntDesign';
 import store from '../store';
-import userSlice from '../slices/user';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function MyInfo({navigation, props}) {
   const toResetPasswd = useCallback(() => {

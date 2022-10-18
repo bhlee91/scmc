@@ -389,7 +389,6 @@ function SignUp({navigation}) {
     setRadioButtonsLF(radioButtonsArray)
   }
 
-  //let remainTime = Mtimer(); // 타이머
   const onSubmit = useCallback(async () => {
     // try {
     //   setLoading(true);
@@ -890,11 +889,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     marginBottom: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#283593',
+    backgroundColor: '#000000',
   },
 
   ButtonText: {

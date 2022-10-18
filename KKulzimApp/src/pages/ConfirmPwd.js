@@ -1,40 +1,28 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   TextInput,
-  Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
   TouchableOpacity,
 } from 'react-native';
-import {Button, Card, Title, Paragraph} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import axios, {AxiosError} from 'axios';
-import Config from 'react-native-config';
-import {Provider as PaperProvider} from 'react-native-paper';
-import {NavigationContainer} from '@react-navigation/native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { confirmAccount } from '../api/truckowner';
 import DismissKeyboardView from '../components/DismissKeyboardView';
+import store from '../store';
 
 function ConfirmPwd({navigation}) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const carNumber = store.getState().user.carNumber;
+
+  useEffect(() => {
+    console.log(carNumber)
+  },[])
 
   const onChangePasswd = useCallback(text => {
     setPassword(text.trim());
@@ -47,6 +35,21 @@ function ConfirmPwd({navigation}) {
   const onSubmit = useCallback(async () => {
     if (!password || !password.trim()) {
       return Alert.alert('알림', '비밀번호를 입력해주세요.');
+    } else {
+      const info = {
+        carNumber: carNumber,
+        password: password
+      }
+      confirmAccount(info)
+      .then(res => {
+        if(res.status !== 200){
+          Alert.alert('오류', '잘못된 비밀번호 입니다.');
+        } else {
+          Alert.alert('알림', `${res.data}`)
+          toMyReg()
+        }
+        
+      })
     }
 
     // try {
