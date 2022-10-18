@@ -27,20 +27,23 @@ import DismissKeyboardView from '../components/DismissKeyboardView';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import store from '../../src/store';
 import { changePassword } from '../api/truckowner';
+import { persistor } from '../../App';
 
 function ResetPassword({navigation}) {
   const phoneNumber = store.getState().user.phoneNumber
   const [newPassword, setnewPassword] = useState('');
   const [confirmNewPassword, setconfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  
   const onChangeNewPassword = useCallback(text => {
     setnewPassword(text.trim());
   }, []);
   const onChangeConrirmNewPassword = useCallback(text => {
     setconfirmNewPassword(text.trim());
   }, []);
-
+  useEffect(() => {
+    console.log('phoneNumber:' + phoneNumber)
+  },[])
   // const canGoNext = confirmpassword1 && password;
 
   const onClickChpwd = () =>{
@@ -54,11 +57,12 @@ function ResetPassword({navigation}) {
     } else if (confirmNewPassword !== newPassword){
       Alert.alert('비밀번호를 다시 확인해주세요.')
     } else {
+      
       changePassword(info)
       .then(res => {
         if(res.data !== null || res.data !== ""){
           Alert.alert(`${res.data}`)
-          navigation.navigate('LogIn');
+          logOut();
         } else {
           Alert.alert('알수 없는 오류중에 있습니다. 다시 시도해 주세요.')
         }
@@ -69,9 +73,11 @@ function ResetPassword({navigation}) {
     }
   }
 
-  const toLogin = useCallback(() => {
-    navigation.navigate('Login');
-  }, [navigation]);
+  const logOut = async() => {
+    await persistor.purge();
+    AsyncStorage.removeItem('userData');
+    navigation.navigate('LogIn')
+  }
 
   return (
     <DismissKeyboardView style={styles.maincontainer}>

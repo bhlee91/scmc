@@ -231,4 +231,5 @@ public class TruckOwnerController {
 		
 		return new ResponseEntity<>(truckOwnerService.setRequestTransportConfirm(obj), HttpStatus.OK);
 	}
+	
 }

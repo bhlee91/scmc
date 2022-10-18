@@ -9,9 +9,11 @@ import {
   Card,
   Button,
 } from 'react-native-paper';
-import store from './src/store/index/'
+//import store from './src/store/index/'
 import AppInner from './AppInner';
-// import store from './src/store';
+import store from './src/store';
+import { persistStore } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
 import {Provider as StoreProvider} from 'react-redux';
 import {NavigationContainer} from '@react-navigation/native';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -28,15 +30,19 @@ const theme = {
   },
 };
 
+export let persistor = persistStore(store)
+
 function App() {
   return (
     <MenuProvider style={{ backgroundColor: 'white', padding: 10, justifyContent: 'space-between' }}>
       <StoreProvider store={store}>
-        <PaperProvider theme={theme}>
-          <NavigationContainer>
-            <AppInner />
-          </NavigationContainer>
-        </PaperProvider>
+        <PersistGate loading = {null} persistor={persistor}>
+          <PaperProvider theme={theme}>
+            <NavigationContainer>
+              <AppInner />
+            </NavigationContainer>
+          </PaperProvider>
+        </PersistGate>
       </StoreProvider>
     </MenuProvider>
   );

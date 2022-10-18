@@ -138,17 +138,12 @@ function Main() {
 
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
-  //   const isLoggedIn = useSelector(state => !!state.user.email);
   const isFocused = useIsFocused();
-  const isLoggedIn = AsyncStorage.getItem('isLoggedIn')
-  const accessToken = AsyncStorage.getItem('accessToken')
-  const refreshToken = AsyncStorage.getItem('refreshToken')
-  const [loading, setLoading] = useState(false);
-  //const isLoggedIn = true
+  const isLoggedIn = store.getState().user.isLoggedIn
 
   useEffect(() => {
-    console.log(accessToken)
-  },[isFocused, isLoggedIn])
+    console.log()
+  },[isFocused])
 
   return (
     <Stack.Navigator
@@ -167,9 +162,8 @@ function AppInner({navigation}) {
         headerTitleStyle: {fontsize: 24},
         headerTintColor: '#ffffff',
       }}>
-      <Stack.Group screenOptions={{headerShown: true}}>
-      {isLoggedIn && accessToken !== null  && refreshToken !== null ? (
-        // Screens for logged in users
+      <Stack.Group screenOptions={{headerShown: false}}>
+      {isLoggedIn ? (
         <>
           <Stack.Screen
             name="Main"

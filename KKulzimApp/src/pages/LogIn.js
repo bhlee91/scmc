@@ -41,9 +41,12 @@ function LogIn({navigation}) {
   const [loading, setLoading] = useState(false);
   const carnoRef = useRef();
   const passwordRef = useRef();
-  // const [accessToken, setAccessToken] = useState('')
-  // const [refreshToken, setRefreshToken] = useState('')
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    setCarno('');
+    setPassword('');
+  })
 
   const toSignUp = useCallback(() => {
     navigation.navigate('SignUp');
@@ -76,19 +79,24 @@ function LogIn({navigation}) {
       setLoading(true)
       loginTruckOwner(info)
       .then(res => {
-        const tokens = res.data
+        console.log(res.data)
         if(res.data !== null ){ 
          dispatch(
           userSlice.actions.SET_LOGIN({
+            truckownerUid: res.data.truckownerUid,
+            truckownerName: res.data.truckownerName,
+            phoneNumber: res.data.phoneNumber,
+            carNumber: res.data.carNumber,
             isLoggedIn : true,
-            accessToken : res.data.accessToken,
-            refreshToken: res.data.refreshToken
+            accessToken : res.data.token.accessToken,
+            refreshToken: res.data.token.refreshToken
           })
-         
         ) 
-         AsyncStorage.setItem('isLoggedIn', true) 
-         AsyncStorage.setItem('accessToken', res.data.accessToken)
-         AsyncStorage.setItem('refreshToken', res.data.refreshToken)
+         AsyncStorage.setItem('userData', JSON.stringify({
+          isLoggedIn: true,
+          accessToken: res.data.token.accessToken,
+          refreshToken: res.data.token.refreshToken
+         }))
          navigation.navigate("Main")
         }
       })
@@ -98,72 +106,6 @@ function LogIn({navigation}) {
     }
 
   }
-
-  const onSubmit = useCallback(() => {
-    const info = {
-      carNumber: carno,
-      password: password
-    }
-    if (!carno || !carno.trim()) {
-      return Alert.alert('알림', '차량번호를 입력해주세요.');
-    }
-    if (!password || !password.trim()) {
-      return Alert.alert('알림', '비밀번호를 입력해주세요.');
-    }
-    try{
-      setLoading(true)
-      loginTruckOwner(info)
-      .then(res => {
-        if(res.data !== null ){
-         setAccessToken(res.data.accessToken)
-         setRefreshToken(res.data.refreshToken)
-         dispatch(
-          userSlice.actions.SET_LOGIN({
-            isLoggedIn : true,
-            accessToken : accessToken,
-            refreshToken: refreshToken
-          })
-         ) 
-         AsyncStorage.setItem('accessToken', res.data.accessToken)
-         AsyncStorage.setItem('refreshToken', res.data.refreshToken)
-         navigation.navigate("Main")
-        }
-      })
-      .catch(err => {
-        console.log(err)
-      })
-    }catch{
-
-    }
-    // try {
-    //   setLoading(true);
-    //   const response = await axios.post(`${Config.API_URL}/login`, {
-    //     carno,
-    //     password,
-    //   });
-    //   console.log(response.data);
-    //   Alert.alert('알림', '로그인 되었습니다.');
-    //   dispatch(
-    //     userSlice.actions.setUser({
-    //       name: response.data.data.name,
-    //       carno: response.data.data.carno,
-    //       accessToken: response.data.data.accessToken, //유효기간이 있는 토근 10, 5분 등, 짧을 수록 보안에......좋음, Redux에만 저장
-    //       refreshToken: response.data.data.refreshToken, //유효기간 1일 30일 1년 ==> accessToken보다 크다 EncryptedStorage에 저장
-    //     }),
-    //   );
-    //   await EncryptedStorage.setItem(
-    //     'refreshToken',
-    //     response.data.data.refreshToken,
-    //   );
-    // } catch (error) {
-    //   const errorResponse = error.response;
-    //   if (errorResponse) {
-    //     Alert.alert('알림', errorResponse.data.message);
-    //   }
-    // } finally {
-    //   setLoading(false);
-    // }
-  }, [loading, carno, password, navigation]);
 
   return (
     <View style={styles.container}>

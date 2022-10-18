@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,8 +30,9 @@ public interface TruckOwnerService {
 	Map<String, Object> getTruckOwnerMainInfo(long uid, String lat, String lon);
 	Map<String, Object> getTruckOwnerCurrentLocation(String lat, String lon);
 	List<HistoryDto> getCargoListByTruckOwner(long uid);
-	TokenDto truckOwnerLogin(HashMap<String, Object> param);
+	Map<String, Object> truckOwnerLogin(HashMap<String, Object> param);
 	String changePassowrd(HashMap<String, Object> param);
 	boolean setRequestTransportConfirm(Map<String, Long> dto);
 	List<?> getCargoListInRadius(double lat, double lon, int rad, String d);
+	
 }

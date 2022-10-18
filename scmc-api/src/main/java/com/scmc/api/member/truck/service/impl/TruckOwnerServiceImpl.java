@@ -72,7 +72,8 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	QTbMemberTruckOwner tmto = QTbMemberTruckOwner.tbMemberTruckOwner;
 	
 	@Override
-	public TokenDto truckOwnerLogin(HashMap<String, Object> param) {
+	public Map<String, Object> truckOwnerLogin(HashMap<String, Object> param) {
+		Map<String, Object> obj = new HashMap<String, Object>();
 		TbMemberTruckOwner user = 
 				tbMemberTruckOwnerRepository.findByCarNumber(param.get("carNumber").toString())
 				.orElseThrow(() -> new IllegalArgumentException("가입되지 않은 차량 번호입니다."));
@@ -80,13 +81,19 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 			throw new IllegalArgumentException("잘못된 비밀번호 입니다.");
 		}
 		
+		
 		TokenDto token = jwtTokenProvider.createTruckToken(user.getCarNumber());
 		if(user != null) {
 			user.setRefreshToken(token.getRefreshToken());
 			tbMemberTruckOwnerRepository.save(user);
 		}
+		obj.put("truckownerUid", user.getTruckownerUid());
+		obj.put("truckownerName", user.getTruckownerName());
+		obj.put("phoneNumber", user.getPhoneNumber());
+		obj.put("carNumber", user.getCarNumber());
+		obj.put("token", token);
 																				
-		return token;
+		return obj;
 	}
 	
 	@Override
@@ -373,4 +380,6 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 		
 		return false;
 	}
+
+
 }
