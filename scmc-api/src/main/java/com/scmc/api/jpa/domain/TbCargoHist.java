@@ -49,7 +49,7 @@ public class TbCargoHist {
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "truckowner_uid", referencedColumnName = "truckowner_uid")
 	@JsonBackReference
-	@JsonIgnore
+	//@JsonIgnore
 	@ToString.Exclude
 	private TbMemberTruckOwner truckowner;
 	

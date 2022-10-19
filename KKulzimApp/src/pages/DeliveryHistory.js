@@ -17,25 +17,63 @@ import {
   ScrollView,
 } from 'react-native';
 
+import { formatFare } from '../utils/CommonUtil';
 import store from '../../src/store';
 import {Card, Title, Divider, Paragraph, Badge} from 'react-native-paper';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { getMyTransit } from '../api/cargo';
+import { formatDateTimeToKorea, formatStringToDateTime } from '../utils/DateUtil';
 
 function DeliveryHistoy({navigation}) {
-  const toGoDetail = useCallback(() => {
-    navigation.navigate('CargoDetail');
-  }, [navigation]);
-
+  const [req, setReq] = useState('')
+  const [reqId, setReqId] = useState(0);
+  const [info, setInfo] = useState([]);
   const truckownerUid = store.getState().user.truckownerUid;
-
+  
   useEffect(() =>{
     getMyTransit(truckownerUid)
     .then(res => {
-      console.log(res)
+      res.data.map(obj => {
+        getColValue(obj.hist)
+        setInfo(obj.hist)
+        console.log(info)
+      })
     })
   },[])
+
+  const toGoDetail = useCallback(() => {
+    setReqId(info.reqId)
+    console.log(reqId)
+    navigation.navigate('CargoDetail', {reqId: reqId});
+  }, [navigation]);
+
+  const getColValue = (data) => {
+    data.map((obj) => {
+      switch(obj.status) {
+        case 'RO' :
+          return obj.status = '준비/등록중'
+        case 'MO' :
+          return obj.status = '최적차량검색'
+        case 'MF' :
+          return obj.status = '매칭완료'
+        case 'LC' :
+          return obj.status = '상차완료'
+        case 'TO' :
+          return obj.status = '운송중'
+        case 'UC' :
+          return obj.status = '하차완료'          
+        case 'TF' :
+          return obj.status = '운송완료'
+        case 'TN' :
+          return obj.status = '운송취소'
+      }
+    });
+
+    data.map((obj) =>{
+      obj.reqId = obj.request.reqId
+    })
+  }
 
   return (
     <ScrollView style={styles.mainView}>
@@ -45,138 +83,74 @@ function DeliveryHistoy({navigation}) {
           <Card style={styles.recommendcard}>
             <Card.Content>
               {/* 히스토리 Looping */}
-
-              <Card style={styles.recommendcardcontents} onPress={toGoDetail}>
-                <Card.Content>
-                  <Paragraph style={styles.recommendtext}>
-                    2022년 10월 01일 00시 00분
-                  </Paragraph>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{justifyContent: 'center', padding: 10}}>
-                      <Icon
-                        name="angle-double-right"
-                        size={20}
-                        color="#3F51B5"
-                      />
-                    </View>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            운송완료
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          flex: 1,
-                          height: 50,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            120,000원
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                </Card.Content>
-              </Card>
-
-              <Card
-                style={styles.recommendcardcontents}
-                onPress={() => Alert.alert('상세정보로 이동')}>
-                <Card.Content>
-                  <Paragraph style={styles.recommendtext}>
-                    2022년 10월 01일 00시 00분
-                  </Paragraph>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동??
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{justifyContent: 'center', padding: 10}}>
-                      <Icon
-                        name="angle-double-right"
-                        size={20}
-                        color="#3F51B5"
-                      />
-                    </View>
-                    <View style={{flex: 1, width: '45%'}}>
-                      <Card>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            서울 성동구 천호동
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                  <View style={styles.recommendView}>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            운송완료
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                    <View style={{flex: 1, width: '50%'}}>
-                      <Card
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <Card.Content>
-                          <Paragraph style={styles.recommendtext}>
-                            120,000원
-                          </Paragraph>
-                        </Card.Content>
-                      </Card>
-                    </View>
-                  </View>
-                </Card.Content>
-              </Card>
-              {/* 단건 2번째 추천 영역 끝 */}
+              {info.map(item => {
+                return(
+                  <Card style={styles.recommendcardcontents} onPress={toGoDetail} key={item.histUid}>
+                    <Card.Content>
+                      <Paragraph style={styles.recommendtext}>
+                        {formatDateTimeToKorea(item.request.arrivalDatetimes)}
+                      </Paragraph>
+                      <View style={styles.recommendView}>
+                        <View style={{flex: 1, width: '45%'}}>
+                          <Card>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {item.request.departAddrSt}
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                        <View style={{justifyContent: 'center', padding: 10}}>
+                          <Icon
+                            name="angle-double-right"
+                            size={20}
+                            color="#3F51B5"
+                          />
+                        </View>
+                        <View style={{flex: 1, width: '45%'}}>
+                          <Card>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {item.request.arrivalAddrSt}
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                      </View>
+                      <View style={styles.recommendView}>
+                        <View style={{flex: 1, width: '50%'}}>
+                          <Card
+                            style={{
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {item.status}
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                        <View style={{flex: 1, width: '50%'}}>
+                          <Card
+                            style={{
+                              flex: 1,
+                              height: 50,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Card.Content>
+                              <Paragraph style={styles.recommendtext}>
+                                {formatFare(item.request.transitFare)} 원
+                              </Paragraph>
+                            </Card.Content>
+                          </Card>
+                        </View>
+                      </View>
+                    </Card.Content>
+                  </Card>
+                );
+              })}
             </Card.Content>
           </Card>
         </View>
