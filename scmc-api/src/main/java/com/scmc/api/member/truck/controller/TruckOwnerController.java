@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.common.utils.CommonUtil;
+import com.scmc.api.common.utils.NaverGeoUtil;
 import com.scmc.api.member.truck.dto.CargoInfoDto;
 import com.scmc.api.member.truck.service.TruckOwnerService;
 
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TruckOwnerController {
 	
 	private final TruckOwnerService truckOwnerService;
+	private final NaverGeoUtil naverGeoUtil;
 	
 	@ApiOperation(value = "차주 등록", notes = "차주 등록")
 	@PostMapping("/truck")
@@ -253,6 +255,18 @@ public class TruckOwnerController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(truckOwnerService.setRequestTransportConfirm(obj), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "주소를 좌표로 변환", notes = "주소를 좌표로 변환(테스트)")
+	@GetMapping("/truck/address2coord/test")
+	public ResponseEntity<?> getAddress2Coord(
+			@ApiParam(value = "주소") @RequestParam(value = "query", required = false) String query
+			) throws Exception {
+		log.info("==================");
+		log.info("주소를 좌표로 변환(테스트)");
+		log.info("==================");
+		
+		return new ResponseEntity<>(naverGeoUtil.address2Coord(query), HttpStatus.OK);
 	}
 	
 }

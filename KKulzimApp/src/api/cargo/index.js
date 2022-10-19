@@ -9,6 +9,14 @@ export const getCargoRequestDetail = (param) => {
   })
 }
 
+export const setCargoRequestDetail = (obj) => {
+  return request({
+    url: `${BASE_URL}/request/detail`,
+    method: "post",
+    data: obj,
+  })
+}
+
 export const getMyTransit = (truckownerUid) => {
   return request({
     url: `${BASE_URL}/transit/${truckownerUid}`,

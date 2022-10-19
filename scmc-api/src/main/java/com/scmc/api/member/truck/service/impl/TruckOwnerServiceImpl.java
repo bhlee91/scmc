@@ -14,7 +14,6 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -232,17 +231,6 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	@Override
 	public TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto dto) throws ParseException, UnsupportedEncodingException {
 		if (dto.getTruckownerUid() == 0) return null;
-		
-		JSONObject json = kakaoLocalUtil.searchAddress(dto.getDepartAddrSt()).getJSONArray("documents").getJSONObject(0);
-		
-		// x : 경도 : longitude
-		// y : 위도 : latitude
-		dto.setDepartLatitude(json.getString("y"));
-		dto.setDepartLongitude(json.getString("x"));
-		
-		json = kakaoLocalUtil.searchAddress(dto.getArrivalAddrSt()).getJSONArray("documents").getJSONObject(0);
-		dto.setArrivalLatitude(json.getString("y"));
-		dto.setArrivalLongitude(json.getString("x"));
 		
 		if (dto.getCargoUid() == 0) {
 			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -43,6 +43,9 @@ import CargoDetail from './src/pages/CargoDetail';
 import RecomDetail from './src/pages/RecomDetail';
 import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
+import NMap from './src/common/NMap';
+import MapViewScreen from './src/common/MapViewScreen';
+import MapViewScreen2 from './src/common/MapViewScreen2';
 import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useIsFocused } from '@react-navigation/native';
@@ -175,6 +178,21 @@ function AppInner({navigation}) {
             component={Address}
             options={{title: '주소찾기'}}
           />
+          <Stack.Screen
+            name="NMap"
+            component={NMap}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MapViewScreen"
+            component={MapViewScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MapViewScreen2"
+            component={MapViewScreen2}
+            options={{ headerShown: false }}
+          />
         </>
       ) : (
         // Auth screens
@@ -198,6 +216,21 @@ function AppInner({navigation}) {
             name="Address"
             component={Address}
             options={{title: '주소찾기'}}
+          />
+          <Stack.Screen
+            name="NMap"
+            component={NMap}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MapViewScreen"
+            component={MapViewScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MapViewScreen2"
+            component={MapViewScreen2}
+            options={{ headerShown: false }}
           />
         </>
       )}
