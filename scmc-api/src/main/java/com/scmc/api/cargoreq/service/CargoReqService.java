@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
+import com.scmc.api.cargoreq.dto.RequestDetailDto;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.dto.MatchingDto;
@@ -27,4 +28,5 @@ public interface CargoReqService {
 	List<TbMemberTruckOwner> selectCargoRequestByTruckOwnerUid(Long truckownerUid);
 	
 	TbCargoRequest selectCargoRequestDetail(Long reqId);
+	boolean updateCargoRequestDetail(RequestDetailDto dto);
 }

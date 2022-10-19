@@ -2,7 +2,8 @@ import {useCallback} from 'react';
 import {io, Socket} from 'socket.io-client';
 import Config from 'react-native-config';
 
-let socket;
+let socket = Socket;
+
 const useSocket = () => {
   const disconnect = useCallback(() => {
     if (socket) {

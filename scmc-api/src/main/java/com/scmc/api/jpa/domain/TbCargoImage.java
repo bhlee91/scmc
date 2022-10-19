@@ -20,6 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scmc.api.cargoreq.dto.ImageDto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -68,6 +69,15 @@ public class TbCargoImage {
 		this.contents = new String(imageContents);
 		
 		if (request.containsKey("methodDiv")) this.methodDiv = request.get("methodDiv").toString();
+	}
+	
+	// com.scmc.api.cargoreq.dto
+	public TbCargoImage(ImageDto dto) {
+		this.imageId = dto.getImageId() == null || dto.getImageId() == 0 ? null : dto.getImageId();
+		this.memDiv = dto.getMemDiv();
+		this.imageSeq = dto.getImageSeq();
+		this.imageContents = dto.getContents().getBytes();
+		this.methodDiv = dto.getMethodDiv();
 	}
 	
 }

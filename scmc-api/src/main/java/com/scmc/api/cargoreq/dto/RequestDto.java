@@ -50,7 +50,7 @@ public class RequestDto {
 		
 		this.reqId = request.getReqId();
 		this.ownerUid = request.getOwnerUid();
-		this.cargoownerName = request.getCargoownerName();
+		this.cargoownerName = request.getCargoownerName(); 
 		this.cargoName = request.getCargoName();
 		this.truckUid = request.getTruckUid();
 		this.cweight = request.getCweight();

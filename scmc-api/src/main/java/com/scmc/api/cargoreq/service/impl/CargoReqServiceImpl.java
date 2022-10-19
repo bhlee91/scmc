@@ -13,6 +13,8 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.scmc.api.cargoreq.dto.ImageDto;
+import com.scmc.api.cargoreq.dto.RequestDetailDto;
 import com.scmc.api.cargoreq.service.CargoReqService;
 import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
@@ -193,5 +195,39 @@ public class CargoReqServiceImpl implements CargoReqService {
 		}
 		
 		return request;
+	}
+
+	@Transactional
+	@Override
+	public boolean updateCargoRequestDetail(RequestDetailDto dto) {
+		boolean res = true;
+		
+		try {
+			TbCargoRequest request = tbCargoRequestRepository.findByReqId(dto.getReqId());
+			
+			if (dto.getLmFiles().size() > 0) {
+				for (ImageDto i : dto.getLmFiles()) {
+					TbCargoImage tci = new TbCargoImage(i);
+					tci.setTbCargoRequest(request);
+					
+					tbCargoImageRepository.save(tci);
+				}
+			}
+			
+			if (dto.getUmFiles().size() > 0) {
+				for (ImageDto i : dto.getUmFiles()) {
+					TbCargoImage tci = new TbCargoImage(i);
+					tci.setTbCargoRequest(request);
+					
+					tbCargoImageRepository.save(tci);
+				}
+			}
+			
+			return res;
+		} catch (Exception e) {
+			res = false;
+			e.printStackTrace();
+			return res;
+		}
 	}
 }

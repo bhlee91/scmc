@@ -29,6 +29,9 @@ import { convertWeightAndDiv, isEmpty } from "utils/CommonUtil";
 import {
   setCargoInfo
 } from "api/truck/index";
+import {
+  geocoding
+} from "api/openapi/index";
 
 Date.prototype.format = function (f) {
   if (!this.valueOf()) return ' ';
@@ -94,10 +97,14 @@ function CargoReg({ navigation, route }) {
   const [loadAddr, setLoadAddr] = useState({
     addr: "",
     buildingName: "",
+    lat: "",
+    lon: "",
   })
   const [unloadAddr, setUnloadAddr] = useState({
     addr: "",
     buildingName: "",
+    lat: "",
+    lon: "",
   })
   const [rate, setRate] = useState(0)
   const [weight, setWeight] = useState("0")
@@ -123,18 +130,28 @@ function CargoReg({ navigation, route }) {
     if (route.params?.addr) {
       const addr = route.params.addr
       
-      if (route.params.d === "load")
-        setLoadAddr({ 
-          ...loadAddr,
-          addr: addr.jibun || addr.road,
-          buildingName: addr.buildingName,
-        })
-      if (route.params.d === "unload")
-        setUnloadAddr({
-          ...unloadAddr,
-          addr: addr.jibun || addr.road,
-          buildingName: addr.buildingName,
-        })
+      geocoding(addr.road)
+      .then(res => {
+        console.log(res)
+        if (route.params.d === "load")
+          setLoadAddr({ 
+            ...loadAddr,
+            addr: addr.jibun || addr.road,
+            buildingName: addr.buildingName,
+            lat: res.lat,
+            lon: res.lon,
+          })
+        if (route.params.d === "unload")
+          setUnloadAddr({
+            ...unloadAddr,
+            addr: addr.jibun || addr.road,
+            buildingName: addr.buildingName,
+            lat: res.lat,
+            lon: res.lon,
+          })
+      })
+
+
     }
   }, [route.params?.addr])
 
@@ -148,12 +165,16 @@ function CargoReg({ navigation, route }) {
       setLoadAddr({ 
         ...loadAddr,
         addr: route.params.info.departAddrSt,
-        buildingName: route.params.info.departAddrSt2,
+        building: route.params.info.departAddrSt2,
+        lat: route.params.info.departLatitude,
+        lon: route.params.info.departLongitude,
       })
       setUnloadAddr({ 
         ...unloadAddr,
         addr: route.params.info.arrivalAddrSt,
-        buildingName: route.params.info.arrivalAddrSt2,
+        building: route.params.info.arrivalAddrSt2,
+        lat: route.params.info.arrivalLatitude,
+        lon: route.params.info.arrivalLongitude,
       })
       setRate(route.params.info.spaceRate)
       setWeight(wad.weight)
@@ -172,10 +193,14 @@ function CargoReg({ navigation, route }) {
       truckownerUid: 4,
       loadDt: formatStringToDateTime(loadDateTime),
       unloadDt: formatStringToDateTime(unloadDateTime),
-      departAddrSt: loadAddr.addr,
-      departAddrSt2: loadAddr.buildingName,
+      departAddrSt: loadAddr.road,
+      departAddrSt2: loadAddr.building,
+      departLatitude: loadAddr.lat,
+      departLongitude: loadAddr.lon,
       arrivalAddrSt: unloadAddr.addr,
-      arrivalAddrSt2: unloadAddr.buildingName,
+      arrivalAddrSt2: unloadAddr.building,
+      arrivalLatitude: unloadAddr.lat,
+      arrivalLongitude: unloadAddr.lon,
       spaceRate: rate,
       cargoWeight: `${weight}${weightDiv}`
     }

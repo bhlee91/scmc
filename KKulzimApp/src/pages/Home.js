@@ -1,39 +1,25 @@
 import React, {
   useState,
-  useRef,
   useEffect,
-  useContext,
   useCallback,
 } from 'react';
 
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
   Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
-  TouchableOpacity,
   ScrollView,
   BackHandler,
   Keyboard,
 } from 'react-native';
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-
 import {
   Card,
-  Title,
   Divider,
   Paragraph,
-  Badge,
-  Appbar,
   Button,
 } from 'react-native-paper';
 
@@ -72,6 +58,12 @@ function Home({ navigation, props }) {
   const [requestList, setRequestList] = useState([])
   const [cargoList, setCargoList] = useState([])
   const [div, setDiv] = useState("reg")
+
+  // 오산시청 좌표
+  const P0 = {
+    latitude: 37.1498870,
+    longitude: 127.0774620,
+  }
 
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
@@ -119,8 +111,8 @@ function Home({ navigation, props }) {
   useEffect(() => {
     const mainParams = {
       uid: 4,
-      lat: location.latitude,
-      lon: location.longitude,
+      lat: P0.latitude,
+      lon: P0.longitude,
     }
     
     getMainInfo(mainParams)
@@ -218,13 +210,17 @@ function Home({ navigation, props }) {
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                   }}>
-                  <Text>{currentLocation}</Text>
+                  <Text onPress={() => navigation.navigate("NMap")}>{currentLocation}</Text>
                 </View>
               </View>
             </Card.Content>
           </Card>
         </View>
       </View>
+                  <Text onPress={() => navigation.navigate("MapViewScreen")}>go MapViewScreen</Text>
+                  <Text></Text>
+                  <Text onPress={() => navigation.navigate("MapViewScreen2")}>go MapViewScreen2</Text>
+                  <Text></Text>
       {/* 차주정보 끝 */}
       {/* 화물정보 */}
       <View style={{flex: 1, flexDirection: 'row'}}>

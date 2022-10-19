@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.scmc.api.cargoreq.dto.RequestDetailDto;
 import com.scmc.api.cargoreq.service.CargoReqService;
 
 import io.swagger.annotations.Api;
@@ -143,15 +144,25 @@ public class CargoReqController {
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestByTruckOwnerUid(truckownerUid), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "화물 정보 조회", notes = "화물 정보를 조회한다.")
+	@ApiOperation(value = "운송 상세 정보 조회", notes = "운송 상세 정보를 조회한다.")
 	@GetMapping("/request/detail/{reqId}")
 	public ResponseEntity<?> selectCargoRequestDetail(
-			@ApiParam(value = "의뢰 번호", example = "1") @PathVariable(value = "reqId") Long reqId
+			@ApiParam(value = "화물 의뢰 번호", example = "1") @PathVariable(value = "reqId") Long reqId
 			) throws Exception {
 		log.info("========================");
-		log.info("차주 운송내역 리스트 조회");
+		log.info("운송 상제정보 조회");
 		log.info("========================");
 		
 		return new ResponseEntity<>(cargoReqService.selectCargoRequestDetail(reqId), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "운송 상세 정보 등록/수정", notes = "운송 상세를 등록/수정한다.")
+	@PostMapping("/request/detail")
+	public ResponseEntity<?> updateCargoRequestDetail(@RequestBody RequestDetailDto dto) throws Exception {
+		log.info("========================");
+		log.info("운송 상세정보 등록/수정");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.updateCargoRequestDetail(dto), HttpStatus.OK);
 	}
 }
