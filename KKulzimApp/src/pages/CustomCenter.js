@@ -45,11 +45,11 @@ function CustomCenter({navigation, props}) {
   const data = [
     {
       id: 1,
-      title: '상담원 연결 \n 000-0000-0000',
+      title: '상담원 연결',
       titleImg: (
         <Icon2 name="phone-classic" size={24} style={styles.icon}></Icon2>
       ),
-      onpress: () => Linking.openURL(`tel:01012341234`),
+      onpress: () => Linking.openURL(`tel:0424888741`),
     },
     {
       id: 2,
@@ -63,13 +63,13 @@ function CustomCenter({navigation, props}) {
       id: 3,
       title: '이용약관',
       titleImg: <Icon3 name="file-signature" size={24} style={styles.icon} />,
-      onpress: toPrTerms,
+      onpress: toUsTerms,
     },
     {
       id: 4,
       title: '개인정보보호방침',
       titleImg: <Icon3 name="user-shield" size={24} style={styles.icon} />,
-      onpress: toUsTerms,
+      onpress: toPrTerms,
     },
   ];
 

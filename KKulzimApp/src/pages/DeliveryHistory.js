@@ -26,8 +26,8 @@ import { getMyTransit } from '../api/cargo';
 import { formatDateTimeToKorea, formatStringToDateTime } from '../utils/DateUtil';
 
 function DeliveryHistoy({navigation}) {
-  const [req, setReq] = useState('')
-  const [reqId, setReqId] = useState(0);
+  // const [req, setReq] = useState('')
+  // const [reqId, setReqId] = useState(0);
   const [info, setInfo] = useState([]);
   const truckownerUid = store.getState().user.truckownerUid;
   
@@ -37,16 +37,17 @@ function DeliveryHistoy({navigation}) {
       res.data.map(obj => {
         getColValue(obj.hist)
         setInfo(obj.hist)
-        console.log(info)
       })
     })
   },[])
 
-  const toGoDetail = useCallback(() => {
-    setReqId(info.reqId)
-    console.log(reqId)
-    navigation.navigate('CargoDetail', {reqId: reqId});
+  const toGoDetail = useCallback((param) => {
+    navigation.navigate('CargoDetail', {reqId: param});
   }, [navigation]);
+
+  // const toGoDetail = (param) =>{
+  //   navigation.navigate('CargoDetail', {reqId: param});
+  // }
 
   const getColValue = (data) => {
     data.map((obj) => {
@@ -84,8 +85,9 @@ function DeliveryHistoy({navigation}) {
             <Card.Content>
               {/* 히스토리 Looping */}
               {info.map(item => {
+                const reqId = item.reqId
                 return(
-                  <Card style={styles.recommendcardcontents} onPress={toGoDetail} key={item.histUid}>
+                  <Card style={styles.recommendcardcontents} onPress={() => toGoDetail(reqId)} key={item.histUid}>
                     <Card.Content>
                       <Paragraph style={styles.recommendtext}>
                         {formatDateTimeToKorea(item.request.arrivalDatetimes)}
