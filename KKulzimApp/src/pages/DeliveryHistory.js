@@ -26,8 +26,6 @@ import { getMyTransit } from '../api/cargo';
 import { formatDateTimeToKorea, formatStringToDateTime } from '../utils/DateUtil';
 
 function DeliveryHistoy({navigation}) {
-  // const [req, setReq] = useState('')
-  // const [reqId, setReqId] = useState(0);
   const [info, setInfo] = useState([]);
   const truckownerUid = store.getState().user.truckownerUid;
   

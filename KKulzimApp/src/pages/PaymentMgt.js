@@ -9,68 +9,28 @@ import React, {
 import {
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
-  TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import RadioGroup from 'react-native-radio-buttons-group';
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 import {Card, Title, Divider, Paragraph, Badge} from 'react-native-paper';
-
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { getProductList } from '../api/product';
+import { formatFare } from '../utils/CommonUtil';
 
 function PaymentMgt({navigation}) {
   const [isFree, SetIsFree] = useState(false);
+  const [productInfo, setProductInfo] = useState([]);
 
-  // const radioButtonsData = [
-  //   {
-  //     id: '1',
-  //     label: '1개월',
-  //     value: '1mon',
-  //     labelStyle: {
-  //       fontSize: 13,
-  //     },
-  //     size: 16,
-  //   },
-  //   {
-  //     id: '2',
-  //     label: '2개월',
-  //     value: '2mon',
-  //     labelStyle: {
-  //       fontSize: 13,
-  //     },
-  //     size: 16,
-  //   },
-  //   {
-  //     id: '3',
-  //     label: '3개월',
-  //     value: '3mon',
-  //     labelStyle: {
-  //       fontSize: 13,
-  //     },
-  //     size: 16,
-  //   },
-  //   {
-  //     id: '4',
-  //     label: '6개월',
-  //     value: '6mon',
-  //     labelStyle: {
-  //       fontSize: 13,
-  //     },
-  //     size: 16,
-  //   },
-  // ];
+  useEffect(() =>{
+    getProductList('Y')
+    .then(res => {
+      console.log(res.data)
+      setProductInfo(res.data)
+    })
+  },[])
 
   return (
     <ScrollView style={styles.mainView}>
@@ -138,120 +98,57 @@ function PaymentMgt({navigation}) {
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <Card.Content>
-                          <View
-                            style={{
-                              // backgroundColor: '#E8EAF6',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            {/* 상품 Looping */}
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}>
+                        {/* 상품 Looping */}
+                        {productInfo.map(item => {
+                          return(
+                            <Card.Content key={item.productUid}>
+                              <View
+                                style={{
+                                  // backgroundColor: '#E8EAF6',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                }}>
                               <View
                                 style={{
                                   flexDirection: 'row',
-                                  width: '30%',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
                                 }}>
-                                <Text style={styles.text}>1개월</Text>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    width:'30%',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderWidth: 0.5,
+                                    padding: 5,
+                                    borderColor: '#B0BEC5',
+                                  }}>
+                                  <Text style={styles.text}>{item.productName}</Text>
+                                </View>
+                                <View
+                                  style={{
+                                    flexDirection: 'row',
+                                    flexBasis:'auto',
+                                    width: '70%',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderWidth: 0.5,
+                                    padding: 5,
+                                    borderColor: '#B0BEC5',
+                                    lineHeight: 'auto'
+                                  }}>
+                                  <Text style={styles.text}>
+                                    {formatFare(item.price)}원({item.discountRate}% 할인)
+                                  </Text>
+                                </View>
                               </View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  width: '70%',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
-                                }}>
-                                <Text style={styles.text}>
-                                  9,000원(10% 할인)
-                                </Text>
-                              </View>
+                              
                             </View>
-                            {/* 2번째 상품 */}
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  width: '30%',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
-                                }}>
-                                <Text style={styles.text}>2개월</Text>
-                              </View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  width: '70%',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
-                                }}>
-                                <Text style={styles.text}>
-                                  17,000원(15% 할인)
-                                </Text>
-                              </View>
-                            </View>
-
-                            {/* 3번째 상품 */}
-                            <View
-                              style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                              }}>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  width: '30%',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
-                                }}>
-                                <Text style={styles.text}>3개월</Text>
-                              </View>
-                              <View
-                                style={{
-                                  flexDirection: 'row',
-                                  width: '70%',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  borderWidth: 0.5,
-                                  padding: 5,
-                                  borderColor: '#B0BEC5',
-                                }}>
-                                <Text style={styles.text}>
-                                  26,000원(20% 할인)
-                                </Text>
-                              </View>
-                            </View>
-
-                            {/* 상품 Looping  끝*/}
-                          </View>
-                        </Card.Content>
+                          </Card.Content>
+                        )
+                        {/* 상품 Looping  끝*/}
+                        })}
                       </Card>
                     </View>
                   </View>
