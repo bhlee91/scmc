@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useRef, 
 } from 'react';
 
 import {
@@ -27,6 +28,8 @@ import RNPickerSelect from "react-native-picker-select";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Geolocation from '@react-native-community/geolocation';
 
+import useSocket from 'hooks/useSocket';
+
 import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatMonthAndDay, formatDateTimeToString, formatDate } from "utils/DateUtil";
 import {
@@ -46,7 +49,27 @@ const divList = [
   },
 ]
 
+const useInterval = (callback, delay) => {
+  const savedCallback = useRef()
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    const tick = () => savedCallback.current()
+
+    if (delay !== null) {
+      const id = setInterval(tick, delay)
+
+      return () => clearInterval(id)
+    }
+  }, [delay])
+}
+
 function Home({ navigation, props }) {
+  // const [socket, disconnect] = useSocket();
+
   const [user, setUser] = useState({})
   const [cargoInfo, setCargoInfo] = useState({})
   const [currentLocation, setCurrentLocation] = useState("")
@@ -59,36 +82,34 @@ function Home({ navigation, props }) {
   const [cargoList, setCargoList] = useState([])
   const [div, setDiv] = useState("reg")
 
-  // 오산시청 좌표
-  const P0 = {
-    latitude: 37.1498870,
-    longitude: 127.0774620,
+  const getPosition = (options) => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(resolve, reject, options)
+    })
   }
 
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      position => {
-        setLocation({
-          ...location,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          loading: true,
-        })
-      },
-      error => {
-        console.log(error)
-      },
-      { 
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000
-      },
-    )
+  const getCurrentLocation = async () => {
+    const options = { 
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000
+    }
+
+    await getPosition()
+    .then(res => {
+      setLocation({
+        ...location,
+        latitude: res.coords.latitude,
+        longitude: res.coords.longitude,
+        loading: true,
+      })
+    })
+    .catch(error => {
+      console.log(error)
+    })
   }
 
   useEffect(() => {
-    getCurrentLocation()
-
     const backAction = () => {
       Alert.alert('꿀짐', '앱을 종료하시겠습니까?', [
         {
@@ -109,6 +130,23 @@ function Home({ navigation, props }) {
   }, [])
 
   useEffect(() => {
+    const timer = setInterval(() => getCurrentLocation(), 5000)
+    
+    return () => clearInterval(timer)
+  }, [location]) 
+
+  // 오산시청 좌표
+  const P0 = {
+    latitude: 37.1498870,
+    longitude: 127.0774620,
+  }
+
+  useEffect(() => {
+    /* 현위치(신영시그마2, 탄천상로 164)
+    x: 위도
+    y: 경도
+    rad: 반경(기본값: 10, 단위: km)
+    */
     const mainParams = {
       uid: 4,
       lat: P0.latitude,
@@ -123,14 +161,9 @@ function Home({ navigation, props }) {
       setCurrentLocation(res.data.documents?.address.address_name)
     })
 
-    /* 현위치(신영시그마2, 탄천상로 164)
-    x: 위도
-    y: 경도
-    rad: 반경(기본값: 10, 단위: km)
-    */
     const currentLocation = {
-      lat: location.latitude,
-      lon: location.longitude,
+      lat: P0.latitude,
+      lon: P0.longitude,
       rad: 30,
       div: div,
     }
@@ -177,7 +210,16 @@ function Home({ navigation, props }) {
   }
 
   const toCargoDetail = useCallback((reqId) => {
-    navigation.navigate('CargoDetail', { reqId: reqId })
+    navigation.reset({
+      index: 0, 
+      routes: [{ 
+        name: 'CargoDetail', 
+        params: {
+          p: 'Main',
+          reqId: reqId
+        }
+      }]
+    }) 
   }, [navigation])
 
   const toRecomDetail = useCallback((reqId) => {
@@ -217,10 +259,6 @@ function Home({ navigation, props }) {
           </Card>
         </View>
       </View>
-                  <Text onPress={() => navigation.navigate("MapViewScreen")}>go MapViewScreen</Text>
-                  <Text></Text>
-                  <Text onPress={() => navigation.navigate("MapViewScreen2")}>go MapViewScreen2</Text>
-                  <Text></Text>
       {/* 차주정보 끝 */}
       {/* 화물정보 */}
       <View style={{flex: 1, flexDirection: 'row'}}>

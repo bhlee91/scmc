@@ -66,12 +66,12 @@ function UseList() {
     padding: theme.spacing(1),
     textAlign: "center",
     color: theme.palette.text.secondary,
-  }));
+  }))
 
-  const [reqList, setReqList] = useState([]);
+  const [reqList, setReqList] = useState([])
 
   //ownerUid 받아오기
-  const ownerUid = store.getState().user.ownerUid;
+  const ownerUid = store.getState().user.ownerUid
 
   const handleExpandClick = (reqId) => {
     setReqList(reqList.map(req => req.reqId === reqId ? { ...req, expanded: !req.expanded } : req))
@@ -82,21 +82,21 @@ function UseList() {
   const [isViewerOpen, setIsViewerOpen] = useState(false);
 
   const openImageViewer = useCallback((index) => {
-    setCurrentImage(index);
-    setIsViewerOpen(true);
-  }, []);
+    setCurrentImage(index)
+    setIsViewerOpen(true)
+  }, [])
 
   const closeImageViewer = () => {
-    setCurrentImage(0);
-    setIsViewerOpen(false);
-  };
+    setCurrentImage(0)
+    setIsViewerOpen(false)
+  }
 
   useEffect(() => {
     getRequestList(ownerUid)
     .then(res => {
       setReqList(res.data)
     })
-  }, []);
+  }, [])
   
   const renderCardContent = reqList?.map(data => {
 

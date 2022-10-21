@@ -44,8 +44,6 @@ import RecomDetail from './src/pages/RecomDetail';
 import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
 import NMap from './src/common/NMap';
-import MapViewScreen from './src/common/MapViewScreen';
-import MapViewScreen2 from './src/common/MapViewScreen2';
 import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useIsFocused } from '@react-navigation/native';
@@ -108,7 +106,8 @@ function Main() {
         name="Home"
         component={Home}
         options={{
-          tabBarLabel: 'Home',
+          title: "홈",
+          tabBarLabel: "Home",
           unmountOnBlur: true,
           // headerShown: false,
         }}
@@ -117,22 +116,24 @@ function Main() {
         name="CargoReg"
         component={CargoReg}
         options={{
-          tabBarLabel: '화물등록',
+          title: "화물등록",
+          tabBarLabel: "화물등록",
         }}
       />
       <Tab.Screen
         name="RecomShipInfo"
         component={RecomShipInfo}
         options={{
-          tabBarLabel: '추천화물',
+          title: "추천화물",
+          tabBarLabel: "추천화물",
         }}
       />
-
       <Tab.Screen
         name="MyInfo"
         component={MyInfo}
         options={{
-          tabBarLabel: '마이페이지',
+          title: "마이페이지",
+          tabBarLabel: "마이페이지",
         }}
       />
     </Tab.Navigator>
@@ -142,7 +143,8 @@ function Main() {
 function AppInner({navigation}) {
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   const isFocused = useIsFocused();
-  const isLoggedIn = store.getState().user.isLoggedIn
+  // const isLoggedIn = store.getState().user.isLoggedIn
+  const isLoggedIn = true
 
   useEffect(() => {
     console.log(isLoggedIn)
@@ -171,26 +173,19 @@ function AppInner({navigation}) {
           <Stack.Screen
             name="Main"
             component={Main}
-             options={{headerShown: false, unmountOnBlur: true}}
+            options={{ headerShown: false, unmountOnBlur: true }}
           />
           <Stack.Screen
             name="Address"
             component={Address}
-            options={{title: '주소찾기'}}
+            options={({ route }) => ({ 
+              headerShown: true, 
+              title: route.params.d === "load" ? "상차지 주소 입력" : "하차지 주소 입력" 
+            })}
           />
           <Stack.Screen
             name="NMap"
             component={NMap}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="MapViewScreen"
-            component={MapViewScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="MapViewScreen2"
-            component={MapViewScreen2}
             options={{ headerShown: false }}
           />
         </>
@@ -200,36 +195,29 @@ function AppInner({navigation}) {
           <Stack.Screen
             name="LogIn"
             component={LogIn}
-            options={{title: '로그인', unmountOnBlur: true}}
+            options={{ title: "로그인", unmountOnBlur: true }}
           />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
-            options={{title: '회원가입'}}
+            options={{ title: "회원가입"}}
           />
           <Stack.Screen
             name="Main"
             component={Main}
-             options={{headerShown: true, unmountOnBlur: true}}
+            options={{ headerShown: true, unmountOnBlur: true }}
           />
           <Stack.Screen
             name="Address"
             component={Address}
-            options={{title: '주소찾기'}}
+            options={({ route }) => ({ 
+              headerShown: true, 
+              title: route.params.d === "load" ? "상차지 주소 입력" : "하차지 주소 입력" 
+            })}
           />
           <Stack.Screen
             name="NMap"
             component={NMap}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="MapViewScreen"
-            component={MapViewScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="MapViewScreen2"
-            component={MapViewScreen2}
             options={{ headerShown: false }}
           />
         </>

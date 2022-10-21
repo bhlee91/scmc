@@ -59,7 +59,8 @@ public class SecurityConfig {
 						"/swagger/**",
 		        		"/swagger-resources/**",
 		        		"/webjars/**", 
-		        		"/v2/api-docs")
+		        		"/v2/api-docs",
+		        		"/socket/**")
 				.permitAll()
 				.antMatchers("/admin/**").authenticated()
 				.anyRequest().authenticated()

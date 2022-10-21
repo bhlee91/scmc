@@ -55,7 +55,7 @@ public class KaKaoLoginUtil {
 				+ "&client_id=%s"
 				+ "&redirect_uri=%s"
 				+ "&code=%s"
-				, REST_API_KEY, getRedirectURI(request));
+				, REST_API_KEY, getRedirectURI(request), code);
 		
 		HttpURLConnection con = apiUtil.connect(token_url);
 

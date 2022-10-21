@@ -37,7 +37,6 @@ function Address({ navigation, route }) {
   return (
     <View style={styles.mainView}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>자택주소 수정하기</Text>
         <DaumPostcode
           style={{ width: 400, height: 200 }}
           jsOptions={{ animated: true }}

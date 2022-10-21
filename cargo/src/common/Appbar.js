@@ -16,7 +16,20 @@ import "./Appbar.css";
 import store from 'src/store';
 import { persistor } from "src/index"; 
 
-const pages = ["화물의뢰하기", "이용내역보기", "고객센터"];
+const pages = [
+  {
+    name: "화물의뢰하기",
+    to: "ShipperRequire"
+  },
+  {
+    name: "이용내역보기",
+    to: "UseList"
+  },
+  {
+    name: "고객센터",
+    to: "Customer"
+  },
+];
 
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();
@@ -90,27 +103,15 @@ const ResponsiveAppBar = () => {
                   <Typography textAlign="center">메인</Typography>
                 </MenuItem>
 
-                <MenuItem
-                  onClick={handleCloseNavMenu}
-                  component={Link}
-                  to="/ShipperRequire"
-                >
+                <MenuItem onClick={() => navigate("/ShipperRequire")}>
                   <Typography textAlign="center">화물의뢰하기</Typography>
                 </MenuItem>
 
-                <MenuItem
-                  onClick={handleCloseNavMenu}
-                  component={Link}
-                  to="/UseList"
-                >
+                <MenuItem onClick={() => navigate("/UseList")}>
                   <Typography textAlign="center">이용내역보기</Typography>
                 </MenuItem>
 
-                <MenuItem
-                  onClick={handleCloseNavMenu}
-                  component={Link}
-                  to="/Customer"
-                >
+                <MenuItem onClick={() => navigate("/Customer")}>
                   <Typography textAlign="center">고객센터</Typography>
                 </MenuItem>
               </Menu>
@@ -126,11 +127,11 @@ const ResponsiveAppBar = () => {
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
               {pages.map((page) => (
                 <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
+                  key={page.to}
+                  onClick={() => navigate(`/${page.to}`)}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  {page}
+                  {page.name}
                 </Button>
               ))}
             </Box>

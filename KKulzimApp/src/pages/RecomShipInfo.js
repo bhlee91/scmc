@@ -36,7 +36,7 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-function RecomShipInfo({navigation}) {
+function RecomShipInfo({ navigation}) {
   return (
     <ScrollView style={styles.mainView}>
       {/* 추천 화물정보 랭킹 탑 2 까지 보여지기 */}

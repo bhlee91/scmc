@@ -57,7 +57,8 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "rn-async-storage-flipper": "^0.0.10",
-    "socket.io-client": "^4.5.2"
+    "socket.io-client": "^4.5.2",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
