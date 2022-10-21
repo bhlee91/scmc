@@ -3,6 +3,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   ScrollView,
+  View,
 } from 'react-native';
 
 const ScrollLoadingIndicatorView = ({ children, loading }) => {
@@ -22,7 +23,9 @@ const ScrollLoadingIndicatorView = ({ children, loading }) => {
         size='large' 
         animating={!loading}
       />
-      {children}
+      <View style={{ flex: 1, zIndex: 5, opacity: loading ? 1 : 0.5 }}>
+        {children}
+      </View>
     </ScrollView>
   );
 }
