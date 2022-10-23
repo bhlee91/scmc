@@ -136,7 +136,7 @@ function PaymentMgt({navigation}) {
                                     borderWidth: 0.5,
                                     padding: 5,
                                     borderColor: '#B0BEC5',
-                                    lineHeight: 'auto'
+                                    content: 'auto'
                                   }}>
                                   <Text style={styles.text}>
                                     {formatFare(item.price)}원({item.discountRate}% 할인)
@@ -256,7 +256,8 @@ const styles = StyleSheet.create({
   buttonZone: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#4527A0',
+    backgroundColor: '#000000',
+    borderRadius:10,
     height: 50,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',

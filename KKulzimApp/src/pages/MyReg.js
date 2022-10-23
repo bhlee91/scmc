@@ -22,11 +22,10 @@ import DismissKeyboardView from '../components/DismissKeyboardView';
 import RNPickerSelect from 'react-native-picker-select';
 import RadioGroup from 'react-native-radio-buttons-group';
 import store from '../store';
-import { getTruckowner } from '../api/truckowner';
+
+import { getTruckowner, updateTruckowner } from '../api/truckowner';
 
 function MyReg({navigation}) {
-  const [name, setName] = useState('');
-  const [businessno, setBusinessno] = useState('');
   const [tons, setTons] = useState('');
   const [carno, setCarno] = useState('');
   const [info, setInfo] = useState('')
@@ -36,13 +35,12 @@ function MyReg({navigation}) {
   const [rfArr, setRfArr] = useState([]);
   const [stArr, setStArr] = useState([]);
 
-  const [selected, setSelected] = useState('')
-
+  const truckownerUid = store.getState().user.truckownerUid;
   const carNumber = store.getState().user.carNumber;
 
   useEffect(() => {
     getInfo();
-    
+    console.log(info)
   }, []);
 
 
@@ -51,9 +49,22 @@ function MyReg({navigation}) {
     .then(res => {
       setInfo(res.data)
       setCarno(res.data.carNumber)
-      setDefaultRadioLO()
+    })
+    .then(() =>{
+      setDefaultRadio()
     })
   }
+
+  // const onUpdateClick = () => {
+  //   const data = {
+      
+  //   }
+  //   updateTruckowner(data, truckownerUid)
+  //   .then(res => {
+  //     console.log(res)
+  //     //Alert.alert(`${res.data}`)
+  //   })
+  // }
 
   const onChangeCarno = useCallback(text => {
     setCarno(text.trim());
@@ -85,19 +96,43 @@ function MyReg({navigation}) {
     },
   ];
 
-  const setDefaultRadioLO = (radioButtonsArray) =>{
-    radioButtonsArray.map(key =>{
-      radioButtonsArray.filter(key => key.value === info.longyn)
-      console.log(radioButtonsArray)
-    })
-  }
-
   const [radioButtonsLO, setRadioButtonsLO] = useState(radioButtonsLOData);
+
+  const setDefaultRadio = () => {
+    radioButtonsLOData.map(key => {
+      if(key.value === info.longyn) {
+        key.selected = true;
+      }
+    })
+    setRadioButtonsLO(radioButtonsLOData)
+
+    radioButtonsRFData.map(key => {
+      if(key.value === info.refrigeratedFrozen) {
+        key.selected = true;
+      }
+    })
+    setRadioButtonsRF(radioButtonsRFData)
+
+    radioButtonsSTData.map(key => {
+      if(key.value === info.stowageType) {
+        key.selected = true;
+      }
+    })
+    setRadioButtonsST(radioButtonsSTData)
+
+    radioButtonsLFData.map(key => {
+      if(key.value === info.liftType) {
+        key.selected = true;
+        setLfArr(radioButtonsLFData.filter(key => key.selected === true))
+        console.log(lfArr)
+      }
+    })
+    setRadioButtonsLF(radioButtonsLFData)
+  }
 
   function onPressRadioButtonLO(radioButtonsArray) {
     radioButtonsArray.map((key) => {
       setLoArr(radioButtonsArray.filter(key => key.selected === true))
-      console.log(radioButtonsLO)
     })
     setRadioButtonsLO(radioButtonsArray);
   }
@@ -317,7 +352,6 @@ function MyReg({navigation}) {
                           radioButtons={radioButtonsLO}
                           onPress={onPressRadioButtonLO}
                           layout="row"
-                          selected={selected === info.longyn}
                         />
                       </Card.Content>
                     </Card>
@@ -329,8 +363,6 @@ function MyReg({navigation}) {
                           radioButtons={radioButtonsRF}
                           onPress={onPressRadioButtonRF}
                           layout="row"
-                          value={info.refrigeratedFrozen}
-                          
                         />
                       </Card.Content>
                     </Card>
@@ -341,7 +373,6 @@ function MyReg({navigation}) {
                           radioButtons={radioButtonsST}
                           onPress={onPressRadioButtonST}
                           layout="row"
-                          value={info.stowageType}
                         />
                       </Card.Content>
                     </Card>
@@ -353,7 +384,6 @@ function MyReg({navigation}) {
                           radioButtons={radioButtonsLF}
                           onPress={onPressRadioButtonLF}
                           layout="row"
-                          value={info.liftType}
                         />
                       </Card.Content>
                     </Card>
@@ -381,7 +411,8 @@ function MyReg({navigation}) {
         <View style={styles.buttonZone}>
           <Pressable
             style={styles.Button}
-            onPress={() => Alert.alert('수정이 완료되었습니다.')}>
+            //onPress={onUpdateClick}
+            >
             <Text style={styles.ButtonText}>수정</Text>
           </Pressable>
         </View>

@@ -55,10 +55,18 @@ export const confirmAccount = (obj) => {
   })
 }
 
-export const getTruckowner = (carNumber) => {
+export const getTruckowner = (obj,carNumber) => {
   return request({
     url: `${BASE_URL}/truckowner/${carNumber}`,
     method: "get",
+    data: obj
+  })
+}
+
+export const updateTruckowner = (truckownerUid) => {
+  return request({
+    url: `${BASE_URL}/truck/${truckownerUid}`,
+    method: "put",
     params: {
       carNumber
     }

@@ -185,7 +185,7 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 			user.setCarNumber(obj.get("carNumber").toString());
 			user.setPhoneNumber(obj.get("phoneNumber").toString());
 			user.setStowageType(obj.get("stowageType").toString());
-			//user.setBusinessNo(obj.get("businessNo").toString());
+			user.setBusinessNo(obj.get("businessNo").toString());
 			user.setLongyn(obj.get("longyn").toString());
 			user.setRefrigeratedFrozen(obj.get("refrigeratedFrozen").toString());
 			user.setLiftType(obj.get("liftType").toString());
