@@ -26,52 +26,60 @@ import store from '../store';
 import { getTruckowner, updateTruckowner } from '../api/truckowner';
 
 function MyReg({navigation}) {
-  const [tons, setTons] = useState('');
+  const [truckTons, setTruckTons] = useState('');
   const [carno, setCarno] = useState('');
-  const [info, setInfo] = useState('')
+  const [info, setInfo] = useState([])
 
   const [loArr, setLoArr] = useState([]);
   const [lfArr, setLfArr] = useState([]);
   const [rfArr, setRfArr] = useState([]);
   const [stArr, setStArr] = useState([]);
 
-  const truckownerUid = store.getState().user.truckownerUid;
   const carNumber = store.getState().user.carNumber;
 
   useEffect(() => {
     getInfo();
-    console.log(info)
-  }, []);
+  }, [carno]);
 
 
-  const getInfo = () =>{
+  const getInfo = () => {
     getTruckowner(carNumber)
     .then(res => {
       setInfo(res.data)
+      setTruckTons(res.data.truckTons)
       setCarno(res.data.carNumber)
-    })
-    .then(() =>{
       setDefaultRadio()
     })
   }
 
-  // const onUpdateClick = () => {
-  //   const data = {
-      
-  //   }
-  //   updateTruckowner(data, truckownerUid)
-  //   .then(res => {
-  //     console.log(res)
-  //     //Alert.alert(`${res.data}`)
-  //   })
-  // }
+  const onUpdateClick = () => {
+    const data = {
+      carNumber: carno,
+      stowageType: stArr[0]?.value,
+      longyn: loArr[0].value,
+      refrigeratedFrozen: rfArr[0].value,
+      liftType: lfArr[0].value,
+      truckTons: truckTons
+    }
+    try{
+      updateTruckowner(data, carNumber)
+      .then(res => {
+        console.log(res)
+        Alert.alert(`${res.data}`)
+        navigation.navigate('Main')
+      })      
+      console.log(data)
+    } catch(err) {
+      console.log(err)
+    }
+  }
 
   const onChangeCarno = useCallback(text => {
     setCarno(text.trim());
   }, []);
 
   const onChangeTons = useCallback(text => {
-    console.log(text);
+    setTruckTons(text.trim())
   }, []);
 
   // 차량정보 초장축여부 데이타
@@ -98,44 +106,7 @@ function MyReg({navigation}) {
 
   const [radioButtonsLO, setRadioButtonsLO] = useState(radioButtonsLOData);
 
-  const setDefaultRadio = () => {
-    radioButtonsLOData.map(key => {
-      if(key.value === info.longyn) {
-        key.selected = true;
-      }
-    })
-    setRadioButtonsLO(radioButtonsLOData)
 
-    radioButtonsRFData.map(key => {
-      if(key.value === info.refrigeratedFrozen) {
-        key.selected = true;
-      }
-    })
-    setRadioButtonsRF(radioButtonsRFData)
-
-    radioButtonsSTData.map(key => {
-      if(key.value === info.stowageType) {
-        key.selected = true;
-      }
-    })
-    setRadioButtonsST(radioButtonsSTData)
-
-    radioButtonsLFData.map(key => {
-      if(key.value === info.liftType) {
-        key.selected = true;
-        setLfArr(radioButtonsLFData.filter(key => key.selected === true))
-        console.log(lfArr)
-      }
-    })
-    setRadioButtonsLF(radioButtonsLFData)
-  }
-
-  function onPressRadioButtonLO(radioButtonsArray) {
-    radioButtonsArray.map((key) => {
-      setLoArr(radioButtonsArray.filter(key => key.selected === true))
-    })
-    setRadioButtonsLO(radioButtonsArray);
-  }
 
   // 차량정보 데이타 끝
   // 차량정보 냉장냉동여부 데이타
@@ -265,159 +236,198 @@ function MyReg({navigation}) {
     setRadioButtonsLF(radioButtonsArray)
   }
 
-  const onSubmit = useCallback(async () => {
-  }, []);
+  const setDefaultRadio = () => {
+    radioButtonsLOData.map(key => {
+      if(key.value === info.longyn) {
+        key.selected = true;
+        setLoArr(radioButtonsLOData.filter(key => key.selected === true))
+      }
+    })
+    setRadioButtonsLO(radioButtonsLOData)
+
+    radioButtonsRFData.map(key => {
+      if(key.value === info.refrigeratedFrozen) {
+        key.selected = true;
+        setRfArr(radioButtonsRFData.filter(key => key.selected === true))
+      }
+    })
+    setRadioButtonsRF(radioButtonsRFData)
+
+    radioButtonsSTData.map(key => {
+      if(key.value === info.stowageType) {
+        key.selected = true;
+        setStArr(radioButtonsSTData.filter(key => key.selected === true))
+      }
+    })
+    setRadioButtonsST(radioButtonsSTData)
+
+    radioButtonsLFData.map(key => {
+      if(key.value === info.liftType) {
+        key.selected = true;
+        setLfArr(radioButtonsLFData.filter(key => key.selected === true))
+      }
+    })
+    setRadioButtonsLF(radioButtonsLFData)
+  }
+
+  function onPressRadioButtonLO(radioButtonsArray) {
+    radioButtonsArray.map((key) => {
+      setLoArr(radioButtonsArray.filter(key => key.selected === true))
+    })
+    setRadioButtonsLO(radioButtonsArray);
+  }
 
   return (
-    <View style={styles.mainView}>
-      <DismissKeyboardView behavior>
-        <Card style={styles.card}>
-          <Title style={styles.cardtext}>차주정보</Title>
-          <Card.Content>
-            <View>
+    
+      <View style={styles.mainView}>
+        <DismissKeyboardView behavior>
+          <Card style={styles.card}>
+            <Title style={styles.cardtext}>차주정보</Title>
+            <Card.Content>
               <View>
-                <TextInput
-                  style={styles.textInput}
-                  Outlined
-                  placeholder="성명"
-                  placeholderTextColor="#666"
-                  value={info.truckownerName}
-                  returnKeyType="next"
-                  editable={false}
+                <View>
+                  <TextInput
+                    style={styles.textInput}
+                    Outlined
+                    placeholder="성명"
+                    placeholderTextColor="#666"
+                    value={info.truckownerName}
+                    returnKeyType="next"
+                    editable={false}
+                  />
+                </View>
+                <Divider />
+
+                <Divider />
+                <View>
+                  <TextInput
+                    style={styles.textInput}
+                    // label="사업자등록번호"
+                    placeholder="사업자등록번호"
+                    value={info.businessNo}
+                    returnKeyType="next"
+                    clearButtonMode="while-editing"
+                    editable={false}
+                    blurOnSubmit={false}
+                  />
+                </View>
+              </View>
+              <Divider />
+            </Card.Content>
+          </Card>
+          <Divider />
+
+          <Card style={styles.card}>
+            <Title style={styles.cardtext}>차량정보</Title>
+            <Card.Content>
+              <View style={styles.box}>
+                <RNPickerSelect
+                  // textInputProps={{underlineColorAndroid: 'transparent'}}
+                  // useNativeAndroidPickerStyle={false}
+                  style={styles.inputAndroid}
+                  placeholder={{
+                    label: '차량톤수',
+                  }}
+                  // fixAndroidTouchableBug={true}
+                  value={info.truckTons}
+                  onValueChange={value => onChangeTons(value)}
+                  items={[
+                    {label: '1톤', value: '1000T', key: '1'},
+                    {label: '1.4톤', value: '1P04T', key: '2'},
+                    {label: '2.5톤', value: '2P05T', key: '3'},
+                    {label: '3.5톤', value: '3P05T', key: '4'},
+                    {label: '5톤', value: '5000T', key: '5'},
+                    {label: '5톤 를러스', value: '500PT', key: '6'},
+                    {label: '5톤 축', value: '500XT', key: '7'},
+                    {label: '11톤', value: '1100T', key: '8'},
+                    {label: '18톤', value: '1800T', key: '9'},
+                  ]}
                 />
               </View>
               <Divider />
+              <View>
+                <View>
+                  {/* <Pressable
+                      style={styles.Button}
+                      onPress={() => Alert.alert('회원가입이 완료되었습니다.')}>
+                      <Text style={styles.ButtonText}>차량구분선택</Text>
+                    </Pressable> */}
+                  <Card style={styles.radiocardivbox}>
+                    <Title style={styles.radiocardtext}>차량종류</Title>
+                    <Card.Content>
+                      <Card>
+                        <Title style={styles.radiocardtext2}>초장축여부</Title>
+                        <Card.Content>
+                          <RadioGroup
+                            radioButtons={radioButtonsLO}
+                            onPress={onPressRadioButtonLO}
+                            layout="row"
+                          />
+                        </Card.Content>
+                      </Card>
 
+                      <Card>
+                        <Title style={styles.radiocardtext2}>냉장냉동여부</Title>
+                        <Card.Content>
+                          <RadioGroup row defaultValue={info.refrigeratedFrozen}
+                            radioButtons={radioButtonsRF}
+                            onPress={onPressRadioButtonRF}
+                            layout="row"
+                          />
+                        </Card.Content>
+                      </Card>
+                      <Card>
+                        <Title style={styles.radiocardtext2}>적재함형태</Title>
+                        <Card.Content>
+                          <RadioGroup
+                            radioButtons={radioButtonsST}
+                            onPress={onPressRadioButtonST}
+                            layout="row"
+                          />
+                        </Card.Content>
+                      </Card>
+
+                      <Card>
+                        <Title style={styles.radiocardtext2}>리프트여부</Title>
+                        <Card.Content>
+                          <RadioGroup
+                            radioButtons={radioButtonsLF}
+                            onPress={onPressRadioButtonLF}
+                            layout="row"
+                          />
+                        </Card.Content>
+                      </Card>
+                    </Card.Content>
+                  </Card>
+                </View>
+              </View>
               <Divider />
               <View>
                 <TextInput
                   style={styles.textInput}
-                  // label="사업자등록번호"
-                  placeholder="사업자등록번호"
-                  value={info.businessNo}
+                  onChangeText={onChangeCarno}
+                  placeholder="차량번호"
+                  value={carno}
                   returnKeyType="next"
                   clearButtonMode="while-editing"
-                  editable={false}
+                  defaultValue={carno}
                   blurOnSubmit={false}
                 />
               </View>
-            </View>
-            <Divider />
-          </Card.Content>
-        </Card>
-        <Divider />
+              <Divider />
+            </Card.Content>
+          </Card>
 
-        <Card style={styles.card}>
-          <Title style={styles.cardtext}>차량정보</Title>
-          <Card.Content>
-            <View style={styles.box}>
-              <RNPickerSelect
-                // textInputProps={{underlineColorAndroid: 'transparent'}}
-                // useNativeAndroidPickerStyle={false}
-                style={styles.inputAndroid}
-                placeholder={{
-                  label: '차량톤수',
-                }}
-                // fixAndroidTouchableBug={true}
-                value={info.truckTons}
-                onValueChange={value => onChangeTons(value)}
-                items={[
-                  {label: '1톤', value: '1000T', key: '1'},
-                  {label: '1.4톤', value: '1P04T', key: '2'},
-                  {label: '2.5톤', value: '2P05T', key: '3'},
-                  {label: '3.5톤', value: '3P05T', key: '4'},
-                  {label: '5톤', value: '5000T', key: '5'},
-                  {label: '5톤 를러스', value: '500PT', key: '6'},
-                  {label: '5톤 축', value: '500XT', key: '7'},
-                  {label: '11톤', value: '1100T', key: '8'},
-                  {label: '18톤', value: '1800T', key: '9'},
-                ]}
-              />
-            </View>
-            <Divider />
-            <View>
-              <View>
-                {/* <Pressable
-                    style={styles.Button}
-                    onPress={() => Alert.alert('회원가입이 완료되었습니다.')}>
-                    <Text style={styles.ButtonText}>차량구분선택</Text>
-                  </Pressable> */}
-                <Card style={styles.radiocardivbox}>
-                  <Title style={styles.radiocardtext}>차량종류</Title>
-                  <Card.Content>
-                    <Card>
-                      <Title style={styles.radiocardtext2}>초장축여부</Title>
-                      <Card.Content>
-                        <RadioGroup
-                          radioButtons={radioButtonsLO}
-                          onPress={onPressRadioButtonLO}
-                          layout="row"
-                        />
-                      </Card.Content>
-                    </Card>
-
-                    <Card>
-                      <Title style={styles.radiocardtext2}>냉장냉동여부</Title>
-                      <Card.Content>
-                        <RadioGroup row defaultValue={info.refrigeratedFrozen}
-                          radioButtons={radioButtonsRF}
-                          onPress={onPressRadioButtonRF}
-                          layout="row"
-                        />
-                      </Card.Content>
-                    </Card>
-                    <Card>
-                      <Title style={styles.radiocardtext2}>적재함형태</Title>
-                      <Card.Content>
-                        <RadioGroup
-                          radioButtons={radioButtonsST}
-                          onPress={onPressRadioButtonST}
-                          layout="row"
-                        />
-                      </Card.Content>
-                    </Card>
-
-                    <Card>
-                      <Title style={styles.radiocardtext2}>리프트여부</Title>
-                      <Card.Content>
-                        <RadioGroup
-                          radioButtons={radioButtonsLF}
-                          onPress={onPressRadioButtonLF}
-                          layout="row"
-                        />
-                      </Card.Content>
-                    </Card>
-                  </Card.Content>
-                </Card>
-              </View>
-            </View>
-            <Divider />
-            <View>
-              <TextInput
-                style={styles.textInput}
-                onChangeText={onChangeCarno}
-                placeholder="차량번호"
-                value={carno}
-                returnKeyType="next"
-                clearButtonMode="while-editing"
-                defaultValue={carno}
-                blurOnSubmit={false}
-              />
-            </View>
-            <Divider />
-          </Card.Content>
-        </Card>
-
-        <View style={styles.buttonZone}>
-          <Pressable
-            style={styles.Button}
-            //onPress={onUpdateClick}
-            >
-            <Text style={styles.ButtonText}>수정</Text>
-          </Pressable>
-        </View>
-      </DismissKeyboardView>
-    </View>
+          <View style={styles.buttonZone}>
+            <Pressable
+              style={styles.Button}
+              onPress={onUpdateClick}
+              >
+              <Text style={styles.ButtonText}>수정</Text>
+            </Pressable>
+          </View>
+        </DismissKeyboardView>
+      </View>
   );
 }
 export default MyReg;
