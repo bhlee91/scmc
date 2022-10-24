@@ -228,13 +228,14 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(CommonUtil.distance(lat1, lon1, lat2, lon2, unit), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "반경 리스트 조회(테스트용)", notes = "반경 리스트 조회(테스트용)")
+	@ApiOperation(value = "반경 리스트 조회", notes = "반경 리스트 조회")
 	@GetMapping("/truck/request")
 	public ResponseEntity<?> getCargoListInRadius(
 			@ApiParam(value = "현재 위도(latitude)") @RequestParam(value = "lat", required = true) String strLat,
 			@ApiParam(value = "현재 경도(longitude)") @RequestParam(value = "lon", required = true) String strLon,
 			@ApiParam(value = "반경", example = "10") @RequestParam(value = "rad", required = false, defaultValue = "10") String strRad,
-			@ApiParam(value = "기준", example = "reg") @RequestParam(value = "div", required = false, defaultValue = "reg") String div
+			@ApiParam(value = "기준", example = "reg") @RequestParam(value = "div", required = false, defaultValue = "reg") String div,
+			Pageable page
 			) throws Exception {
 		log.info("==================");
 		log.info("반경 리스트 조회(테스트용)");
@@ -244,7 +245,7 @@ public class TruckOwnerController {
 		double lon = Double.parseDouble(strLon);
 		int rad = Integer.parseInt(strRad);
 		
-		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad, div), HttpStatus.OK);
+		return new ResponseEntity<>(truckOwnerService.getCargoListInRadius(lat, lon, rad, div, page), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "차주 화물 의뢰 운송하기", notes = "차주 화물 의뢰 운송하기")

@@ -2,6 +2,7 @@ package com.scmc.api.jpa.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -35,9 +36,8 @@ public interface TbCargoRequestRepository extends JpaRepository<TbCargoRequest, 
 				+ "  ) t "
 				+ " WHERE t.distance < :rad"
 				+ " ORDER BY t.distance ASC"
-				+ " LIMIT 2" 
 			, nativeQuery = true)
-	List<TbCargoRequest> findByEarthDistanceByDistance(@Param("lat") double lat, @Param("lon") double lon, @Param("rad") int rad);
+	List<TbCargoRequest> findByEarthDistanceByDistance(@Param("lat") double lat, @Param("lon") double lon, @Param("rad") int rad, Pageable page);
 	@Query(value = "SELECT t.* "
 				+ "  FROM ( "
 				+ "	SELECT "
@@ -54,7 +54,6 @@ public interface TbCargoRequestRepository extends JpaRepository<TbCargoRequest, 
 				+ "  ) t "
 				+ " WHERE t.distance < :rad"
 				+ " ORDER BY t.req_id DESC"
-				+ " LIMIT 2" 
 			, nativeQuery = true)
-	List<TbCargoRequest> findByEarthDistanceByReg(@Param("lat") double lat, @Param("lon") double lon, @Param("rad") int rad);
+	List<TbCargoRequest> findByEarthDistanceByReg(@Param("lat") double lat, @Param("lon") double lon, @Param("rad") int rad, Pageable page);
 }

@@ -79,26 +79,26 @@ function Main() {
         // headerShown: false,
 
         tabBarIcon: ({focused, color, size}) => {
-          let iconName;
+          let iconName
           if (route.name === 'Home') {
             iconName = focused
-              ? require('/assets/images/home.png')
-              : require('/assets/images/outline_home.png');
-          } else if (route.name === '화물등록') {
+              ? require('assets/images/home.png')
+              : require('assets/images/outline_home.png');
+          } else if (route.name === 'CargoReg') {
             iconName = focused
-              ? require('/assets/images/register.png')
-              : require('/assets/images/outline_register.png');
-          } else if (route.name === '추천화물') {
+              ? require('assets/images/register.png')
+              : require('assets/images/outline_register.png');
+          } else if (route.name === 'RecomShipInfo') {
             iconName = focused
-              ? require('./src/assets/images/recommend.png')
-              : require('./src/assets/images/outline_recommend.png');
-          } else if (route.name === '마이페이지') {
+              ? require('assets/images/recommend.png')
+              : require('assets/images/outline_recommend.png');
+          } else if (route.name === 'MyInfo') {
             iconName = focused
-              ? require('./src/assets/images/my.png')
-              : require('./src/assets/images/outline_my.png');
+              ? require('assets/images/my.png')
+              : require('assets/images/outline_my.png');
           }
 
-          return <Image source={iconName} style={{width: 25, height: 25}} />;
+          return <Image source={iconName} style={{ width: 25, height: 25 }} />;
         },
         tabBarActiveTintColor: '#e91e63',
       })}>
@@ -186,7 +186,10 @@ function AppInner({navigation}) {
           <Stack.Screen
             name="NMap"
             component={NMap}
-            options={{ headerShown: false }}
+            options={{ 
+              headerShown: true,
+              title: "지도"
+            }}
           />
         </>
       ) : (
@@ -218,7 +221,10 @@ function AppInner({navigation}) {
           <Stack.Screen
             name="NMap"
             component={NMap}
-            options={{ headerShown: false }}
+            options={{ 
+              headerShown: true,
+              title: "지도"
+            }}
           />
         </>
       )}

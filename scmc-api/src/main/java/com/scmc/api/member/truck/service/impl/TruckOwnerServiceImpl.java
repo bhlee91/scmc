@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -354,13 +355,13 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 	}
 
 	@Override
-	public List<?> getCargoListInRadius(double lat, double lon, int rad, String d) {
+	public List<?> getCargoListInRadius(double lat, double lon, int rad, String d, Pageable page) {
 		List<TbCargoRequest> result = null;
 		
 		if (lat == 0 || lon == 0) return result;
 		
-		if (d.equals("dist")) result = tbCargoRequestRepository.findByEarthDistanceByDistance(lat, lon, rad);
-		else if (d.equals("reg")) result = tbCargoRequestRepository.findByEarthDistanceByReg(lat, lon, rad);
+		if (d.equals("dist")) result = tbCargoRequestRepository.findByEarthDistanceByDistance(lat, lon, rad, PageRequest.of(page.getPageNumber(), page.getPageSize()));
+		else if (d.equals("reg")) result = tbCargoRequestRepository.findByEarthDistanceByReg(lat, lon, rad, PageRequest.of(page.getPageNumber(), page.getPageSize()));
 		
 		if (result != null) {
 			for (TbCargoRequest request : result) {

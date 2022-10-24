@@ -166,6 +166,8 @@ function Home({ navigation, props }) {
       lon: P0.longitude,
       rad: 30,
       div: div,
+      page: 0,
+      size: 2,
     }
     
     getRequestListInRadius(currentLocation)
@@ -183,6 +185,8 @@ function Home({ navigation, props }) {
       lon: location.longitude,
       rad: 30,
       div: div,
+      page: 0,
+      size: 2,
     }
 
     getRequestListInRadius(currentLocation)
@@ -339,7 +343,7 @@ function Home({ navigation, props }) {
                       onPress={() => toCargoDetail(cargo.request.reqId)}>
                       <Card.Content>
                         <View style={styles.recommendView}>
-                          <View style={{flex: 1, width: '45%'}}>
+                          <View style={{ flex: 1, width: '45%', justifyContent: 'center' }}>
                             <Card>
                               <Card.Content>
                                 <Paragraph style={styles.recommendtext}>
@@ -358,7 +362,7 @@ function Home({ navigation, props }) {
                               color="#3F51B5"
                             />
                           </View>
-                          <View style={{flex: 1, width: '45%'}}>
+                          <View style={{ flex: 1, width: '45%', justifyContent: 'center' }}>
                             <Card>
                               <Card.Content>
                                 <Paragraph style={styles.recommendtext}>
@@ -432,25 +436,27 @@ function Home({ navigation, props }) {
         <View style={{flex: 1}}>
           <Card style={styles.recommendcard}>
             <Card.Content>
-              <View style={{ width: "50%" }}>
-                <Text 
-                  style={{ 
-                    color: '#43A047',
-                    fontSize: 16,
-                    fontWeight: '500',
-                  }}
-                >
-                  추천화물정보
-                  <Text style={{ fontSize: 14, color: "black" }}>(반경 30km)</Text>
-                </Text>
-              </View>
-              <View style={{ width: "40%" }}>
-                <RNPickerSelect
-                  value={div}
-                  onValueChange={(value) => setDiv(value)}
-                  onOpen={() => Keyboard.dismiss()}
-                  items={divList}
-                />
+              <View style={{ flexDirection: "row" }}>
+                <View style={{ justifyContent: "center", width: "50%" }}>
+                  <Text 
+                    style={{ 
+                      color: '#43A047',
+                      fontSize: 16,
+                      fontWeight: '500',
+                    }}
+                  >
+                    추천화물정보
+                    <Text style={{ fontSize: 14, color: "black" }}>(반경 30km)</Text>
+                  </Text>
+                </View>
+                <View style={{ width: "40%" }}>
+                  <RNPickerSelect
+                    value={div}
+                    onValueChange={(value) => setDiv(value)}
+                    onOpen={() => Keyboard.dismiss()}
+                    items={divList}
+                  />
+                </View>
               </View>
               {/* 단건 추천 영역 */}
               {requestList?.map(req => {
@@ -479,8 +485,7 @@ function Home({ navigation, props }) {
                             marginLeft: 2,
                             marginRight: 8,
                           }}></Image>
-                        <View style={{flexDirection: 'column'}}>
-                          <Text></Text>
+                        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
                           <Text style={styles.recommendtitletext}>
                             크기 :{' '}
                             <Text style={styles.recommendtext}>{req.cwidth}m x {req.cverticalreal}m x {req.cheight}</Text>
@@ -496,7 +501,7 @@ function Home({ navigation, props }) {
 
                       {/* 이미지 화물사이즈 */}
                       <View style={styles.recommendView}>
-                        <View style={{flex: 1, width: '45%'}}>
+                        <View style={{ flex: 1, width: '45%', justifyContent: 'center' }}>
                           <Card>
                             <Card.Content>
                               <Paragraph style={styles.recommendtext}>
@@ -515,7 +520,7 @@ function Home({ navigation, props }) {
                             color="#3F51B5"
                           />
                         </View>
-                        <View style={{flex: 1, width: '45%'}}>
+                        <View style={{ flex: 1, width: '45%', justifyContent: 'center' }}>
                           <Card>
                             <Card.Content>
                               <Paragraph style={styles.recommendtext}>

@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.scmc.api.common.jwt.TokenDto;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.domain.TbSysSmslog;
 import com.scmc.api.jpa.domain.TbTruckOwnerCargoInfo;
@@ -34,7 +32,7 @@ public interface TruckOwnerService {
 	Map<String, Object> truckOwnerLogin(HashMap<String, Object> param);
 	String changePassowrd(HashMap<String, Object> param);
 	boolean setRequestTransportConfirm(Map<String, Long> dto);
-	List<?> getCargoListInRadius(double lat, double lon, int rad, String d);
+	List<?> getCargoListInRadius(double lat, double lon, int rad, String d, Pageable page);
 	String confirmAccount(HashMap<String, Object> param);
 	TruckOwnerDto getTruckOwner(String carNumber);
 	

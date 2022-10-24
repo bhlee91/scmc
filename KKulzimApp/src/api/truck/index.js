@@ -26,7 +26,7 @@ export const setCargoInfo = (obj) => {
 
 export const getRequestListInRadius = (params) => {
   return request({
-    url: `${BASE_URL}/truck/request?lat=${params.lat}&lon=${params.lon}&rad=${params.rad}&div=${params.div}`,
+    url: `${BASE_URL}/truck/request?lat=${params.lat}&lon=${params.lon}&rad=${params.rad}&div=${params.div}&page=${params.page}&size=${params.size}`,
     method: "get"
   })
 }

@@ -71,11 +71,11 @@ function RecomDetail({ navigation, route }) {
   return (
     <ScrollView style={styles.mainView}>
       {/* 화물정보 */}
-      <View style={{flex: 1, flexDirection: 'row', marginTop: 5}}>
-        <View style={{flex: 1}}>
+      <View style={{ flex: 1, flexDirection: 'row', marginTop: 5, height: '16%' }}>
+        <View style={{ flex: 1 }}>
           <Card style={styles.detailcard}>
             <Card.Content>
-              <Title style={styles.title2}>화물정보</Title>
+              <Title style={styles.title}>화물정보</Title>
               <View
                 style={{
                   flexDirection: 'row',
@@ -116,11 +116,11 @@ function RecomDetail({ navigation, route }) {
         <View style={{flex: 1}}>
           <Card style={styles.detailcard}>
             <Card.Content>
-              <Paragraph style={styles.title2}>상하자정보</Paragraph>
+              <Paragraph style={styles.title}>상하차정보</Paragraph>
               <View style={styles.elem}>
                 <Card style={styles.detailcardcontents}>
                   <Card.Content>
-                    <Paragraph style={styles.title2}>상차지</Paragraph>
+                    <Paragraph style={styles.title}>상차지</Paragraph>
                     <Paragraph
                       style={{
                         padding: 5,
@@ -144,7 +144,7 @@ function RecomDetail({ navigation, route }) {
               <View style={styles.elem}>
                 <Card style={styles.detailcardcontents}>
                   <Card.Content>
-                    <Paragraph style={styles.title2}>하차지</Paragraph>
+                    <Paragraph style={styles.title}>하차지</Paragraph>
                     <Paragraph
                       style={{
                         padding: 5,
@@ -360,35 +360,9 @@ const styles = StyleSheet.create({
     // backgroundColor: '#B3E5FC',
   },
 
-  detailview: {
-    flexDirection: 'row',
-    marginTop: 5,
-    marginBottom: 5,
-    marginLeft: 5,
-    marginRight: 5,
-    borderWidth: 1,
-    backgroundColor: 'green',
-  },
-
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    // borderBottomLeftRadius: 10,
-    // borderBottompRightRadius: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 0,
-    marginBottom: 5,
-    height: 120,
-  },
-
   detailcard: {
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottompRightRadius: 10,
+    borderRadius: 10,
     marginTop: 0,
     marginRight: 5,
     marginLeft: 5,
@@ -398,31 +372,16 @@ const styles = StyleSheet.create({
 
   detailcardcontents: {
     backgroundColor: '#E8EAF6',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderBottomLeftRadius: 10,
-    borderBottompRightRadius: 10,
+    borderRadius: 10,
     borderWidth: 0.5,
     borderColor: '#E0E0E0',
     width: '100%',
-    // height: 220,
-  },
-
-  detailtext: {
-    // color: '#536DFE',
-    fontSize: 13,
-    fontWeight: '500',
+    height: 120,
   },
 
   text: {
-    // color: '#536DFE',
     fontSize: 13,
     fontWeight: '500',
-  },
-
-  cardTitle: {
-    color: '#303F9F',
-    fontSize: 20,
   },
 
   buttonText: {
@@ -456,38 +415,23 @@ const styles = StyleSheet.create({
     height: 120,
     flexDirection: 'row',
   },
-  info: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  infotext: {
-    padding: 2,
-  },
+  
   title: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'yellow',
-    fontSize: 15,
-    color: '#43A047',
-  },
-  title2: {
     fontSize: 15,
     color: '#43A047',
   },
 
   recommendtext: {
-    // color: '#536DFE',
     fontSize: 14,
     fontWeight: '500',
     marginLeft: 5,
     color: 'black',
   },
+
   recommendtitletext: {
-    // color: '#536DFE',
     fontSize: 14,
     marginLeft: 40,
     fontWeight: '500',
     color: '#43A047',
   },
-});
+})

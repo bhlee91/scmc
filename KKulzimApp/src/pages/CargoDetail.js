@@ -20,7 +20,6 @@ import ScrollLoadingIndicatorView from 'components/ScrollLoadingIndicatorView';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageResizer from 'react-native-image-resizer'; //사이즈가 커 리사이징 필요
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatDateTimeToKorea } from "utils/DateUtil";

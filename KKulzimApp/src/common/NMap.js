@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import {
-  Image,
-  ImageBackground, 
-  View,
-  Text, 
-  TouchableOpacity, 
-} from 'react-native';
+import { View } from 'react-native';
 
-import NaverMapView, { Circle, Marker, Path, Polygon, Polyline } from "react-native-nmap";
+import NaverMapView, { Circle, Marker } from "react-native-nmap";
 import Geolocation from '@react-native-community/geolocation';
 
 function NMap({ navigation, route }) {
@@ -49,15 +43,10 @@ function NMap({ navigation, route }) {
   })
 
   return (
-    <>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <View style={{backgroundColor: 'gray', padding: 4}}>
-          <Text style={{color: 'white'}}>goBack</Text>
-        </View>
-      </TouchableOpacity>
+    <View>
       <NaverMapView 
         ref={mapView}
-        style={{width: '100%', height: '100%'}}
+        style={{ width: '100%', height: '100%' }}
         showsMyLocationButton={true}
         center={{
           ...P0,
@@ -70,7 +59,7 @@ function NMap({ navigation, route }) {
         <Circle coordinate={P0} color={"rgba(255, 172, 64, 0.3)"} radius={7000} />
         <Marker style={{ width: 30, height: 30 }} coordinate={P0} image={require("assets/images/bee.png")} zIndex={1000} />
       </NaverMapView>
-    </>
+    </View>
   )
 }
 
