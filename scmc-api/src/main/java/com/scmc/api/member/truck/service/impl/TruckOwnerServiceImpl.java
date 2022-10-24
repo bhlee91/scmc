@@ -199,6 +199,36 @@ public class TruckOwnerServiceImpl implements TruckOwnerService {
 
 		return msg;
 	}
+	
+	@Transactional
+	@Override
+	public String updateTruckOwnerInApp(HashMap<String, Object> obj, String carNubmer) {
+		String msg = "";
+		
+		TbMemberTruckOwner tmto = tbMemberTruckOwnerRepository.findByCarNumber(carNubmer)
+											.orElseThrow();
+
+		try {
+			if(tmto != null) {
+				
+				tmto.setCarNumber(obj.get("carNumber").toString());
+				tmto.setStowageType(obj.get("stowageType").toString());
+				tmto.setLongyn(obj.get("longyn").toString());
+				tmto.setRefrigeratedFrozen(obj.get("refrigeratedFrozen").toString());
+				tmto.setLiftType(obj.get("liftType").toString());
+				tmto.setTruckTons(obj.get("truckTons").toString());
+				
+				tbMemberTruckOwnerRepository.save(tmto);
+				msg = "회원정보 변경이 완료되었습니다.";
+			} else {
+				msg = "변경에 실패하였습니다.";
+			}	
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return msg;
+	}
 
 	@Override
 	public TbMemberTruckOwner getTruckOwner(long uid) {

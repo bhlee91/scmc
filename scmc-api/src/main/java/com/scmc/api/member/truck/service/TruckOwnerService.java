@@ -20,6 +20,7 @@ public interface TruckOwnerService {
 
 	String insertTruckOwner(HashMap<String, Object> obj);
 	String updateTruckOwner(HashMap<String, Object> obj, long uid);
+	String updateTruckOwnerInApp(HashMap<String, Object> obj, String carNumber);
 	TbMemberTruckOwner getTruckOwner(long uid);
 	String getSmsAuthNumber(String phoneNumber);
 	TbTruckOwnerCargoInfo setTruckOwnerCargoInfo(CargoInfoDto obj) throws ParseException, UnsupportedEncodingException;

@@ -61,6 +61,19 @@ public class TruckOwnerController {
 		return new ResponseEntity<>(truckOwnerService.updateTruckOwner(obj, uid), HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "차주 수정 모바일", notes = "차주 수정 모바일")
+	@PutMapping("/truck/mod/{carNumber}")
+	public ResponseEntity<?> updateTruckOwnerInApp(@RequestBody HashMap<String, Object> obj,
+			@ApiParam(value = "차량 번호", example = "45오4545") @PathVariable(value = "carNumber") String carNumber
+			
+			) throws Exception {
+		log.info("==================");
+		log.info("차주 수정 모바일");
+		log.info("==================");
+		
+		return new ResponseEntity<>(truckOwnerService.updateTruckOwnerInApp(obj, carNumber), HttpStatus.OK);
+	}
+	
 	@ApiOperation(value = "차주 회원정보 조회", notes = "차주의 회원정보를 조회한다.")
 	@GetMapping("/truck/{uid}")
 	public ResponseEntity<?> getTruckOwner(
