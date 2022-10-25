@@ -8,7 +8,10 @@ const initialState = {
   isLoggedIn: false,
   accessToken: '',
   refreshToken:'',
-  phoneNumber: ''
+  phoneNumber: '',
+  latitude: '',
+  longitude: '',
+  addr: '',
 }
 
 const userSlice = createSlice({
@@ -36,6 +39,14 @@ const userSlice = createSlice({
     SET_CHPWD(state, action) {
       state.phoneNumber = action.payload.phoneNumber;
       state.isLoggedIn = false;
+    },
+    SET_LOCATION(state, action) {
+      state.latitude = action.payload.latitude;
+      state.longitude = action.payload.longitude;
+      state.addr = action.payload.addr;
+    },
+    SET_ADDR(state, action) {
+      state.addr = action.payload.addr;
     }
   },
   extraReducers: (builder) => {

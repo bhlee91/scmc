@@ -28,7 +28,6 @@ import com.scmc.api.customer.dto.TermsDto;
 import com.scmc.api.info.dto.ProductInfoDto;
 import com.scmc.api.info.service.SystemInfoService;
 import com.scmc.api.jpa.domain.TbSysAppversion;
-import com.scmc.api.jpa.domain.TbSysAttachfile;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

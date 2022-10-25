@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useRef, 
 } from 'react';
-
 import {
   StyleSheet,
   View,
@@ -16,7 +15,6 @@ import {
   BackHandler,
   Keyboard,
 } from 'react-native';
-
 import {
   Card,
   Divider,
@@ -24,12 +22,14 @@ import {
   Button,
 } from 'react-native-paper';
 
+import { useSelector } from 'react-redux';
+
 import RNPickerSelect from "react-native-picker-select";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Geolocation from '@react-native-community/geolocation';
 
 import useSocket from 'hooks/useSocket';
 
+import { useAppDispatch } from 'store';
 import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatMonthAndDay, formatDateTimeToString, formatDate } from "utils/DateUtil";
 import {
@@ -49,67 +49,19 @@ const divList = [
   },
 ]
 
-const useInterval = (callback, delay) => {
-  const savedCallback = useRef()
-
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
-  useEffect(() => {
-    const tick = () => savedCallback.current()
-
-    if (delay !== null) {
-      const id = setInterval(tick, delay)
-
-      return () => clearInterval(id)
-    }
-  }, [delay])
-}
-
 function Home({ navigation, props }) {
   // const [socket, disconnect] = useSocket();
-
+  const dispatch = useAppDispatch()
   const [user, setUser] = useState({})
+  // const user = useSelector((state) => state.user)
+  const loc = useSelector((state) => state.user)
   const [cargoInfo, setCargoInfo] = useState({})
-  const [currentLocation, setCurrentLocation] = useState("")
-  const [location, setLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-    loading: false,
-  })
   const [requestList, setRequestList] = useState([])
   const [cargoList, setCargoList] = useState([])
   const [div, setDiv] = useState("reg")
 
-  const getPosition = (options) => {
-    return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(resolve, reject, options)
-    })
-  }
-
-  const getCurrentLocation = async () => {
-    const options = { 
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 10000
-    }
-
-    await getPosition()
-    .then(res => {
-      setLocation({
-        ...location,
-        latitude: res.coords.latitude,
-        longitude: res.coords.longitude,
-        loading: true,
-      })
-    })
-    .catch(error => {
-      console.log(error)
-    })
-  }
-
   useEffect(() => {
+    // const timer = setInterval(() => getCurrentLocation(), 5000)
     const backAction = () => {
       Alert.alert('꿀짐', '앱을 종료하시겠습니까?', [
         {
@@ -126,14 +78,11 @@ function Home({ navigation, props }) {
       backAction,
     )
 
-    return () => backHandler.remove()
+    return () => {
+      backHandler.remove()
+      // clearInterval(timer)
+    }
   }, [])
-
-  useEffect(() => {
-    const timer = setInterval(() => getCurrentLocation(), 5000)
-    
-    return () => clearInterval(timer)
-  }, [location]) 
 
   // 오산시청 좌표
   const P0 = {
@@ -142,11 +91,6 @@ function Home({ navigation, props }) {
   }
 
   useEffect(() => {
-    /* 현위치(신영시그마2, 탄천상로 164)
-    x: 위도
-    y: 경도
-    rad: 반경(기본값: 10, 단위: km)
-    */
     const mainParams = {
       uid: 4,
       lat: P0.latitude,
@@ -158,12 +102,11 @@ function Home({ navigation, props }) {
       setUser(res.data?.owner)
       setCargoInfo(res.data?.info)
       setCargoList(res.data?.cargo_list)
-      setCurrentLocation(res.data.documents?.address.address_name)
     })
 
     const currentLocation = {
-      lat: P0.latitude,
-      lon: P0.longitude,
+      lat: loc.latitude,
+      lon: loc.longitude,
       rad: 30,
       div: div,
       page: 0,
@@ -177,19 +120,19 @@ function Home({ navigation, props }) {
     .catch(err => {
       console.log(err)
     })
-  }, [location.loading])
+  }, [loc])
 
   useEffect(() => {
-    const currentLocation = {
-      lat: location.latitude,
-      lon: location.longitude,
+    const location = {
+      lat: loc.latitude,
+      lon: loc.longitude,
       rad: 30,
       div: div,
       page: 0,
       size: 2,
     }
 
-    getRequestListInRadius(currentLocation)
+    getRequestListInRadius(location)
     .then(res => {
       setRequestList([...res.data])
     })
@@ -200,13 +143,17 @@ function Home({ navigation, props }) {
 
   const refreshCurrentLocation = () => {
     const params = {
-      lat: location.latitude,
-      lon: location.longitude,
+      lat: loc.latitude,
+      lon: loc.longitude,
     }
 
     getTruckOwnerCurrentLocation(params)
     .then(res => {
-      setCurrentLocation(res.data.address?.address_name)
+      dispatch(
+        userSlice.actions.SET_ADDR({
+          addr: res.data.address?.address_name
+        })
+      )
     })
     .catch(error => {
       console.log(error)
@@ -256,7 +203,7 @@ function Home({ navigation, props }) {
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                   }}>
-                  <Text onPress={() => navigation.navigate("NMap")}>{currentLocation}</Text>
+                  <Text onPress={() => navigation.navigate("NMap")}>{loc.addr}</Text>
                 </View>
               </View>
             </Card.Content>

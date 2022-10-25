@@ -1,31 +1,32 @@
 import request from "src/request";
 
-const BASE_URL = "/auth"
+const AUTH_URL = "/auth"
+const API_URL = "/api"
 
 export const initNaverLogin = () => {
   return request({
-    url: `${BASE_URL}/naver`,
+    url: `${API_URL}/naver`,
     method: "post"
   })
 }
 
 export const getNaverAccessToken = (code, state) => {
   return request({
-    url: `${BASE_URL}/naver/callback?code=${code}&state=${state}`,
+    url: `${API_URL}/naver/callback?code=${code}&state=${state}`,
     method: "get"
   })
 }
 
 export const initKaKaoLogin = () => {
   return request({
-    url: `${BASE_URL}/kakao`,
+    url: `${API_URL}/kakao`,
     method: "post"
   })
 }
 
 export const getKaKaoAccessToken = (code) => {
   return request({
-    url: `${BASE_URL}/kakao/callback?code=${code}`,
+    url: `${API_URL}/kakao/callback?code=${code}`,
     method: "get"
   })
 }
@@ -35,9 +36,9 @@ export const adminLogin = (email, password) => {
     id: email,
     password: password
   }
-  console.log(data)
+
   return request({
-    url: `${BASE_URL}/admin`,
+    url: `${AUTH_URL}/admin`,
     method: "post",
     data: data
   })

@@ -1,7 +1,6 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useEffect, useState} from 'react';
 import MyInfo from './src/pages/MyInfo';
 import LogIn from './src/pages/LogIn';
 import SignUp from './src/pages/SignUp';
@@ -9,8 +8,6 @@ import MyLocation from './src/pages/MyLocation';
 import RecomShipInfo from './src/pages/RecomShipInfo';
 import ShipInfo from './src/pages/ShipInfo';
 import Home from './src/pages/Home';
-import {Provider, useSelector} from 'react-redux';
-// import store, {useAppDispatch} from './src/store';
 // import {RootState} from './src/store/reducer';
 // import useSocket from './src/hooks/useSocket';
 // import EncryptedStorage from 'react-native-encrypted-storage';
@@ -44,10 +41,14 @@ import RecomDetail from './src/pages/RecomDetail';
 import usePermissions from './src/hooks/usePermissions';
 import Address from "./src/common/Address";
 import NMap from './src/common/NMap';
-import store from './src/store';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geolocation from '@react-native-community/geolocation';
+import { useAppDispatch } from './src/store';
+import userSlice from './src/slices/user';
+import MapViewScreen from './src/common/MapViewScreen';
+import { getTruckOwnerCurrentLocation } from "api/truck/index";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -141,14 +142,67 @@ function Main() {
 }
 
 function AppInner({navigation}) {
+  const dispatch = useAppDispatch()
   // useSelector은 Porvider 내부에서만 사용 가능 하여 AppInner로 분리 하여 사용
   const isFocused = useIsFocused();
   // const isLoggedIn = store.getState().user.isLoggedIn
   const isLoggedIn = true
 
+  // 오산시청 좌표
+  const osanPosition = {
+    latitude: 37.1498870,
+    longitude: 127.0774620,
+  }
+
   useEffect(() => {
     console.log(isLoggedIn)
   },[isFocused])
+
+  const getPosition = (options) => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(resolve, reject, options)
+    })
+  }
+
+  const getCurrentLocation = async () => {
+    const options = { 
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 10000
+    }
+
+    await getPosition(options)
+    .then(response => {
+      // 현위치(탄천상로 164)
+      // const params = {
+      //   lat: response.coords.latitude,
+      //   lon: response.coords.longitude,
+      // }
+
+      const params = {
+        lat: osanPosition.latitude,
+        lon: osanPosition.longitude,
+      }
+
+      getTruckOwnerCurrentLocation(params)
+      .then(res => {
+        dispatch(
+          userSlice.actions.SET_LOCATION({
+            latitude: params.lat,
+            longitude: params.lon,
+            addr: res.data.address?.address_name
+          })
+        )
+      })
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
 
   return (
     <Stack.Navigator
@@ -191,6 +245,14 @@ function AppInner({navigation}) {
               title: "지도"
             }}
           />
+          <Stack.Screen
+            name="MapViewScreen"
+            component={MapViewScreen}
+            options={{ 
+              headerShown: true,
+              title: "지도(예시)"
+            }}
+          />
         </>
       ) : (
         // Auth screens
@@ -224,6 +286,14 @@ function AppInner({navigation}) {
             options={{ 
               headerShown: true,
               title: "지도"
+            }}
+          />
+          <Stack.Screen
+            name="MapViewScreen"
+            component={MapViewScreen}
+            options={{ 
+              headerShown: true,
+              title: "지도(예시)"
             }}
           />
         </>

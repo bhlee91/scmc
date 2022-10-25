@@ -11,32 +11,20 @@ import {
   FlatList,
   StyleSheet,
   View,
-  ImageBackground,
   Text,
-  Dimensions,
-  KeyboardAvoidingView,
   Alert,
   Pressable,
-  Image,
-  ActivityIndicator,
-  Platform,
-  Linking,
-  TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import RNPickerSelect from "react-native-picker-select";
 
 import {
   Card,
-  Title,
   Divider,
   Paragraph,
-  Badge,
-  Appbar,
 } from 'react-native-paper';
 
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { isEmpty, formatFare } from "utils/CommonUtil";
@@ -56,6 +44,8 @@ const divList = [
 ]
 
 function RecomShipInfo({ navigation, route }) {
+  const user = useSelector((state) => state.user)
+
   const [div, setDiv] = useState("reg")
   const [list, setList] = useState([])
 
@@ -66,6 +56,15 @@ function RecomShipInfo({ navigation, route }) {
   }
 
   useEffect(() => {
+    // const currentLocation = {
+    //   lat: user.latitude,
+    //   lon: user.longitude,
+    //   rad: 30,
+    //   div: div,
+    //   page: null,
+    //   size: null,
+    // }
+
     const currentLocation = {
       lat: P0.latitude,
       lon: P0.longitude,
@@ -77,7 +76,6 @@ function RecomShipInfo({ navigation, route }) {
 
     getRequestListInRadius(currentLocation)
     .then(res => {
-      console.log(res)
       setList([...res.data])
     })
   }, [div])
@@ -159,7 +157,19 @@ function RecomShipInfo({ navigation, route }) {
               <View style={{flex: 1}}>
                 <Pressable
                   style={styles.buttonZone}
-                  onPress={() => Alert.alert('지도 보기')}>
+                  onPress={() => navigation.navigate({
+                    name: "NMap", 
+                    params: { 
+                      depart: {
+                        latitude: parseFloat(item.departLatitude),
+                        longitude: parseFloat(item.departLongitude),
+                      },
+                      arrival: {
+                        latitude: parseFloat(item.arrivalLatitude),
+                        longitude: parseFloat(item.arrivalLongitude),
+                      }
+                    }
+                  })}>
                   <Text style={styles.ButtonText}>지도보기</Text>
                 </Pressable>
               </View>

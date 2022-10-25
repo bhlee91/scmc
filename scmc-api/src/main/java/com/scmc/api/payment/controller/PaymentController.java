@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.scmc.api.cargoreq.controller.CargoReqController;
-import com.scmc.api.cargoreq.service.CargoReqService;
 import com.scmc.api.payment.service.PaymentService;
 
 import io.swagger.annotations.Api;
