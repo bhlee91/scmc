@@ -30,6 +30,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import useSocket from 'hooks/useSocket';
 
 import { useAppDispatch } from 'store';
+import userSlice from 'slices/user';
 import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatMonthAndDay, formatDateTimeToString, formatDate } from "utils/DateUtil";
 import {

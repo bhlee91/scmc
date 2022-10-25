@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const geocodingUrl = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode";
+const drivingUrl = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving";
 
 export async function geocoding(query) {
   
@@ -38,6 +39,23 @@ export async function geocoding(query) {
         lat: data.addresses[0].y,
         lon: data.addresses[0].x,
       }
+    })
+
+  return coord
+}
+
+export async function driving(start, goal, options) {
+  
+  const coord = await axios
+    .get(`${drivingUrl}?start=${start}&goal=${goal}&option=${options}&cartype=3&fueltype=diesel`, {
+      headers: {
+        "X-NCP-APIGW-API-KEY-ID": "205xj64cr0",
+        "X-NCP-APIGW-API-KEY": "fKCrRKmTNrI3JWOYjzOITzkWpqb97mO3XutBDa9n",
+      },
+    })
+    .then((res) => {
+      console.log(res)
+      return res.data
     })
 
   return coord
