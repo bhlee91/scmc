@@ -28,13 +28,15 @@ function NMap({ navigation, route }) {
   }
 
   useEffect(() => {
-    const start = `${route.params.depart.longitude},${route.params.depart.latitude}`
-    const goal = `${route.params.arrival.longitude},${route.params.arrival.latitude}`
+    if (route.params?.depart !== undefined && route.params?.arrival !== undefined) {
+      const start = `${route.params.depart.longitude},${route.params.depart.latitude}`
+      const goal = `${route.params.arrival.longitude},${route.params.arrival.latitude}`
 
-    driving(start, goal)
-    .then(res => {
-      console.log(res)
-    })
+      driving(start, goal)
+      .then(res => {
+        console.log(res)
+      })
+    }
   }, [])
 
   const onTouch = (event) => {
@@ -66,7 +68,7 @@ function NMap({ navigation, route }) {
         <Circle coordinate={P0} color={"rgba(255, 172, 64, 0.3)"} radius={30000} />
         <Marker style={{ width: 30, height: 30 }} coordinate={P0} image={require("assets/images/bee.png")} zIndex={1000} caption={{ text: "현위치", textSize: 17 }}/>
         {
-          route.params.depart !== undefined && route.params.arrival !== undefined ?
+          route.params?.depart !== undefined && route.params?.arrival !== undefined ?
           (
             <>
               {/* 상차지 */}
