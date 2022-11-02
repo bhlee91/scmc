@@ -55,10 +55,10 @@ public class TbTruckOwnerCargoInfo {
 	private String departAddrSt2;
 	
 	@Column(name = "depart_latitude")
-	private String departLatitude;
+	private Float departLatitude;
 	
 	@Column(name = "depart_longitude")
-	private String departLongitude;
+	private Float departLongitude;
 	
 	@Column(name = "arrival_addr_st")
 	private String arrivalAddrSt;
@@ -67,10 +67,10 @@ public class TbTruckOwnerCargoInfo {
 	private String arrivalAddrSt2;
 	
 	@Column(name = "arrival_latitude")
-	private String arrivalLatitude;
+	private Float arrivalLatitude;
 	
 	@Column(name = "arrival_longitude")
-	private String arrivalLongitude;
+	private Float arrivalLongitude;
 	
 	@Column(name = "cancelyn")
 	private String cancelyn;
@@ -85,8 +85,8 @@ public class TbTruckOwnerCargoInfo {
 
 	@Builder(builderMethodName = "insertCargoInfo")
 	public TbTruckOwnerCargoInfo(long truckownerUid, Date loadDt, Date unloadDt, int spaceRate,
-			String cargoWeight, String departAddrSt, String departAddrSt2, String departLatitude, String departLongitude,
-			String arrivalAddrSt, String arrivalAddrSt2, String arrivalLatitude, String arrivalLongitude) throws ParseException {
+			String cargoWeight, String departAddrSt, String departAddrSt2, float departLatitude, float departLongitude,
+			String arrivalAddrSt, String arrivalAddrSt2, float arrivalLatitude, float arrivalLongitude) throws ParseException {
 		
 		this.truckownerUid = truckownerUid;
 		this.loadDt = loadDt;
@@ -104,8 +104,8 @@ public class TbTruckOwnerCargoInfo {
 	}
 	
 	public void updateCargoInfo(String loadDt, String unloadDt, int spaceRate,
-			String cargoWeight, String departAddrSt, String departAddrSt2, String departLatitude, String departLongitude,
-			String arrivalAddrSt, String arrivalAddrSt2, String arrivalLatitude, String arrivalLongitude) throws ParseException {
+			String cargoWeight, String departAddrSt, String departAddrSt2, float departLatitude, float departLongitude,
+			String arrivalAddrSt, String arrivalAddrSt2, float arrivalLatitude, float arrivalLongitude) throws ParseException {
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		

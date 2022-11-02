@@ -29,10 +29,10 @@ public class MatchingDto {
 	private String departAddrSt;
 	private String arrivalAddrSt;
 	private String receiverPhone;
-	private String departLatitude;
-	private String departLongitude;
-	private String arrivalLatitude;
-	private String arrivalLongitude;
+	private float departLatitude;
+	private float departLongitude;
+	private float arrivalLatitude;
+	private float arrivalLongitude;
 	
 	private String loadMethod;
 	private String unloadMethod;

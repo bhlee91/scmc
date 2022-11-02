@@ -18,11 +18,11 @@ public class CargoInfoDto {
 	
 	private String departAddrSt;
 	private String departAddrSt2;
-	private String departLatitude;
-	private String departLongitude;
+	private float departLatitude;
+	private float departLongitude;
 	
 	private String arrivalAddrSt;
 	private String arrivalAddrSt2;
-	private String arrivalLatitude;
-	private String arrivalLongitude;
+	private float arrivalLatitude;
+	private float arrivalLongitude;
 }

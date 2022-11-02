@@ -95,16 +95,16 @@ public class TbCargoRequest {
 	private String receiverPhone;
 	
 	@Column(name = "depart_latitude")
-	private String departLatitude;
+	private Float departLatitude;
 	
 	@Column(name = "depart_longitude")
-	private String departLongitude;
+	private Float departLongitude;
 	
 	@Column(name = "arrival_latitude")
-	private String arrivalLatitude;
+	private Float arrivalLatitude;
 	
 	@Column(name = "arrival_longitude")
-	private String arrivalLongitude;
+	private Float arrivalLongitude;
 	
 	@Column(name = "load_method")
 	private String loadMethod;
@@ -191,10 +191,10 @@ public class TbCargoRequest {
 		this.arrivalAddrSt = request.get("arrivalAddrSt") == null ? null : request.get("arrivalAddrSt").toString();
 		this.arrivalAddrOld = request.get("arrivalAddrOld") == null ? null : request.get("arrivalAddrOld").toString();
 		this.receiverPhone = request.get("receiverPhone").toString();
-		this.departLatitude = request.get("departLatitude").toString();
-		this.departLongitude = request.get("departLongitude").toString();
-		this.arrivalLatitude = request.get("arrivalLatitude").toString();
-		this.arrivalLongitude = request.get("arrivalLongitude").toString();
+		this.departLatitude = Float.parseFloat(request.get("departLatitude").toString());
+		this.departLongitude = Float.parseFloat(request.get("departLongitude").toString());
+		this.arrivalLatitude = Float.parseFloat(request.get("arrivalLatitude").toString());
+		this.arrivalLongitude = Float.parseFloat(request.get("arrivalLongitude").toString());
 		this.loadMethod = request.get("loadMethod").toString();
 		this.unloadMethod = request.get("unloadMethod").toString();
 		this.requestItems = request.get("requestItems").toString();
