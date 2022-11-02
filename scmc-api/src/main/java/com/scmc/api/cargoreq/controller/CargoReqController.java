@@ -1,6 +1,9 @@
 package com.scmc.api.cargoreq.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +48,22 @@ public class CargoReqController {
 		log.info("========================");
 		
 		return new ResponseEntity<>(cargoReqService.selectCargoRequest(ownerUid, departDate, arrivalDate, phoneNumber, status), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "화주별 이용내역 조회", notes = "화주별 이용내역 리스트를 조회한다.")
+	@GetMapping("/requestByStat")
+	public ResponseEntity<?> selectCargoRequestByStatus(
+			@ApiParam(value = "화주 uid", example = "1") @RequestParam(value = "ownerUid") Long ownerUid,
+			@RequestParam(value = "status") List<String> status 
+			) throws Exception {
+		log.info("========================");
+		log.info("사용자별 상태 별 이용내역 리스트 조회");
+		log.info("========================");
+		
+		
+		//cargoReqService.selectCargoRequestByStatus(ownerUid, stat),
+		//System.out.println(param.toString());
+		return new ResponseEntity<>(cargoReqService.selectCargoRequestByStatus(ownerUid, status), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")

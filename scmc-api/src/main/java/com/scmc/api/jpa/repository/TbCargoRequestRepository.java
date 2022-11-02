@@ -16,6 +16,7 @@ public interface TbCargoRequestRepository extends JpaRepository<TbCargoRequest, 
 	TbCargoRequest findByReqId(Long reqId);
 	List<TbCargoRequest> findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(Long ownerUid);
 	List<TbCargoRequest> findAllByOrderByReqIdAsc();
+	List<TbCargoRequest> findByOwnerUidAndStatusIn(Long ownerUid, List<String> status);
 	
 	// admin 용
 	int countByStatus(String status);

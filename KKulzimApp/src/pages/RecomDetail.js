@@ -24,7 +24,6 @@ import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {createIconSetFromFontello} from 'react-native-vector-icons';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
 import { isEmpty, formatFare } from "utils/CommonUtil";
 import { formatDateTimeToKorea } from "utils/DateUtil";
 import {
@@ -44,6 +43,7 @@ function RecomDetail({ navigation, route }) {
       getCargoRequestDetail(route.params.reqId)
       .then(res => {
         setDetail(() => res.data)
+        console.log(detail)
       })
     }
   }, [route.params?.reqId])
@@ -68,6 +68,33 @@ function RecomDetail({ navigation, route }) {
     })
   }
 
+  const getExRoute = async () => {
+    console.log('getExRoute')
+    // const depart = [detail.departLongitude, detail.departLatitude]
+    // const arrival = [detail.arrivalLongitude, detail.arrivalLatitude]
+    await axios.get(`https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${detail.departLongitude},${detail.departLatitude}&goal=${detail.arrivalLongitude},${detail.arrivalLatitude}`,
+    {
+      headers: {
+        Accept:'application/json',
+        'X-NCP-APIGW-API-KEY-ID': '205xj64cr0', 
+        'X-NCP-APIGW-API-KEY': 'fKCrRKmTNrI3JWOYjzOITzkWpqb97mO3XutBDa9n',
+        'Content-Type':'application/json'
+        },
+
+      // params: {
+      //   start: `${detail.departLongitude},${detail.departLatitude}`,//depart,
+      //   goal: `${detail.arrivalLongitude},${detail.arrivalLatitude}`,//arrival,
+      //   option: 'trafast'
+      // }
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err.response)
+    })
+  }
+  
   return (
     <ScrollView style={styles.mainView}>
       {/* 화물정보 */}
@@ -170,7 +197,8 @@ function RecomDetail({ navigation, route }) {
                   <View style={{flex: 1}}>
                     <Pressable
                       style={styles.buttonZone}
-                      onPress={() => Alert.alert('T-map 로직')}>
+                      onPress={getExRoute}>
+                        {/* () => Alert.alert('T-map 로직') */}
                       <Text style={styles.buttonText}>예상경로</Text>
                     </Pressable>
                   </View>

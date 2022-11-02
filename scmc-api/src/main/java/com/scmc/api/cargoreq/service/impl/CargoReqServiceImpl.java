@@ -56,6 +56,7 @@ public class CargoReqServiceImpl implements CargoReqService {
 		if (ownerUid == null) {
 			result = tbCargoRequestRepositoryCustom.dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(departDate, arrivalDate, phoneNumber, status);
 		} else {
+		
 			result = tbCargoRequestRepository.findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
 		}
 		
@@ -68,6 +69,13 @@ public class CargoReqServiceImpl implements CargoReqService {
 		}
 	
 		return result;
+	}
+	
+	@Override
+	@Transactional
+	public List<TbCargoRequest> selectCargoRequestByStatus(Long ownerUid, List<String> status){
+		List<TbCargoRequest> list = tbCargoRequestRepository.findByOwnerUidAndStatusIn(ownerUid, status);
+		return list;
 	}
 	
 	@Override
