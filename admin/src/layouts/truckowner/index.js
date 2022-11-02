@@ -94,7 +94,7 @@ function Truckowner() {
         setValues(res.data)
         const hist = res.data.hist
         setData([])
-        hist.map(key =>
+        hist?.map(key =>
           {
             if(hist.length !== 0){
               const requests = key.requests
@@ -103,8 +103,6 @@ function Truckowner() {
             }
           }
         )
-        console.log(res.data)
-
       })
   };
   const handleCargoRowClick = (params) => {

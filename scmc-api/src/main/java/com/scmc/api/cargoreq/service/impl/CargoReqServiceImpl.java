@@ -47,6 +47,7 @@ public class CargoReqServiceImpl implements CargoReqService {
 	private final TbCargoHistRepository tbCargoHistReqository;
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 	private final TbCargoRequestRepositoryCustom tbCargoRequestRepositoryCustom;
+	private final TbCargoHistRepository tbCargoHistRepository;
 
 	@Override
 	@Transactional
@@ -205,6 +206,12 @@ public class CargoReqServiceImpl implements CargoReqService {
 		return request;
 	}
 
+	@Override
+	public TbCargoHist selectCargoHist(Long reqId) {
+		TbCargoHist hist = tbCargoHistRepository.findByRequest_ReqId(reqId);
+		return hist;
+	}
+	
 	@Transactional
 	@Override
 	public boolean updateCargoRequestDetail(RequestDetailDto dto) {

@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -38,7 +39,7 @@ public class TbCargoHist {
 	@Column(name = "hist_uid")
 	private Long histUid;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)	
+	@OneToOne	
 	@JoinColumn(name = "req_id", referencedColumnName = "req_id")
 	@ToString.Exclude
 	private TbCargoRequest request;
@@ -46,9 +47,8 @@ public class TbCargoHist {
 	@Column(name = "owner_uid")
 	private Long ownerUid;
 	
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "truckowner_uid", referencedColumnName = "truckowner_uid")
-	@JsonBackReference
 	//@JsonIgnore
 	@ToString.Exclude
 	private TbMemberTruckOwner truckowner;

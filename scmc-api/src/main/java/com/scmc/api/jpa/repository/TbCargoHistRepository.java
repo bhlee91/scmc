@@ -12,4 +12,6 @@ import com.scmc.api.member.truck.dto.HistoryDto;
 public interface TbCargoHistRepository extends JpaRepository<TbCargoHist, Long>{
 	
 	List<HistoryDto> findAllByTruckowner_truckownerUidAndStatusNotIn(Long truckownerUid, List<String> statusList);
+	
+	TbCargoHist findByRequest_ReqId(Long reqId);
 }

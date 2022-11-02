@@ -184,4 +184,15 @@ public class CargoReqController {
 		
 		return new ResponseEntity<>(cargoReqService.updateCargoRequestDetail(dto), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "운송이력", notes = "운송이력을 등록/수정한다.")
+	@GetMapping("/request/hist/{reqId}")
+	public ResponseEntity<?> getReqHist(
+			@ApiParam(value = "화물 의뢰 번호", example = "1") @PathVariable(value = "reqId") Long reqId) throws Exception {
+		log.info("========================");
+		log.info("운송 이력");
+		log.info("========================");
+		
+		return new ResponseEntity<>(cargoReqService.selectCargoHist(reqId), HttpStatus.OK);
+	}
 }

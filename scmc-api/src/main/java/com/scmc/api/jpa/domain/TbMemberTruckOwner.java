@@ -101,9 +101,13 @@ public class TbMemberTruckOwner {
 	@Column(name = "refresh_token")
 	private String refreshToken;
 	
-	@JsonManagedReference
-	@OneToMany(mappedBy = "truckowner", fetch = FetchType.LAZY)
-	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();
+//	@JsonManagedReference
+//	@OneToMany(mappedBy = "truckowner", fetch = FetchType.LAZY)
+//	private List<TbCargoHist> hist = new ArrayList<TbCargoHist>();
+	
+	@OneToOne
+	@JoinColumn(name="truckowner_uid")
+	private TbCargoHist hist;
 	
 	@JsonManagedReference
 	@OneToMany(mappedBy = "truckownerUid", fetch = FetchType.LAZY)

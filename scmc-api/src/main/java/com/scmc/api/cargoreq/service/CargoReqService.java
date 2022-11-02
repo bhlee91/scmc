@@ -4,10 +4,8 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import com.scmc.api.cargoreq.dto.RequestDetailDto;
+import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
 import com.scmc.api.jpa.dto.MatchingDto;
@@ -34,4 +32,6 @@ public interface CargoReqService {
 	boolean updateCargoRequestDetail(RequestDetailDto dto);
 	
 	List<TbCargoRequest> selectCargoRequestByStatus(Long ownerUid, List<String> Status);
+	
+	TbCargoHist selectCargoHist(Long reqId);
 }
