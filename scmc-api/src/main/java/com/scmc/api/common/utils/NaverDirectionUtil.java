@@ -3,9 +3,6 @@ package com.scmc.api.common.utils;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class NaverGeocodeUtil {
-	
+public class NaverDirectionUtil {
+
 	private final APIUtil apiUtil;
 	
 	@Value("${naver.maps.key-id}")
@@ -24,11 +21,11 @@ public class NaverGeocodeUtil {
 	@Value("${naver.maps.key}")
 	private String KEY;
 	
-	@Value("${naver.geocode.api}")
+	@Value("${naver.driving.api}")
 	private String API;
 	
-	public String getAddress(HttpServletRequest request, String query) throws UnsupportedEncodingException {
-		String url = API + String.format("?query=%s", URLEncoder.encode(query, "utf-8"));
+	public String getCoord(String start, String goal, String option) throws UnsupportedEncodingException {
+		String url = API + String.format("?start=%s&goal=%s&option=%s&cartype=3&fueltype=diesel", start, goal, option);
 		
 		HttpURLConnection con = apiUtil.connect(url);
 		

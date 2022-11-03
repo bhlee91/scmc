@@ -139,6 +139,12 @@ public class TbCargoRequest {
 	@Column(name = "mod_dt")
 	private Date modDt;
 	
+	@Column(name = "direct_distance", nullable = true)
+	private Float directDistance;
+	
+	@Column(name = "real_distance", nullable = true)
+	private Float realDistance;
+	
 	// 상태명
 	@Formula("(SELECT com.code_name FROM tb_common_cd com WHERE com.cdid = status)")
 	private String statusName;
@@ -203,6 +209,9 @@ public class TbCargoRequest {
 		this.additionalFare = dto.getAdditionalFare();
 		this.status = dto.getStatus();
 		this.regComDate = dto.getRegComDate();
+		
+		this.directDistance = dto.getDirectDistance();
+		this.realDistance = dto.getRealDistance();
 		
 		this.modDt = format.parse(CommonUtil.getNowDate().toString());
 	}

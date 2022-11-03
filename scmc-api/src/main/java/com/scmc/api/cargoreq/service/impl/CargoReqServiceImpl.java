@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.dto.ImageDto;
@@ -18,6 +19,7 @@ import com.scmc.api.cargoreq.dto.RequestDto;
 import com.scmc.api.cargoreq.service.CargoReqService;
 import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
+import com.scmc.api.common.utils.NaverDirectionUtil;
 import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoImage;
 import com.scmc.api.jpa.domain.TbCargoRequest;
@@ -40,6 +42,7 @@ public class CargoReqServiceImpl implements CargoReqService {
 	private EntityManager em;
 	
 	private final KaKaoLocalUtil kakaoLocalUtil;
+	private final NaverDirectionUtil naverDirectionUtil;
 	
 	private final TbCommonCdRepository tbCommonCdRepository;
 	private final TbCargoRequestRepository tbCargoRequestRepository;
@@ -121,7 +124,19 @@ public class CargoReqServiceImpl implements CargoReqService {
 		TbCargoRequest tbcr = null;
 		
 		try {
-			tbcr = tbCargoRequestRepository.save(new TbCargoRequest(dto));
+			String start = String.format("%f,%f", dto.getDepartLongitude(), dto.getDepartLatitude());
+			String goal = String.format("%f,%f", dto.getArrivalLongitude(), dto.getArrivalLatitude());
+			JSONObject driving = new JSONObject(naverDirectionUtil.getCoord(start, goal, "traoptimal"));
+			
+			JSONObject summary = driving.getJSONObject("route").getJSONArray("traoptimal").getJSONObject(0).getJSONObject("summary");
+			
+			int realDistance = summary.getInt("distance");
+			int directDistance = CommonUtil.distance(dto.getDepartLatitude(), dto.getDepartLongitude(), dto.getArrivalLatitude(), dto.getArrivalLongitude(), "m");
+					
+			dto.setRealDistance(realDistance);
+			dto.setDirectDistance(directDistance);
+			
+			tbcr = tbCargoRequestRepository.save(new TbCargoRequest(dto)); 
 			
 			for (ImageDto image : dto.getImageList()) {
 				TbCargoImage tci = new TbCargoImage(image);

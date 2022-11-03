@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.common.utils.KaKaoLoginUtil;
+import com.scmc.api.common.utils.NaverDirectionUtil;
 import com.scmc.api.common.utils.NaverGeocodeUtil;
 import com.scmc.api.common.utils.NaverLoginUtil;
 
@@ -32,6 +33,7 @@ public class CommonController {
 	private final KaKaoLoginUtil kakaoLoginUtil;
 	private final NaverLoginUtil naverLoginUtil;
 	private final NaverGeocodeUtil naverGeocodeUtil;
+	private final NaverDirectionUtil naverDirectionUtil;
 	
 	@ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 통해 사용자 정보 저장 후 토큰 생성")
 	@PostMapping("/kakao")
@@ -91,5 +93,19 @@ public class CommonController {
 		log.info("==================");
 		
 		return new ResponseEntity<>(naverGeocodeUtil.getAddress(request, query), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "네이버 Direction5 사용", notes = "네이버 Direction5 사용")
+	@GetMapping("/naver/driving")
+	public ResponseEntity<?> naverDriving(HttpServletRequest request,
+			@ApiParam(value = "출발지", example = "위도,경도") @RequestParam(value = "start") String start,
+			@ApiParam(value = "목적지", example = "위도,경도") @RequestParam(value = "goal") String goal,
+			@ApiParam(value = "검색 옵션", example = "traoptimal") @RequestParam(value = "option", required = false) String option
+		) throws Exception {
+		log.info("==================");
+		log.info("네이버 driving");
+		log.info("==================");
+		
+		return new ResponseEntity<>(naverDirectionUtil.getCoord(start, goal, option), HttpStatus.OK);
 	}
 }

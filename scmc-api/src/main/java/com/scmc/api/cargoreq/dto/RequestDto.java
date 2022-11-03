@@ -54,6 +54,9 @@ public class RequestDto {
 	private Date regComDate;
 	private Date modDt;
 	
+	private float directDistance;
+	private float realDistance;
+	
 	private List<ImageDto> imageList = new ArrayList<ImageDto>();
 
 	public RequestDto(TbCargoRequest request) {
