@@ -3,7 +3,6 @@ package com.scmc.api.cargoreq.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.scmc.api.cargoreq.dto.ImageDto;
 import com.scmc.api.cargoreq.dto.RequestDetailDto;
+import com.scmc.api.cargoreq.dto.RequestDto;
 import com.scmc.api.cargoreq.service.CargoReqService;
 import com.scmc.api.common.utils.CommonUtil;
 import com.scmc.api.common.utils.KaKaoLocalUtil;
@@ -117,16 +117,13 @@ public class CargoReqServiceImpl implements CargoReqService {
 	
 	@Transactional
 	@Override
-	public int saveRequest(Map<String, Object> param) {
+	public int saveRequest(RequestDto dto) {
 		TbCargoRequest tbcr = null;
 		
 		try {
-			tbcr = tbCargoRequestRepository.save(new TbCargoRequest(param));
+			tbcr = tbCargoRequestRepository.save(new TbCargoRequest(dto));
 			
-			@SuppressWarnings("unchecked")
-			List<HashMap<String, Object>> imageList = (List<HashMap<String, Object>>) param.get("imageList");
-			
-			for (HashMap<String, Object> image : imageList) {
+			for (ImageDto image : dto.getImageList()) {
 				TbCargoImage tci = new TbCargoImage(image);
 				tci.setTbCargoRequest(tbcr);
 				

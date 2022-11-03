@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,6 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.scmc.api.cargoreq.dto.RequestDto;
 import com.scmc.api.common.utils.CommonUtil;
 
 import lombok.Getter;
@@ -172,40 +172,39 @@ public class TbCargoRequest {
 	
 	public TbCargoRequest() {}
 	
-	public TbCargoRequest(Map<String, Object> request) throws ParseException {
-		SimpleDateFormat formatToMin = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	public TbCargoRequest(RequestDto dto) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		this.reqId = request.containsKey("reqId") ? Long.parseLong(request.get("reqId").toString()) : 0;
-		this.ownerUid = Long.parseLong(request.get("ownerUid").toString());
-		this.cargoName = request.get("cargoName") == null ? null : request.get("cargoName").toString();
-		this.truckUid = Long.parseLong(request.get("truckUid").toString());
-		this.cweight = Float.parseFloat(request.get("cweight").toString());
-		this.cheight = Float.parseFloat(request.get("cheight").toString());
-		this.cwidth = Float.parseFloat(request.get("cwidth").toString());
-		this.cverticalreal = Float.parseFloat(request.get("cverticalreal").toString());
-		this.departDatetimes = request.get("departDatetimes") == null ? null : formatToMin.parse(request.get("departDatetimes").toString());
-		this.arrivalDatetimes = request.get("arrivalDatetimes") == null ? null : formatToMin.parse(request.get("arrivalDatetimes").toString());
-		this.departAddrSt = request.get("departAddrSt") == null ? null : request.get("departAddrSt").toString();
-		this.departAddrOld = request.get("departAddrOld") == null ? null : request.get("departAddrOld").toString();
-		this.arrivalAddrSt = request.get("arrivalAddrSt") == null ? null : request.get("arrivalAddrSt").toString();
-		this.arrivalAddrOld = request.get("arrivalAddrOld") == null ? null : request.get("arrivalAddrOld").toString();
-		this.receiverPhone = request.get("receiverPhone").toString();
-		this.departLatitude = Float.parseFloat(request.get("departLatitude").toString());
-		this.departLongitude = Float.parseFloat(request.get("departLongitude").toString());
-		this.arrivalLatitude = Float.parseFloat(request.get("arrivalLatitude").toString());
-		this.arrivalLongitude = Float.parseFloat(request.get("arrivalLongitude").toString());
-		this.loadMethod = request.get("loadMethod").toString();
-		this.unloadMethod = request.get("unloadMethod").toString();
-		this.requestItems = request.get("requestItems").toString();
-		this.transitFare = Integer.parseInt(request.get("transitFare").toString());
-		this.additionalFare = Integer.parseInt(request.get("additionalFare").toString());
-		this.status = request.get("status").toString();
-		this.regComDate = format.parse(request.get("regComDate").toString());
+		this.reqId = dto.getReqId();
+		this.ownerUid = dto.getOwnerUid();
+		this.cargoName = dto.getCargoName();
+		this.truckUid = dto.getTruckUid();
+		this.cweight = dto.getCweight();
+		this.cheight = dto.getCheight();
+		this.cwidth = dto.getCwidth();
+		this.cverticalreal = dto.getCverticalreal();
+		this.departDatetimes = dto.getDepartDatetimes();
+		this.arrivalDatetimes = dto.getArrivalDatetimes();
+		this.departAddrSt = dto.getDepartAddrSt();
+		this.departAddrSt2 = dto.getDepartAddrSt2();
+		this.departAddrOld = dto.getDepartAddrOld();
+		this.arrivalAddrSt = dto.getArrivalAddrSt();
+		this.arrivalAddrSt2 = dto.getArrivalAddrSt2();
+		this.arrivalAddrOld = dto.getArrivalAddrOld();
+		this.receiverPhone = dto.getReceiverPhone();
+		this.departLatitude = dto.getDepartLatitude();
+		this.departLongitude = dto.getDepartLongitude();
+		this.arrivalLatitude = dto.getArrivalLatitude();
+		this.arrivalLongitude = dto.getArrivalLongitude();
+		this.loadMethod = dto.getLoadMethod();
+		this.unloadMethod = dto.getUnloadMethod();
+		this.requestItems = dto.getRequestItems();
+		this.transitFare = dto.getTransitFare();
+		this.additionalFare = dto.getAdditionalFare();
+		this.status = dto.getStatus();
+		this.regComDate = dto.getRegComDate();
 		
-		if (request.containsKey("regId")) {
-			this.modDt = format.parse(CommonUtil.getNowDate().toString());
-		}
+		this.modDt = format.parse(CommonUtil.getNowDate().toString());
 	}
 
 }

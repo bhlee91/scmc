@@ -1,7 +1,5 @@
 package com.scmc.api.cargoreq.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.cargoreq.dto.RequestDetailDto;
+import com.scmc.api.cargoreq.dto.RequestDto;
 import com.scmc.api.cargoreq.service.CargoReqService;
 
 import io.swagger.annotations.Api;
@@ -68,12 +67,12 @@ public class CargoReqController {
 	
 	@ApiOperation(value = "의뢰 내역 등록/수정", notes = "의뢰내역을 등록/수정한다.")
 	@PostMapping("/request")
-	public ResponseEntity<?> saveCargoRequest(@RequestBody HashMap<String, Object> param) throws Exception {
+	public ResponseEntity<?> saveCargoRequest(@RequestBody RequestDto dto) throws Exception {
 		log.info("========================");
 		log.info("의뢰내역 등록/수정");
 		log.info("========================");
 	
-		return new ResponseEntity<>(cargoReqService.saveRequest(param), HttpStatus.OK);
+		return new ResponseEntity<>(cargoReqService.saveRequest(dto), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "매칭관리 조회", notes = "매칭관리 리스트 조회한다.")

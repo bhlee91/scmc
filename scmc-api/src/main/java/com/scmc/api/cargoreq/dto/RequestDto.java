@@ -1,6 +1,8 @@
 package com.scmc.api.cargoreq.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.scmc.api.jpa.domain.TbCargoRequest;
 
@@ -26,7 +28,11 @@ public class RequestDto {
 	private Date arrivalDatetimes;
 	
 	private String departAddrSt;
+	private String departAddrSt2;
+	private String departAddrOld;
 	private String arrivalAddrSt;
+	private String arrivalAddrSt2;
+	private String arrivalAddrOld;
 	private String receiverPhone;
 	private float departLatitude;
 	private float departLongitude;
@@ -44,6 +50,11 @@ public class RequestDto {
 	private String reqComyn;
 	private String status;
 	private String statusName;
+	
+	private Date regComDate;
+	private Date modDt;
+	
+	private List<ImageDto> imageList = new ArrayList<ImageDto>();
 
 	public RequestDto(TbCargoRequest request) {
 		super();

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.scmc.api.cargoreq.dto.RequestDetailDto;
+import com.scmc.api.cargoreq.dto.RequestDto;
 import com.scmc.api.jpa.domain.TbCargoHist;
 import com.scmc.api.jpa.domain.TbCargoRequest;
 import com.scmc.api.jpa.domain.TbMemberTruckOwner;
@@ -20,7 +21,7 @@ public interface CargoReqService {
 	
 	int updateStatus(String status, Long reqId);
 	
-	int saveRequest(Map<String, Object> obj);
+	int saveRequest(RequestDto dto);
 	
 	int saveRequestFare(Map<String, Object> obj);
 	

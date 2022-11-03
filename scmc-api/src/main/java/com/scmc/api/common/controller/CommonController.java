@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.scmc.api.common.utils.KaKaoLoginUtil;
+import com.scmc.api.common.utils.NaverGeocodeUtil;
 import com.scmc.api.common.utils.NaverLoginUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +31,7 @@ public class CommonController {
 	
 	private final KaKaoLoginUtil kakaoLoginUtil;
 	private final NaverLoginUtil naverLoginUtil;
+	private final NaverGeocodeUtil naverGeocodeUtil;
 	
 	@ApiOperation(value = "카카오 로그인", notes = "카카오 로그인을 통해 사용자 정보 저장 후 토큰 생성")
 	@PostMapping("/kakao")
@@ -76,5 +79,17 @@ public class CommonController {
 		param.put("state", state);
 		
 		return new ResponseEntity<>(naverLoginUtil.getNaverToken(request, param), HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "네이버 geocoding 사용", notes = "네이버 geocoding 사용")
+	@GetMapping("/naver/geocode")
+	public ResponseEntity<?> naverGeocoding(HttpServletRequest request,
+			@ApiParam(value = "검색할 주소", example = "경기 성남시 분당구 탄천상로 164") @RequestParam(value = "query") String query
+		) throws Exception {
+		log.info("==================");
+		log.info("네이버 geocoding");
+		log.info("==================");
+		
+		return new ResponseEntity<>(naverGeocodeUtil.getAddress(request, query), HttpStatus.OK);
 	}
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,8 +25,8 @@ public class APIUtil {
         }
     }
     
-    public String readBody(InputStream body){
-        InputStreamReader streamReader = new InputStreamReader(body);
+    public String readBody(InputStream body) throws UnsupportedEncodingException{
+        InputStreamReader streamReader = new InputStreamReader(body, "utf-8");
 
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
             StringBuilder responseBody = new StringBuilder();
