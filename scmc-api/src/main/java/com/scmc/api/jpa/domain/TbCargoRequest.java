@@ -46,8 +46,8 @@ public class TbCargoRequest {
 	@Column(name = "cargo_name")
 	private String cargoName;
 	
-	@Column(name = "truck_uid")
-	private Long truckUid;
+	@Column(name = "truck_type")
+	private String truckType;
 	
 	@Column(name = "cweight")
 	private float cweight;
@@ -184,7 +184,7 @@ public class TbCargoRequest {
 		this.reqId = dto.getReqId();
 		this.ownerUid = dto.getOwnerUid();
 		this.cargoName = dto.getCargoName();
-		this.truckUid = dto.getTruckUid();
+		this.truckType = dto.getTruckType();
 		this.cweight = dto.getCweight();
 		this.cheight = dto.getCheight();
 		this.cwidth = dto.getCwidth();

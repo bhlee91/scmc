@@ -16,7 +16,7 @@ public class MatchingDto {
 	private Long ownerUid;
 	private String cargoownerName;
 	private String cargoName;
-	private Long truckUid;
+	private String truckType;
 	
 	private float cweight;
 	private float cheight;
@@ -53,7 +53,7 @@ public class MatchingDto {
 		this.ownerUid = request.getOwnerUid();
 		this.cargoownerName = request.getCargoownerName();
 		this.cargoName = request.getCargoName();
-		this.truckUid = request.getTruckUid();
+		this.truckType = request.getTruckType();
 		this.cweight = request.getCweight();
 		this.cheight = request.getCheight();
 		this.cwidth = request.getCwidth();
