@@ -86,4 +86,22 @@ public class CommonUtil {
 	private static double rad2deg(double rad) {
 		return (rad * 180 / Math.PI);
 	}
+	
+	public static int fareByDistance(int distance) {
+		int fare = 0;
+		
+		if (distance >= 200) {
+			fare = 49000 + ((distance - 200) * 100);
+		} else if (distance >= 100) {
+			fare = 34000 + ((distance - 100) * 150);
+		} else if (distance >= 30) {
+			fare = 20000 + ((distance - 30) * 200);
+		} else if (distance >= 10) {
+			fare = 10000 + ((distance - 10) * 500);
+		} else {
+			fare = distance * 1000;
+		}
+		
+		return fare;
+	}
 }

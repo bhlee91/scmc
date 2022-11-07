@@ -2,6 +2,7 @@ package com.scmc.api.cargoreq.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,6 +91,28 @@ public class CargoReqController {
 		log.info("========================");
 		
 		return new ResponseEntity<>(cargoReqService.selectRequestMatching(departDate, arrivalDate, phoneNumber, cargoName, status), HttpStatus.OK);	
+	}
+	
+	@ApiOperation(value = "의뢰 비용 계산 후 조회", notes = "의뢰 비용 계산 후 조회한다.")
+	@GetMapping("/request/fare")
+	public ResponseEntity<?> selectRequestFare(
+			@ApiParam(value = "출발지 위도") @RequestParam(value = "departLatitude") Float departLatitude,
+			@ApiParam(value = "출발지 경도") @RequestParam(value = "departLongitude") Float departLongitude,
+			@ApiParam(value = "도착지 위도") @RequestParam(value = "arrivalLatitude") Float arrivalLatitude,
+			@ApiParam(value = "도착지 경도") @RequestParam(value = "arrivalLongitude") Float arrivalLongitude
+			) throws Exception {
+		
+		log.info("========================");
+		log.info("의뢰 비용 계산 후 조회");
+		log.info("========================");
+		
+		Map<String, Float> obj = new HashMap<String, Float>();
+		obj.put("departLatitude", departLatitude);
+		obj.put("departLongitude", departLongitude);
+		obj.put("arrivalLatitude", arrivalLatitude);
+		obj.put("arrivalLongitude", arrivalLongitude);
+		
+		return new ResponseEntity<>(cargoReqService.selectRequestFare(obj), HttpStatus.OK);	
 	}
 	
 	@ApiOperation(value = "", notes = "매칭관리 리스트 조회 테스트 용입니다.")

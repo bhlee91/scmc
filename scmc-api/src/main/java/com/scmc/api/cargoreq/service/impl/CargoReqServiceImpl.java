@@ -3,6 +3,7 @@ package com.scmc.api.cargoreq.service.impl;
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,6 @@ public class CargoReqServiceImpl implements CargoReqService {
 		if (ownerUid == null) {
 			result = tbCargoRequestRepositoryCustom.dynamicByDepartDatetimesAndArrivalDatetimesAndPhoneNumberAndStatus(departDate, arrivalDate, phoneNumber, status);
 		} else {
-		
 			result = tbCargoRequestRepository.findWithTbCargoImageUsingFetchJoinByOwnerUidOrderByReqIdAsc(ownerUid);
 		}
 		
@@ -149,6 +149,36 @@ public class CargoReqServiceImpl implements CargoReqService {
 		} catch(Exception e) {
 			System.out.println(e.getMessage());
 			return 0;
+		}
+	}
+	
+	@Override
+	public Map<String, Integer> selectRequestFare(Map<String, Float> obj) {
+		try {
+			String start = String.format("%f,%f", obj.get("departLongitude"), obj.get("departLatitude"));
+			String goal = String.format("%f,%f", obj.get("arrivalLongitude"), obj.get("arrivalLatitude"));
+			JSONObject driving = new JSONObject(naverDirectionUtil.getCoord(start, goal, "traoptimal"));
+			
+			JSONObject summary = driving.getJSONObject("route").getJSONArray("traoptimal").getJSONObject(0).getJSONObject("summary");
+
+			int realDistance = summary.getInt("distance");
+			int directDistance = CommonUtil.distance(obj.get("departLongitude"), obj.get("departLatitude"), obj.get("arrivalLongitude"), obj.get("arrivalLatitude"), "m");
+
+			// 거리 계산을 위해 m -> km 변환
+			int rd = Math.round(realDistance / 1000);
+			
+			int additionalFare = CommonUtil.fareByDistance(rd);
+			
+			Map<String, Integer> res = new HashMap<String, Integer>();
+			
+			res.put("realDistance", realDistance);
+			res.put("directDistance", directDistance);
+			res.put("additionalFare", additionalFare);
+
+			return res;
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			return null;
 		}
 	}
 	

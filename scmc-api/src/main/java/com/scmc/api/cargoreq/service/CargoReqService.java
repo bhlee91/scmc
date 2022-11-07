@@ -23,6 +23,8 @@ public interface CargoReqService {
 	
 	int saveRequest(RequestDto dto);
 	
+	Map<String, Integer> selectRequestFare(Map<String, Float> obj);
+	
 	int saveRequestFare(Map<String, Object> obj);
 	
 	String searchAddress(String query);
