@@ -37,4 +37,6 @@ public interface CargoReqService {
 	List<TbCargoRequest> selectCargoRequestByStatus(Long ownerUid, List<String> Status);
 	
 	TbCargoHist selectCargoHist(Long reqId);
+	
+	String updateAddFare(Long reqId, int additionalFare);
 }

@@ -287,4 +287,26 @@ public class CargoReqServiceImpl implements CargoReqService {
 			return res;
 		}
 	}
+
+	@Override
+	@Transactional
+	public String updateAddFare(Long reqId, int additionalFare) {
+
+		String msg = "";
+		try {
+			
+			TbCargoRequest request = tbCargoRequestRepository.findByReqId(reqId);
+			request.setAdditionalFare(request.getAdditionalFare() + additionalFare);
+			tbCargoRequestRepository.save(request);
+			
+		} catch(Exception e) {
+			System.out.println(e.getMessage());
+			msg = "운송비 추가에 실패 했습니다. 잠시 후 다시 시도해주세요.";
+			
+		}
+		msg = "운송비가 변경 되었습니다.";
+		
+		return msg;
+	}
+	
 }

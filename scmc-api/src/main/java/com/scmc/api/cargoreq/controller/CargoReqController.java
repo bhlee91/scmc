@@ -217,4 +217,16 @@ public class CargoReqController {
 		
 		return new ResponseEntity<>(cargoReqService.selectCargoHist(reqId), HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "운송비 추가", notes = "운송비 추가")
+	@PostMapping("/request/addFare")
+	public ResponseEntity<?> setAddFare(@RequestBody Map<String, Object> obj) throws Exception {
+		Long reqId = Long.parseLong(obj.get("reqId").toString());
+		int additionalFare = Integer.parseInt(obj.get("additionalFare").toString());
+		log.info("==================");
+		log.info("운송비 추가");
+		log.info("==================");
+		
+		return new ResponseEntity<>(cargoReqService.updateAddFare(reqId, additionalFare), HttpStatus.OK);
+	}
 }
