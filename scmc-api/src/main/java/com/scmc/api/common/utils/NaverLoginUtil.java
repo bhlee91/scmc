@@ -46,6 +46,9 @@ public class NaverLoginUtil {
 	@Value("${spring.host.url-dev}")
 	private String DEV_URL;
 	
+	@Value("${spring.host.port-dev}")
+	private String DEV_PORT;
+	
 	private String URI = "/LogIn/nid";
 	
 	private String generateState(HttpServletRequest request) {
@@ -151,7 +154,7 @@ public class NaverLoginUtil {
 		String requestURL = request.getRequestURL().toString();
 		
 		if (requestURL.contains(DEV_URL)) {
-			redirectUri = DEV_URL + ":3011";
+			redirectUri = DEV_URL + DEV_PORT;
 		} else if (requestURL.contains("127.0.0.1") || requestURL.contains("localhost")) {
 			redirectUri = "localhost:3000";
 		}

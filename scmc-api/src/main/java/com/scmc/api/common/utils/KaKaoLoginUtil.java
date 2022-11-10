@@ -38,6 +38,9 @@ public class KaKaoLoginUtil {
 	@Value("${spring.host.url-dev}")
 	private String DEV_URL;
 	
+	@Value("${spring.host.port-dev}")
+	private String DEV_PORT;
+	
 	private String URI = "/LogIn/kid";
 	
 	public String authConnect(HttpServletRequest request) throws UnsupportedEncodingException {
@@ -127,7 +130,7 @@ public class KaKaoLoginUtil {
 		String requestURL = request.getRequestURL().toString();
 		
 		if (requestURL.contains(DEV_URL)) {
-			redirectUri = DEV_URL + ":3006";
+			redirectUri = DEV_URL + DEV_PORT;
 		} else if (requestURL.contains("127.0.0.1") || requestURL.contains("localhost")) {
 			redirectUri = "localhost:3000";
 		}
