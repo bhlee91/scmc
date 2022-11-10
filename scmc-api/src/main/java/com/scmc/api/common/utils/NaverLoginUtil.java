@@ -151,7 +151,7 @@ public class NaverLoginUtil {
 		String requestURL = request.getRequestURL().toString();
 		
 		if (requestURL.contains(DEV_URL)) {
-			redirectUri = DEV_URL + ":3006";
+			redirectUri = DEV_URL + ":3011";
 		} else if (requestURL.contains("127.0.0.1") || requestURL.contains("localhost")) {
 			redirectUri = "localhost:3000";
 		}

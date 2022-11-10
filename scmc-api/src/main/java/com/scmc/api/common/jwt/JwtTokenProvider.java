@@ -3,7 +3,6 @@ package com.scmc.api.common.jwt;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
@@ -40,7 +39,6 @@ public class JwtTokenProvider {
 	private int tokenValidTime; // 1시간
 	
 	private final CustomUserDetailsService customUserDetailsService;
-	
 	
 	private final TbMemberTruckOwnerRepository tbMemberTruckOwnerRepository;
 	
