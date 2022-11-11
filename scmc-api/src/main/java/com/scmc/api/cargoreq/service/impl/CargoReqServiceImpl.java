@@ -296,7 +296,7 @@ public class CargoReqServiceImpl implements CargoReqService {
 		try {
 			
 			TbCargoRequest request = tbCargoRequestRepository.findByReqId(reqId);
-			request.setAdditionalFare(request.getAdditionalFare() + additionalFare);
+			request.setAdditionalFare(additionalFare);
 			tbCargoRequestRepository.save(request);
 			
 		} catch(Exception e) {
