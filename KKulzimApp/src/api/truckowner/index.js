@@ -31,14 +31,6 @@ export const registTruckOwner = (obj) => {
   })
 }
 
-export const loginTruckOwner = (obj) => {
-  return request({
-    url: `${BASE_URL}/truck/login`,
-    method: "post",
-    data: obj
-  })
-}
-
 export const changePassword = (obj) => {
   return request({
     url: `${BASE_URL}/truck/chpwd`,

@@ -16,7 +16,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DismissKeyboardView from '../components/DismissKeyboardView';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; 
-import { loginTruckOwner } from '../api/truckowner';
+import { login } from '../api/auth';
 import store, { useAppDispatch } from '../store';
 import { persistor } from '../../App';
 import userSlice from '../slices/user';
@@ -63,7 +63,7 @@ function LogIn({navigation}) {
       return Alert.alert('알림', '비밀번호를 입력해주세요.');
     } else {
       setLoading(true)
-      loginTruckOwner(info)
+      login(info)
       .then(res => {
         console.log(res.data)
         if(res.data !== null ){ 
